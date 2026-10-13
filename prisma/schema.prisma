@@ -1,0 +1,258 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------- Auth / perfis ----------
+
+enum Role {
+  ADMIN
+  EQUIPE
+  FREELANCER
+  CLIENTE
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(EQUIPE)
+  clienteId    String?
+  cliente      Cliente? @relation(fields: [clienteId], references: [id])
+  createdAt    DateTime @default(now())
+}
+
+// ---------- Catálogo ----------
+
+enum TipoCobranca {
+  PROJETO_UNICO
+  RECORRENCIA_MENSAL
+  LOCACAO_HORA
+}
+
+model Pilar {
+  id       String    @id @default(cuid())
+  nome     String
+  ordem    Int       @default(0)
+  ativo    Boolean   @default(true)
+  servicos Servico[]
+}
+
+model Servico {
+  id                String       @id @default(cuid())
+  pilarId           String
+  pilar             Pilar        @relation(fields: [pilarId], references: [id])
+  nome              String
+  tipoCobranca      TipoCobranca
+  descricao         String?
+  argumentacaoVenda String?
+  objecoesComuns    String?
+  ordem             Int          @default(0)
+  ativo             Boolean      @default(true)
+
+  planos    Plano[]
+  adicionais Adicional[]
+  etapasTemplate PipelineEtapaTemplate[]
+  propostas Proposta[]
+  projetos  Projeto[]
+}
+
+model Plano {
+  id         String   @id @default(cuid())
+  servicoId  String
+  servico    Servico  @relation(fields: [servicoId], references: [id])
+  nome       String
+  valorMin   Float?
+  valorMax   Float?
+  prazoDias  Int?
+  prazoTexto String?
+  entregas   String[] @default([])
+  ordem      Int      @default(0)
+  ativo      Boolean  @default(true)
+
+  propostas Proposta[]
+}
+
+model Adicional {
+  id          String   @id @default(cuid())
+  servicoId   String
+  servico     Servico  @relation(fields: [servicoId], references: [id])
+  nome        String
+  valor       Float?
+  descricao   String?
+  ativo       Boolean  @default(true)
+
+  propostas PropostaAdicional[]
+}
+
+model PipelineEtapaTemplate {
+  id        String  @id @default(cuid())
+  servicoId String
+  servico   Servico @relation(fields: [servicoId], references: [id])
+  nome      String
+  ordem     Int     @default(0)
+}
+
+// ---------- CRM ----------
+
+enum StatusRelacionamento {
+  LEAD
+  ORCAMENTO_ENVIADO
+  CLIENTE_ATIVO
+  CLIENTE_RECORRENTE
+}
+
+model Cliente {
+  id                   String               @id @default(cuid())
+  nome                 String
+  empresa              String?
+  contato              String?
+  email                String?
+  telefone             String?
+  origem               String?
+  statusRelacionamento StatusRelacionamento @default(LEAD)
+  notasInternas        String?
+  createdAt            DateTime             @default(now())
+
+  usuarios  User[]
+  propostas Proposta[]
+  projetos  Projeto[]
+}
+
+// ---------- Propostas ----------
+
+enum StatusProposta {
+  ENVIADA
+  NEGOCIACAO
+  APROVADA
+  RECUSADA
+}
+
+model Proposta {
+  id                String         @id @default(cuid())
+  clienteId         String
+  cliente           Cliente        @relation(fields: [clienteId], references: [id])
+  servicoId         String
+  servico           Servico        @relation(fields: [servicoId], references: [id])
+  planoId           String
+  plano             Plano          @relation(fields: [planoId], references: [id])
+  valorProposto      Float
+  prazoPropostoDias  Int?
+  status            StatusProposta @default(ENVIADA)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  adicionais PropostaAdicional[]
+  projeto    Projeto?
+}
+
+model PropostaAdicional {
+  propostaId  String
+  proposta    Proposta  @relation(fields: [propostaId], references: [id], onDelete: Cascade)
+  adicionalId String
+  adicional   Adicional @relation(fields: [adicionalId], references: [id])
+
+  @@id([propostaId, adicionalId])
+}
+
+// ---------- Projetos ----------
+
+enum StatusGeralProjeto {
+  ATIVO
+  PAUSADO
+  CONCLUIDO
+  CANCELADO
+}
+
+enum StatusEtapa {
+  PENDENTE
+  EM_ANDAMENTO
+  CONCLUIDA
+}
+
+enum StatusEntrega {
+  EM_REVISAO
+  APROVADA
+  REPROVADA
+}
+
+enum StatusRecebimento {
+  PENDENTE
+  PAGO
+  ATRASADO
+}
+
+model Projeto {
+  id           String              @id @default(cuid())
+  propostaId   String?             @unique
+  proposta     Proposta?           @relation(fields: [propostaId], references: [id])
+  clienteId    String
+  cliente      Cliente             @relation(fields: [clienteId], references: [id])
+  servicoId    String
+  servico      Servico             @relation(fields: [servicoId], references: [id])
+  nome         String
+  tipoCobranca TipoCobranca
+  valor        Float
+  prazoData    DateTime?
+  avulso       Boolean             @default(false)
+  statusGeral  StatusGeralProjeto  @default(ATIVO)
+  cicloAtual   Int?
+  createdAt    DateTime            @default(now())
+
+  etapas       ProjetoEtapa[]
+  entregas     Entrega[]
+  recebimentos Recebimento[]
+  custos       Custo[]
+}
+
+model ProjetoEtapa {
+  id         String      @id @default(cuid())
+  projetoId  String
+  projeto    Projeto     @relation(fields: [projetoId], references: [id], onDelete: Cascade)
+  nome       String
+  ordem      Int         @default(0)
+  status     StatusEtapa @default(PENDENTE)
+  dataInicio DateTime?
+  dataFim    DateTime?
+}
+
+model Entrega {
+  id                String        @id @default(cuid())
+  projetoId         String
+  projeto           Projeto       @relation(fields: [projetoId], references: [id], onDelete: Cascade)
+  versao            Int
+  link              String?
+  status            StatusEntrega @default(EM_REVISAO)
+  comentarioCliente String?
+  createdAt         DateTime      @default(now())
+}
+
+// ---------- Financeiro ----------
+
+model Recebimento {
+  id            String            @id @default(cuid())
+  projetoId     String
+  projeto       Projeto           @relation(fields: [projetoId], references: [id], onDelete: Cascade)
+  valor         Float
+  vencimento    DateTime
+  status        StatusRecebimento @default(PENDENTE)
+  formaPagamento String?
+  dataPagamento DateTime?
+}
+
+model Custo {
+  id        String  @id @default(cuid())
+  projetoId String
+  projeto   Projeto @relation(fields: [projetoId], references: [id], onDelete: Cascade)
+  tipo      String
+  descricao String?
+  valor     Float
+}

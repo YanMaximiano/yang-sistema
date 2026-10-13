@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Yang — Sistema de Gestão
 
-## Getting Started
+Sistema de gestão para a Yang (produtora audiovisual full-service): catálogo de serviços,
+propostas, clientes (CRM), projetos com pipeline customizável, prazos/calendário e financeiro
+básico (recebimentos, custos e margem).
 
-First, run the development server:
+## Stack
+
+- Next.js 16 (App Router, TypeScript, Server Actions)
+- Prisma 7 + PostgreSQL (via driver adapter `@prisma/adapter-pg`)
+- Auth.js (NextAuth v5) — login por e-mail/senha, perfis ADMIN/EQUIPE/FREELANCER/CLIENTE
+- Tailwind CSS
+
+## Banco de dados local
+
+Este projeto usa **`prisma dev`**, um Postgres local gerenciado pelo próprio Prisma CLI —
+não precisa de Docker nem de instalar Postgres manualmente.
+
+Antes de rodar o app pela primeira vez (ou depois de reiniciar o computador), suba o banco:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npx prisma dev -d --name yang-db
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Isso inicia um Postgres local em background. Para ver se está rodando: `npx prisma dev ls`.
+Para parar: `npx prisma dev stop`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+A connection string já está configurada em `.env` (`DATABASE_URL`), apontando para esse
+banco local. Se a porta mudar (raro), ajuste o `.env` com o valor que `prisma dev ls` mostrar.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Primeira configuração
 
-## Learn More
+```bash
+npm install
+npx prisma dev -d --name yang-db   # sobe o banco local
+npx prisma migrate dev             # cria as tabelas
+npm run db:seed                    # popula o catálogo com os 21 serviços reais + usuário admin
+npm run dev                        # inicia o app em http://localhost:3000
+```
 
-To learn more about Next.js, take a look at the following resources:
+Login inicial (admin): `yanfmaxi@gmail.com` / senha `yang@2026` — troque a senha depois de
+entrar (ainda não há tela de troca de senha nesta versão; pode ser atualizada direto no banco
+via `npx prisma studio` ou recriando o usuário).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Scripts úteis
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `npm run dev` — servidor de desenvolvimento
+- `npm run build` — build de produção
+- `npm run db:seed` — roda o seed do catálogo novamente (idempotente para pilares/serviços)
+- `npm run db:studio` — abre o Prisma Studio para inspecionar os dados
 
-## Deploy on Vercel
+## Escopo desta versão (MVP — Fase 1)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Catálogo de serviços (pilares, serviços, planos, adicionais, pipeline de etapas) — totalmente
+  editável pela tela de admin em `/catalogo`
+- Clientes (CRM) com notas internas e funil de status
+- Propostas: cliente → serviço → plano → adicionais, com aprovação que cria o projeto
+  automaticamente
+- Projetos com pipeline Kanban (etapas customizáveis por serviço), versionamento de entregas
+- Calendário de prazos com destaque de atrasados
+- Financeiro básico: recebimentos, custos e margem por projeto/pilar
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Fora de escopo por enquanto (fases seguintes): equipamentos, escala de profissionais, portal
+completo do cliente, contratos/assinatura digital, notificações automáticas, modo offline/desktop.

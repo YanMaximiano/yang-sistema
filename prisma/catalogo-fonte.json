@@ -1,0 +1,1630 @@
+[
+  {
+    "arquivo": "01 - Conteudo Mensal.pdf",
+    "servico": "Conteúdo Mensal para Empresas",
+    "pilar_sugerido": "Conteúdo para Empresas",
+    "tipo_cobranca": "RECORRENCIA_MENSAL",
+    "planos": [
+      {
+        "nome": "Essencial",
+        "valor_min": 2800,
+        "valor_max": 3800,
+        "prazo_dias": 5,
+        "prazo_texto": "Até 5 dias úteis",
+        "entregas": [
+          "1 profissional em campo (videomaker) por diária de gravação",
+          "6 peças finalizadas por mês (mix de reels e posts estáticos)",
+          "Edição com corte dinâmico, trilha licenciada e legendas embutidas",
+          "Ajuste de cor e nitidez em todas as entregas",
+          "2 rodadas de ajuste por peça",
+          "Formatos entregues: vertical (Reels/Stories) e quadrado (feed)",
+          "Entrega via pasta compartilhada (Drive/WeTransfer) em até 5 dias úteis"
+        ]
+      },
+      {
+        "nome": "Performance",
+        "valor_min": 5000,
+        "valor_max": 7000,
+        "prazo_dias": 4,
+        "prazo_texto": "Até 4 dias úteis",
+        "entregas": [
+          "Equipe de 2 profissionais por diária (videomaker + diretor de conteúdo)",
+          "10 a 12 peças finalizadas por mês, com roteiro prévio das gravações principais",
+          "Motion graphics simples em ao menos 2 peças/mês",
+          "2 criativos exclusivos para campanhas de tráfego pago (Meta/Google)",
+          "Banco de imagens brutas do mês entregue à parte",
+          "2 rodadas de ajuste por peça",
+          "Entrega em até 4 dias úteis"
+        ]
+      },
+      {
+        "nome": "Autoridade",
+        "valor_min": 9000,
+        "valor_max": 14000,
+        "prazo_dias": null,
+        "prazo_texto": "Contínuo, ciclo semanal",
+        "entregas": [
+          "Equipe de até 3 profissionais por diária (videomaker, diretor de conteúdo, assistente)",
+          "16 a 20 peças finalizadas por mês",
+          "Planejamento editorial mensal com calendário de postagens",
+          "Reunião mensal de alinhamento e apresentação de resultados",
+          "Criativos exclusivos para tráfego pago inclusos",
+          "Prioridade de agenda e prazos de entrega reduzidos",
+          "Banco de imagens completo entregue mensalmente"
+        ]
+      }
+    ],
+    "adicionais": [
+      {
+        "nome": "Diária extra de gravação",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Drone",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Fotografia still",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Story maker no dia",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Versão para TV/mídia paga",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Gestão de tráfego",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Identidade visual / rebranding",
+        "valor": null,
+        "descricao": null
+      }
+    ],
+    "argumentacao_venda": "Vender 'presença profissional constante', não 'vídeos por mês' — o cliente contrata tranquilidade de nunca ficar sem conteúdo de qualidade e ganha percepção de marca maior que a concorrência. Contrato mínimo sugerido: 3 a 6 meses; faixas de preço são estimadas e devem ser recalculadas com custo real na Fase 02.",
+    "objecoes_comuns": "'Já tenho alguém que grava com celular' → não é sobre câmera, é sobre estratégia, consistência e qualidade que geram autoridade. 'Achei caro comparado a freelancer avulso' → freelancer cobra pontual, sem recorrência/estratégia; aqui é um time e linha editorial contínua. 'Preciso pensar' → sugerir início pelo plano Essencial com upgrade natural."
+  },
+  {
+    "arquivo": "02 - Filme Publicitario.pdf",
+    "servico": "Filme Publicitário",
+    "pilar_sugerido": "Filmes Publicitários & Campanhas",
+    "tipo_cobranca": "PROJETO_UNICO",
+    "planos": [
+      {
+        "nome": "Comercial (30-60s)",
+        "valor_min": 15000,
+        "valor_max": 25000,
+        "prazo_dias": 28,
+        "prazo_texto": "3 a 4 semanas",
+        "entregas": [
+          "Equipe de captação: diretor, diretor de fotografia, operador de câmera, técnico de som",
+          "1 diária de captação (até 10h)",
+          "Elenco simples/figuração local (até 3 pessoas), quando aplicável",
+          "1 locação inclusa",
+          "Edição, color grading e sound design profissional",
+          "Filme em formato horizontal (TV/YouTube) + 2 cortes verticais para redes",
+          "Licença de uso digital por 12 meses inclusa",
+          "2 rodadas de revisão"
+        ]
+      },
+      {
+        "nome": "Campanha Completa",
+        "valor_min": 28000,
+        "valor_max": 45000,
+        "prazo_dias": 42,
+        "prazo_texto": "4 a 6 semanas",
+        "entregas": [
+          "Equipe ampliada: diretor, DFC, produtor de set, operador de câmera, assistente, técnico de som",
+          "2 diárias de captação",
+          "Locações múltiplas (até 3 cenários)",
+          "Casting de elenco (seleção e contratação de atores/modelos)",
+          "Motion graphics e identidade visual aplicada",
+          "Filme principal + 3 a 4 formatos derivados (teaser, cortes para redes, stories)",
+          "Licença de uso digital e mídia paga por 12 meses",
+          "3 rodadas de revisão"
+        ]
+      },
+      {
+        "nome": "Campanha 360 Premium",
+        "valor_min": 50000,
+        "valor_max": null,
+        "prazo_dias": 56,
+        "prazo_texto": "6 a 8 semanas (R$ 50.000 – 90.000+)",
+        "entregas": [
+          "Equipe completa de produção cinematográfica (diretor, DFC, produtor executivo, arte, som direto)",
+          "Múltiplas diárias conforme escopo",
+          "Elenco profissional agenciado",
+          "Direção de arte e cenografia dedicada",
+          "Captação aérea com drone inclusa",
+          "Pacote completo: filme master + teasers + reels + still fotográfico + versões para todas as plataformas",
+          "Licença de uso ampliada (nacional, todos os meios, 24 meses)",
+          "Revisões ilimitadas até aprovação final"
+        ]
+      }
+    ],
+    "adicionais": [
+      {
+        "nome": "Elenco profissional/agenciado",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Direção de arte e cenografia",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Trilha sonora exclusiva",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Versões internacionais",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Mídia paga",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Extensão de uso de imagem",
+        "valor": null,
+        "descricao": null
+      }
+    ],
+    "argumentacao_venda": "O cliente não compra 'um vídeo publicitário', compra uma peça capaz de mudar a percepção de mercado sobre a marca — o investimento se justifica pelo aumento de desejo e recall, não pelo custo de produção.",
+    "objecoes_comuns": "'É muito investimento' → comparar com custo de mídia paga que a peça vai sustentar por meses; é ativo de marca. 'Consigo mais barato com outro fornecedor' → diferenciar por direção criativa e execução completa, não é commodity. 'Quanto tempo até ver resultado?' → o filme é o ativo, resultado depende de veiculação — encaminhar para diagnóstico conjunto."
+  },
+  {
+    "arquivo": "03 - Filme Institucional.pdf",
+    "servico": "Filme Institucional",
+    "pilar_sugerido": "Institucional & Corporativo",
+    "tipo_cobranca": "PROJETO_UNICO",
+    "planos": [
+      {
+        "nome": "Essencial",
+        "valor_min": 8000,
+        "valor_max": 12000,
+        "prazo_dias": 28,
+        "prazo_texto": "3 a 4 semanas",
+        "entregas": [
+          "Equipe: diretor + operador de câmera + técnico de som",
+          "1 diária de captação",
+          "Até 3 entrevistas roteirizadas",
+          "Imagens institucionais da empresa (ambientes, equipe, processos)",
+          "Trilha sonora licenciada",
+          "Entrega em arquivo master (Full HD/4K) + versão para redes",
+          "2 rodadas de revisão"
+        ]
+      },
+      {
+        "nome": "Completo",
+        "valor_min": 15000,
+        "valor_max": 25000,
+        "prazo_dias": 35,
+        "prazo_texto": "4 a 5 semanas",
+        "entregas": [
+          "Equipe ampliada com diretor de fotografia dedicado",
+          "Múltiplas locações (até 3 unidades/ambientes)",
+          "Até 6 entrevistas roteirizadas",
+          "Captação aérea com drone inclusa",
+          "Motion graphics para dados e informações institucionais",
+          "Filme principal (3-5min) + 3 cortes para redes sociais",
+          "Legendas em português inclusas",
+          "3 rodadas de revisão"
+        ]
+      },
+      {
+        "nome": "Corporativo Anual",
+        "valor_min": 35000,
+        "valor_max": 55000,
+        "prazo_dias": null,
+        "prazo_texto": "12 meses, entregas trimestrais",
+        "entregas": [
+          "Tudo do plano Completo, com produção distribuída ao longo de 12 meses",
+          "3 a 4 cases de sucesso (problema → solução → resultado → depoimento)",
+          "Vídeos de treinamento/onboarding/cultura interna incluídos",
+          "Entregas programadas trimestralmente",
+          "Prioridade de agenda para captações",
+          "Reunião trimestral de alinhamento de conteúdo"
+        ]
+      }
+    ],
+    "adicionais": [
+      {
+        "nome": "Depoimentos extras de clientes",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Versão em inglês",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Motion/infográficos de dados",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Fotografia corporativa",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Vídeo de recrutamento",
+        "valor": null,
+        "descricao": null
+      }
+    ],
+    "argumentacao_venda": "Posicionar como material que sustenta vendas B2B, captação de investimento, RH e imprensa — ativo institucional usado por anos, não um 'vídeo de site'.",
+    "objecoes_comuns": "'Não sei se preciso disso agora' → perguntar se hoje têm material confiável para investidor/cliente grande/candidato. 'Prefiro algo mais simples e barato' → entrada pelo plano Essencial, upsell natural para o pacote anual.",
+    "pipeline_etapas_sugeridas": [
+      "Problema",
+      "Solução",
+      "Resultado",
+      "Depoimento"
+    ]
+  },
+  {
+    "arquivo": "04 - Filme Manifesto.pdf",
+    "servico": "Filme Manifesto",
+    "pilar_sugerido": "Institucional & Corporativo",
+    "tipo_cobranca": "PROJETO_UNICO",
+    "planos": [
+      {
+        "nome": "Manifesto Essencial",
+        "valor_min": 18000,
+        "valor_max": 28000,
+        "prazo_dias": 35,
+        "prazo_texto": "4 a 5 semanas",
+        "entregas": [
+          "Roteiro conceitual desenvolvido em parceria com a direção da empresa",
+          "Equipe: diretor + DFC autoral + operador de câmera + técnico de som",
+          "1 a 2 diárias de captação",
+          "Trilha sonora licenciada premium",
+          "Color grading cinematográfico",
+          "Entrega em arquivo master + versão para redes",
+          "2 rodadas de revisão"
+        ]
+      },
+      {
+        "nome": "Manifesto Completo",
+        "valor_min": 30000,
+        "valor_max": 48000,
+        "prazo_dias": 49,
+        "prazo_texto": "5 a 7 semanas",
+        "entregas": [
+          "Múltiplas locações",
+          "Elenco (atores ou personagens reais), quando necessário",
+          "Direção de arte dedicada",
+          "Captação aérea com drone",
+          "Trilha sonora original ou licenciada premium",
+          "Filme master + versão estendida (making of)",
+          "3 rodadas de revisão"
+        ]
+      },
+      {
+        "nome": "Manifesto Cinematográfico",
+        "valor_min": 55000,
+        "valor_max": null,
+        "prazo_dias": 70,
+        "prazo_texto": "8 a 10 semanas (R$ 55.000 – 90.000+)",
+        "entregas": [
+          "Produção nos moldes de um curta-metragem institucional",
+          "Elenco profissional",
+          "Efeitos visuais leves (VFX) quando necessário",
+          "Mixagem de áudio em estúdio dedicado",
+          "Evento de estreia/lançamento planejado em conjunto (opcional)",
+          "Licença de uso ampliada e versões internacionais (legendas/dublagem)",
+          "Revisões ilimitadas até aprovação final"
+        ]
+      }
+    ],
+    "adicionais": [
+      {
+        "nome": "Evento de lançamento associado",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Versão estendida (making of)",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Campanha de mídia paga associada",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Versões internacionais",
+        "valor": null,
+        "descricao": null
+      }
+    ],
+    "argumentacao_venda": "Não vender como 'mais um vídeo institucional' — vender como a peça que vai definir como a marca quer ser lembrada pelos próximos anos; investimento de posicionamento, não de comunicação operacional.",
+    "objecoes_comuns": "'Não é isso que meu concorrente faz' → exatamente, é pensado para diferenciar. 'Parece caro para um vídeo emocional' → comparar com custo de rebranding completo (agência + mídia); o filme manifesto é o núcleo dessa comunicação."
+  },
+  {
+    "arquivo": "05 - Eventos Corporativos.pdf",
+    "servico": "Eventos Corporativos",
+    "pilar_sugerido": "Eventos Corporativos",
+    "tipo_cobranca": "PROJETO_UNICO",
+    "planos": [
+      {
+        "nome": "Cobertura Essencial",
+        "valor_min": 3500,
+        "valor_max": 5000,
+        "prazo_dias": 7,
+        "prazo_texto": "Até 7 dias",
+        "entregas": [
+          "1 videomaker + 1 fotógrafo",
+          "Cobertura de até 8h",
+          "1 aftermovie (1-2min)",
+          "Galeria de fotos tratadas entregue em link digital",
+          "Entrega em até 7 dias"
+        ]
+      },
+      {
+        "nome": "Cobertura Completa",
+        "valor_min": 7000,
+        "valor_max": 11000,
+        "prazo_dias": 2,
+        "prazo_texto": "Até 48h",
+        "entregas": [
+          "2 videomakers (multicâmera) + 1 fotógrafo",
+          "Cobertura de até 8h",
+          "Entrevistas com participantes/palestrantes",
+          "Aftermovie + 3 cortes para redes sociais",
+          "Galeria de fotos tratadas",
+          "Entrega em até 48h"
+        ]
+      },
+      {
+        "nome": "Cobertura Premium",
+        "valor_min": 15000,
+        "valor_max": null,
+        "prazo_dias": 5,
+        "prazo_texto": "Parcial 24-48h / final em até 5 dias (R$ 15.000 – 25.000+)",
+        "entregas": [
+          "Equipe de até 4 profissionais (videomakers, fotógrafo, drone)",
+          "Cobertura de múltiplos dias",
+          "Conteúdo em tempo real: até 10 reels/posts publicados no próprio dia do evento",
+          "Aftermovie cinematográfico + entrevistas + fotografia completa",
+          "Drone incluso",
+          "Pendrive personalizado com todo o material entregue ao cliente",
+          "Entrega parcial em 24-48h e material final em até 5 dias"
+        ]
+      }
+    ],
+    "adicionais": [
+      {
+        "nome": "Videomaker extra",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Drone",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Fotografia adicional",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Entrega em tempo real",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Story maker dedicado",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Live streaming do evento",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Pronta-entrega expressa",
+        "valor": null,
+        "descricao": null
+      }
+    ],
+    "argumentacao_venda": "Vender a certeza de que o investimento no evento não se perde — o conteúdo continua gerando alcance e prova social por semanas, e ainda entrega retorno de mídia durante o próprio evento.",
+    "objecoes_comuns": "'Já temos alguém que fotografa' → diferenciar cobertura fotográfica avulsa de cobertura audiovisual estratégica com aftermovie e tempo real. 'O orçamento já estourou' → mostrar reaproveitamento do conteúdo em outras verticais."
+  },
+  {
+    "arquivo": "06 - Casamentos.pdf",
+    "servico": "Casamentos",
+    "pilar_sugerido": "Eventos Sociais",
+    "tipo_cobranca": "PROJETO_UNICO",
+    "planos": [
+      {
+        "nome": "Essencial",
+        "valor_min": 3500,
+        "valor_max": 4500,
+        "prazo_dias": 15,
+        "prazo_texto": "15 dias",
+        "entregas": [
+          "1 videomaker, captação de 3h (cerimônia)",
+          "1 filme de 3 minutos com edição sensível",
+          "Trilha sonora licenciada",
+          "Entrega digital em galeria online privada",
+          "Pendrive personalizado incluso",
+          "Entrega em até 15 dias"
+        ]
+      },
+      {
+        "nome": "Completo",
+        "valor_min": 6500,
+        "valor_max": 8500,
+        "prazo_dias": 10,
+        "prazo_texto": "10 dias",
+        "entregas": [
+          "1 videomaker + 1 fotógrafo, captação de 6h (making of + cerimônia + festa)",
+          "1 filme de 5 minutos",
+          "Captação aérea com drone",
+          "Álbum digital com as melhores fotos tratadas",
+          "Pendrive personalizado + caixa de entrega personalizada com a identidade do casal",
+          "Porta-retrato digital incluso, com foto e trecho do filme",
+          "Entrega em até 10 dias"
+        ]
+      },
+      {
+        "nome": "Premium",
+        "valor_min": 10000,
+        "valor_max": 14000,
+        "prazo_dias": 5,
+        "prazo_texto": "5 dias",
+        "entregas": [
+          "Equipe completa: 2 videomakers + 1 fotógrafo",
+          "Captação de 10h (pré-wedding + making of + cerimônia + festa)",
+          "1 filme de 8 minutos + teaser de pronta-entrega (1min) no próprio dia",
+          "Cobertura em tempo real: stories/reels publicados durante a festa",
+          "Captação aérea com drone",
+          "Álbum físico impresso com capa personalizada + álbum digital",
+          "Porta-retrato normal + porta-retrato digital com trecho do filme",
+          "Caixa personalizada de entrega com identidade do casal + pendrive gravado sob medida",
+          "Sessão de pré-wedding inclusa",
+          "Entrega em até 5 dias"
+        ]
+      }
+    ],
+    "adicionais": [
+      {
+        "nome": "Story maker",
+        "valor": null,
+        "descricao": "R$500-700"
+      },
+      {
+        "nome": "Teaser expresso",
+        "valor": null,
+        "descricao": "R$400-600"
+      },
+      {
+        "nome": "Pré-wedding avulso",
+        "valor": null,
+        "descricao": "R$800-1.200"
+      },
+      {
+        "nome": "Filmagem na íntegra",
+        "valor": null,
+        "descricao": "R$1.000-1.500"
+      },
+      {
+        "nome": "Segundo videomaker",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Álbum físico adicional para os pais",
+        "valor": null,
+        "descricao": null
+      }
+    ],
+    "argumentacao_venda": "O casamento não se repete — vender a tranquilidade de uma equipe profissional cobrindo cada momento, com filme e kit de recordação físico que a família guarda por gerações. No plano Premium, o cliente recebe uma experiência de entrega (unboxing) à altura do investimento.",
+    "objecoes_comuns": "'Achei outro fotógrafo/vídeo mais barato' → diferenciar por direção, sensibilidade de edição, experiência em captar o momento certo e itens físicos de entrega. 'Preciso negociar o pacote' → trabalhar com adicionais modulares em vez de descontar o pacote base."
+  },
+  {
+    "arquivo": "07 - 15 Anos.pdf",
+    "servico": "15 Anos",
+    "pilar_sugerido": "Eventos Sociais",
+    "tipo_cobranca": "PROJETO_UNICO",
+    "planos": [
+      {
+        "nome": "Essencial",
+        "valor_min": 2800,
+        "valor_max": 3800,
+        "prazo_dias": 15,
+        "prazo_texto": "15 dias",
+        "entregas": [
+          "1 videomaker, captação de 3h (cerimônia/valsa)",
+          "1 filme de 3 minutos",
+          "Pendrive personalizado incluso",
+          "Entrega em galeria digital em até 15 dias"
+        ]
+      },
+      {
+        "nome": "Completo",
+        "valor_min": 5000,
+        "valor_max": 6500,
+        "prazo_dias": 10,
+        "prazo_texto": "10 dias",
+        "entregas": [
+          "1 videomaker + 1 fotógrafo, captação de 5h (making of + cerimônia + festa)",
+          "1 filme de 5 minutos + drone",
+          "Álbum digital com fotos tratadas",
+          "Caixa de entrega personalizada + pendrive",
+          "Entrega em até 10 dias"
+        ]
+      },
+      {
+        "nome": "Premium",
+        "valor_min": 8000,
+        "valor_max": 11000,
+        "prazo_dias": 5,
+        "prazo_texto": "5 dias",
+        "entregas": [
+          "Equipe completa (2 videomakers + 1 fotógrafo)",
+          "Captação de 8h (ensaio + making of + cerimônia + festa)",
+          "1 filme de 7 minutos + teaser de pronta-entrega no próprio dia",
+          "Cobertura em tempo real (stories/reels durante a festa)",
+          "Porta-retrato digital + álbum físico impresso",
+          "Caixa personalizada de entrega + pendrive gravado sob medida",
+          "Sessão fotográfica de ensaio inclusa",
+          "Entrega em até 5 dias"
+        ]
+      }
+    ],
+    "adicionais": [
+      {
+        "nome": "Story maker",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Teaser expresso",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Ensaio fotográfico avulso",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Segundo videomaker",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Álbum físico adicional",
+        "valor": null,
+        "descricao": null
+      }
+    ],
+    "argumentacao_venda": "Vender como o registro de um marco único na vida da família — comparável em importância emocional a um casamento, com o mesmo padrão de qualidade e kit físico de entrega.",
+    "objecoes_comuns": "'Só quero fotos, vídeo é caro' → mostrar como o filme captura movimento, som e emoção que a foto não registra; geralmente é o material mais assistido anos depois."
+  },
+  {
+    "arquivo": "08 - Fotografia.pdf",
+    "servico": "Fotografia",
+    "pilar_sugerido": "Serviços Especiais",
+    "tipo_cobranca": "PROJETO_UNICO",
+    "planos": [
+      {
+        "nome": "Ensaio Simples",
+        "valor_min": 500,
+        "valor_max": 800,
+        "prazo_dias": 5,
+        "prazo_texto": "5 dias",
+        "entregas": [
+          "1 fotógrafo, até 1h de sessão",
+          "15 a 20 fotos editadas e tratadas em alta resolução",
+          "Entrega via galeria digital",
+          "Entrega em até 5 dias"
+        ]
+      },
+      {
+        "nome": "Sessão Comercial",
+        "valor_min": 1000,
+        "valor_max": 1800,
+        "prazo_dias": 5,
+        "prazo_texto": "5 dias",
+        "entregas": [
+          "1 fotógrafo + assistente de produção, 2 a 3h de sessão",
+          "30 a 40 fotos tratadas",
+          "Direção de cena/produto incluída",
+          "Entrega em galeria digital organizada por categoria",
+          "Entrega em até 5 dias"
+        ]
+      },
+      {
+        "nome": "Cobertura Editorial",
+        "valor_min": 2000,
+        "valor_max": 3500,
+        "prazo_dias": 7,
+        "prazo_texto": "7 dias",
+        "entregas": [
+          "Equipe de produção fotográfica completa (fotógrafo + direção de arte)",
+          "4 a 6h de sessão, múltiplos cenários/looks",
+          "50+ fotos tratadas em padrão editorial",
+          "Still de vídeo simultâneo, se houver captação de vídeo no mesmo dia",
+          "Entrega em até 7 dias"
+        ]
+      }
+    ],
+    "adicionais": [
+      {
+        "nome": "Fotos extras tratadas",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Still durante produção de vídeo",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Direção de arte para still de produto",
+        "valor": null,
+        "descricao": null
+      }
+    ],
+    "argumentacao_venda": "Fotografia profissional é o que sustenta cardápios, catálogos, redes sociais e material institucional — muitas vezes é o primeiro contato visual do cliente com a marca.",
+    "objecoes_comuns": "'Posso tirar com celular' → a diferença de iluminação, composição e tratamento de cor é visível imediatamente lado a lado."
+  },
+  {
+    "arquivo": "09 - Estudio.pdf",
+    "servico": "Locação de Estúdio",
+    "pilar_sugerido": "Estúdio & Podcast",
+    "tipo_cobranca": "LOCACAO_HORA",
+    "planos": [
+      {
+        "nome": "Hora Avulsa",
+        "valor_min": 150,
+        "valor_max": 250,
+        "prazo_dias": null,
+        "prazo_texto": null,
+        "entregas": [
+          "Estúdio equipado: fundo infinito, iluminação softbox, tomadas e ponto de energia",
+          "Sem operador — cliente traz equipe própria",
+          "Uso livre do espaço durante o período contratado"
+        ]
+      },
+      {
+        "nome": "Meio Período (4h)",
+        "valor_min": 500,
+        "valor_max": 700,
+        "prazo_dias": null,
+        "prazo_texto": null,
+        "entregas": [
+          "Estúdio equipado + suporte técnico básico (ajuste de luz/som na chegada)",
+          "Acesso a cenários e fundos disponíveis",
+          "Ideal para sessões fotográficas e pequenas gravações"
+        ]
+      },
+      {
+        "nome": "Diária Completa",
+        "valor_min": 900,
+        "valor_max": 1300,
+        "prazo_dias": null,
+        "prazo_texto": null,
+        "entregas": [
+          "Estúdio equipado + operador de câmera e áudio dedicado",
+          "Suporte técnico durante toda a gravação",
+          "Acesso completo a equipamentos de iluminação e áudio do estúdio"
+        ]
+      }
+    ],
+    "adicionais": [
+      {
+        "nome": "Operador de câmera dedicado",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Iluminação adicional",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Cenografia/fundo personalizado",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Edição do material captado",
+        "valor": null,
+        "descricao": null
+      }
+    ],
+    "argumentacao_venda": "Vender como 'estrutura pronta' — sem o cliente precisar investir em equipamento ou espaço próprio para gravar com qualidade.",
+    "objecoes_comuns": "'Posso gravar em qualquer sala com um ring light' → comparar diferença de qualidade de imagem e áudio entre ambiente tratado e espaço improvisado."
+  },
+  {
+    "arquivo": "10 - Podcast.pdf",
+    "servico": "Podcast / Videocast",
+    "pilar_sugerido": "Estúdio & Podcast",
+    "tipo_cobranca": "RECORRENCIA_MENSAL",
+    "planos": [
+      {
+        "nome": "Avulso",
+        "valor_min": 800,
+        "valor_max": 1200,
+        "prazo_dias": 5,
+        "prazo_texto": "5 dias",
+        "entregas": [
+          "Captação multicâmera (até 3 ângulos)",
+          "Microfones profissionais para até 3 participantes",
+          "Edição completa do episódio",
+          "1 corte para redes sociais incluso",
+          "Entrega em até 5 dias"
+        ]
+      },
+      {
+        "nome": "Mensal",
+        "valor_min": 3500,
+        "valor_max": 5500,
+        "prazo_dias": null,
+        "prazo_texto": "Ciclo mensal",
+        "entregas": [
+          "4 episódios/mês, captação multicâmera",
+          "Edição completa + 2 cortes por episódio para redes",
+          "Thumbnails para cada episódio",
+          "Entrega em ciclo mensal contínuo"
+        ]
+      },
+      {
+        "nome": "Pro",
+        "valor_min": 6000,
+        "valor_max": 9000,
+        "prazo_dias": null,
+        "prazo_texto": "Ciclo mensal",
+        "entregas": [
+          "4 episódios/mês + cortes ampliados (até 5 por episódio)",
+          "Thumbnails personalizadas para cada corte",
+          "Distribuição do episódio completo em plataformas de áudio (Spotify, YouTube)",
+          "Relatório mensal de performance dos cortes"
+        ]
+      }
+    ],
+    "adicionais": [
+      {
+        "nome": "Convidados/produção de pauta",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Cortes adicionais para redes",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Distribuição em plataformas de áudio",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Gráficos personalizados",
+        "valor": null,
+        "descricao": null
+      }
+    ],
+    "argumentacao_venda": "Vender o podcast como ferramenta de autoridade recorrente, não como 'gravação avulsa' — o valor está na consistência e qualidade de edição/cortes. Pacote Corporativo é orçado à parte conforme frequência e formato.",
+    "objecoes_comuns": "'Posso gravar no computador de casa' → diferenciar qualidade de áudio/imagem e o tempo economizado não precisando editar e cortar sozinho."
+  },
+  {
+    "arquivo": "11 - Live Streaming.pdf",
+    "servico": "Live Streaming",
+    "pilar_sugerido": "Live Streaming",
+    "tipo_cobranca": "PROJETO_UNICO",
+    "planos": [
+      {
+        "nome": "Live Básica",
+        "valor_min": 2500,
+        "valor_max": 4000,
+        "prazo_dias": null,
+        "prazo_texto": null,
+        "entregas": [
+          "1 a 2 câmeras fixas",
+          "Operador dedicado + transmissão para 1 plataforma",
+          "Áudio direto do ambiente/microfone de lapela",
+          "Gravação do material bruto entregue ao cliente"
+        ]
+      },
+      {
+        "nome": "Live Multicâmera",
+        "valor_min": 5500,
+        "valor_max": 9000,
+        "prazo_dias": null,
+        "prazo_texto": null,
+        "entregas": [
+          "3 a 4 câmeras com switcher ao vivo",
+          "Direção de transmissão em tempo real",
+          "Gráficos e identificação visual (lower thirds) inseridos ao vivo",
+          "Replay disponível após o evento"
+        ]
+      },
+      {
+        "nome": "Live Premium",
+        "valor_min": 10000,
+        "valor_max": null,
+        "prazo_dias": null,
+        "prazo_texto": "R$ 10.000 – 18.000+",
+        "entregas": [
+          "Estrutura completa multicâmera + operador dedicado por câmera",
+          "Identidade visual personalizada da transmissão",
+          "Cortes em tempo real publicados durante o próprio evento",
+          "Internet backup dedicado (redundância de conexão)",
+          "Gravação multi-ângulo entregue para produção de conteúdo adicional pós-evento"
+        ]
+      }
+    ],
+    "adicionais": [
+      {
+        "nome": "Cortes em tempo real para redes",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Gráficos/lower thirds personalizados",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Internet backup dedicado",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Gravação multi-ângulo para pós-produção",
+        "valor": null,
+        "descricao": null
+      }
+    ],
+    "argumentacao_venda": "O cliente está comprando a garantia de que a transmissão não vai falhar — o risco técnico de fazer 'na mão' é alto demais para um evento importante.",
+    "objecoes_comuns": "'Vou transmitir pelo celular direto no Instagram' → certo para algo informal; para evento com público pagante ou institucional, uma falha técnica é visível para todos ao vivo."
+  },
+  {
+    "arquivo": "12 - Pos-producao.pdf",
+    "servico": "Pós-produção",
+    "pilar_sugerido": "Pós-produção",
+    "tipo_cobranca": "PROJETO_UNICO",
+    "planos": [
+      {
+        "nome": "Edição Simples",
+        "valor_min": 400,
+        "valor_max": 800,
+        "prazo_dias": 5,
+        "prazo_texto": "3 a 5 dias",
+        "entregas": [
+          "Corte e sincronização do material bruto enviado pelo cliente",
+          "Ajuste básico de cor e áudio",
+          "Entrega em 1 formato (horizontal ou vertical)",
+          "1 rodada de revisão"
+        ]
+      },
+      {
+        "nome": "Edição Completa",
+        "valor_min": 1200,
+        "valor_max": 2500,
+        "prazo_dias": 7,
+        "prazo_texto": "5 a 7 dias",
+        "entregas": [
+          "Color grading profissional",
+          "Motion graphics básico (títulos, textos animados)",
+          "Sound design e mixagem de áudio",
+          "Entrega em até 2 formatos (horizontal + vertical)",
+          "2 rodadas de revisão"
+        ]
+      },
+      {
+        "nome": "Pacote Mensal de Pós",
+        "valor_min": 4000,
+        "valor_max": 8000,
+        "prazo_dias": null,
+        "prazo_texto": "Ciclo mensal",
+        "entregas": [
+          "Volume recorrente mensal (minutagem/quantidade de peças a combinar)",
+          "Prioridade de fila de entrega",
+          "Ponto de contato dedicado para alinhamento de padrão de entrega",
+          "Revisões inclusas conforme volume contratado"
+        ]
+      }
+    ],
+    "adicionais": [
+      {
+        "nome": "Legendagem",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Versões verticais/quadradas para redes",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Thumbnails",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Tratamento de áudio avulso",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Adaptação de formatos",
+        "valor": null,
+        "descricao": null
+      }
+    ],
+    "argumentacao_venda": "Posicionar a YANG como parceira de pós-produção para quem já capta, mas não tem estrutura de finalização — segunda fonte de receita que não depende de diária de gravação. Preço por minuto adicional e por complexidade de efeitos é orçado à parte.",
+    "objecoes_comuns": "'Já temos um editor interno' → oferecer como apoio pontual para picos de demanda ou projetos que exigem color/motion mais avançado."
+  },
+  {
+    "arquivo": "13 - Drone.pdf",
+    "servico": "Drone",
+    "pilar_sugerido": "Serviços Especiais",
+    "tipo_cobranca": "PROJETO_UNICO",
+    "planos": [
+      {
+        "nome": "Captação Avulsa",
+        "valor_min": 500,
+        "valor_max": 800,
+        "prazo_dias": 3,
+        "prazo_texto": "3 dias",
+        "entregas": [
+          "Piloto certificado + drone com câmera 4K",
+          "Meio período de captação (até 4h)",
+          "Imagens estáticas e em movimento",
+          "Entrega do material bruto + 3 clipes editados"
+        ]
+      },
+      {
+        "nome": "Diária Completa",
+        "valor_min": 900,
+        "valor_max": 1400,
+        "prazo_dias": 5,
+        "prazo_texto": "5 dias",
+        "entregas": [
+          "Dia inteiro de captação em múltiplos pontos",
+          "Piloto certificado + drone 4K",
+          "Material bruto + edição de até 5 clipes",
+          "Entrega em até 5 dias"
+        ]
+      },
+      {
+        "nome": "Pacote FPV Avançado",
+        "valor_min": 1500,
+        "valor_max": 2500,
+        "prazo_dias": 7,
+        "prazo_texto": "5 a 7 dias",
+        "entregas": [
+          "Captação em primeira pessoa (FPV) com drone de alta manobrabilidade",
+          "Movimentos dinâmicos e imersivos",
+          "Edição completa do material com trilha sonora",
+          "Entrega em até 7 dias"
+        ]
+      }
+    ],
+    "adicionais": [
+      {
+        "nome": "Edição do material aéreo",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Combinação com captação terrestre no mesmo dia",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Entrega em 4K",
+        "valor": null,
+        "descricao": null
+      }
+    ],
+    "argumentacao_venda": "Vender como o diferencial visual que separa um material 'comum' de um material que realmente impressiona — especialmente forte para imóveis e eventos. Sujeito a autorização de espaço aéreo conforme legislação (ANAC/DECEA) quando aplicável.",
+    "objecoes_comuns": "'Meu celular já filma de um ponto alto' → diferenciar estabilização, enquadramento aéreo e movimento controlado do drone frente a qualquer captação manual."
+  },
+  {
+    "arquivo": "14 - Fashion Film.pdf",
+    "servico": "Fashion Film",
+    "pilar_sugerido": "Serviços Especiais",
+    "tipo_cobranca": "PROJETO_UNICO",
+    "planos": [
+      {
+        "nome": "Essencial",
+        "valor_min": 6000,
+        "valor_max": 9000,
+        "prazo_dias": 28,
+        "prazo_texto": "3 a 4 semanas",
+        "entregas": [
+          "Diretor + operador de câmera + 1 modelo",
+          "1 diária, 1 locação",
+          "Edição com trilha licenciada",
+          "Entrega em formato horizontal + 1 corte vertical"
+        ]
+      },
+      {
+        "nome": "Completo",
+        "valor_min": 10000,
+        "valor_max": 16000,
+        "prazo_dias": 35,
+        "prazo_texto": "4 a 5 semanas",
+        "entregas": [
+          "Equipe ampliada com direção de arte",
+          "2 diárias, múltiplos looks/trocas de figurino",
+          "Trilha licenciada premium",
+          "Still fotográfico da coleção incluso",
+          "Entrega em múltiplos formatos para redes"
+        ]
+      },
+      {
+        "nome": "Editorial Premium",
+        "valor_min": 18000,
+        "valor_max": 28000,
+        "prazo_dias": 56,
+        "prazo_texto": "6 a 8 semanas",
+        "entregas": [
+          "Produção completa com casting, cenografia e styling dedicados",
+          "Multi-diária conforme escopo da coleção",
+          "Trilha original composta para o projeto",
+          "Making of da produção incluso",
+          "Entrega em pacote completo (filme + still + versões redes)"
+        ]
+      }
+    ],
+    "adicionais": [
+      {
+        "nome": "Still fotográfico da coleção",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Versões verticais para redes",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Making of da produção",
+        "valor": null,
+        "descricao": null
+      }
+    ],
+    "argumentacao_venda": "Vender como a peça que traduz a identidade da coleção em movimento — vai além do catálogo, cria desejo. Inclui still fotográfico simultâneo mediante acordo prévio.",
+    "objecoes_comuns": "'Já temos fotos da coleção' → o fashion film comunica textura, caimento e atmosfera que a foto estática não consegue."
+  },
+  {
+    "arquivo": "15 - Videoclipe.pdf",
+    "servico": "Videoclipe",
+    "pilar_sugerido": "Serviços Especiais",
+    "tipo_cobranca": "PROJETO_UNICO",
+    "planos": [
+      {
+        "nome": "Simples",
+        "valor_min": 4000,
+        "valor_max": 7000,
+        "prazo_dias": 28,
+        "prazo_texto": "3 a 4 semanas",
+        "entregas": [
+          "Diretor + operador de câmera",
+          "1 locação, captação sincronizada com a faixa musical",
+          "Edição com sincronismo de batida",
+          "Entrega em formato horizontal + 1 corte vertical"
+        ]
+      },
+      {
+        "nome": "Completo",
+        "valor_min": 8000,
+        "valor_max": 14000,
+        "prazo_dias": 42,
+        "prazo_texto": "4 a 6 semanas",
+        "entregas": [
+          "Equipe ampliada com direção de arte",
+          "Múltiplas locações",
+          "Narrativa elaborada (roteiro/conceito visual)",
+          "Still fotográfico do clipe incluso",
+          "Entrega em múltiplos formatos para redes"
+        ]
+      },
+      {
+        "nome": "Produção Premium",
+        "valor_min": 16000,
+        "valor_max": 25000,
+        "prazo_dias": 56,
+        "prazo_texto": "6 a 8 semanas",
+        "entregas": [
+          "Produção cinematográfica completa com elenco",
+          "Captação aérea com drone",
+          "Efeitos visuais leves (VFX) quando necessário",
+          "Making of incluso",
+          "Entrega em pacote completo (clipe master + cortes + still)"
+        ]
+      }
+    ],
+    "adicionais": [
+      {
+        "nome": "Versão vertical para redes",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Making of",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Fotos still do clipe",
+        "valor": null,
+        "descricao": null
+      }
+    ],
+    "argumentacao_venda": "Vender como o material que sustenta o lançamento da música nas redes e em campanhas de mídia — não só 'um vídeo para o YouTube'. Direitos de imagem e uso da trilha são de responsabilidade do contratante.",
+    "objecoes_comuns": "'Consigo gravar mais barato com um amigo' → diferenciar direção criativa, iluminação e pós-produção de nível profissional."
+  },
+  {
+    "arquivo": "16 - Producoes Especiais.pdf",
+    "servico": "Produções Especiais",
+    "pilar_sugerido": "Serviços Especiais",
+    "tipo_cobranca": "PROJETO_UNICO",
+    "planos": [
+      {
+        "nome": "Conteúdo Imobiliário",
+        "valor_min": 1500,
+        "valor_max": 3500,
+        "prazo_dias": 5,
+        "prazo_texto": "3 a 5 dias (por imóvel)",
+        "entregas": [
+          "Captação terrestre + aérea do imóvel",
+          "Tour em vídeo editado (1-2min)",
+          "Still fotográfico do imóvel incluso",
+          "Entrega em até 5 dias"
+        ]
+      },
+      {
+        "nome": "Indústria / Agronegócio",
+        "valor_min": 8000,
+        "valor_max": 20000,
+        "prazo_dias": 42,
+        "prazo_texto": "4 a 6 semanas",
+        "entregas": [
+          "Captação institucional técnica (processos, estrutura, equipe)",
+          "Drone incluso para vista aérea da propriedade/planta",
+          "Roteiro técnico desenvolvido com o cliente",
+          "Entrega em formato institucional + cortes para redes"
+        ]
+      },
+      {
+        "nome": "Esportivo / Turismo",
+        "valor_min": 3000,
+        "valor_max": 8000,
+        "prazo_dias": 28,
+        "prazo_texto": "2 a 4 semanas",
+        "entregas": [
+          "Captação de ação/aftermovie do evento ou destino",
+          "Drone incluso",
+          "Edição dinâmica com trilha sonora",
+          "Entrega em até 10 dias"
+        ]
+      }
+    ],
+    "adicionais": [
+      {
+        "nome": "Pacote de fotos still do local/produto",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Versões para redes sociais",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Drone incluso conforme escopo",
+        "valor": null,
+        "descricao": null
+      }
+    ],
+    "argumentacao_venda": "Usar o conhecimento local (interior de MG) como diferencial — a YANG entende as necessidades desses setores regionais melhor que produtoras de fora. Cada projeto de nicho é orçado após diagnóstico específico do setor.",
+    "objecoes_comuns": "'Não sei se um vídeo profissional vale a pena para o meu negócio' → mostrar cases do mesmo setor e como o material aumenta a percepção de credibilidade em negociações/vendas."
+  },
+  {
+    "arquivo": "17 - Social Media.pdf",
+    "servico": "Gestão de Social Media",
+    "pilar_sugerido": "Agência",
+    "tipo_cobranca": "RECORRENCIA_MENSAL",
+    "planos": [
+      {
+        "nome": "Essencial",
+        "valor_min": 1200,
+        "valor_max": 1800,
+        "prazo_dias": null,
+        "prazo_texto": "Ciclo mensal",
+        "entregas": [
+          "Gestão de 1 rede social (Instagram ou Facebook)",
+          "Postagem de até 12 peças/mês, usando material já produzido ou banco de imagens",
+          "Legenda e copy padrão para cada peça",
+          "Resposta a comentários em horário comercial",
+          "Relatório mensal básico (alcance, seguidores, engajamento)"
+        ]
+      },
+      {
+        "nome": "Performance",
+        "valor_min": 2200,
+        "valor_max": 3200,
+        "prazo_dias": null,
+        "prazo_texto": "Ciclo mensal",
+        "entregas": [
+          "Gestão de até 2 redes sociais",
+          "Calendário editorial mensal planejado com antecedência",
+          "Copywriting estratégico para todas as peças",
+          "Gestão de comunidade: comentários e mensagens diretas",
+          "Relatório mensal com métricas de crescimento e engajamento"
+        ]
+      },
+      {
+        "nome": "Autoridade",
+        "valor_min": 3800,
+        "valor_max": 5500,
+        "prazo_dias": null,
+        "prazo_texto": "Ciclo mensal",
+        "entregas": [
+          "Gestão de até 3 redes sociais",
+          "Estratégia de crescimento contínua com metas definidas",
+          "Copywriting avançado alinhado a campanhas e lançamentos",
+          "Gestão de comunidade em tempo de resposta reduzido",
+          "Monitoramento de concorrência",
+          "Relatório quinzenal + reunião mensal de estratégia"
+        ]
+      }
+    ],
+    "adicionais": [
+      {
+        "nome": "Rede social adicional",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Gestão de crise/reputação",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Sorteios e campanhas de engajamento",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Copywriting para lançamentos especiais",
+        "valor": null,
+        "descricao": null
+      }
+    ],
+    "argumentacao_venda": "Vender como o elo que faltava entre 'ter conteúdo bom' e 'ter resultado nas redes'. Funciona melhor combinado ao Conteúdo Mensal (produto 01) — a YANG produz e também gerencia a publicação; pode ser vendido separado para quem já tem banco de conteúdo próprio.",
+    "objecoes_comuns": "'Eu mesmo posso postar, é só marcar no calendário' → o problema é a consistência, estratégia e gestão da comunidade. 'Já contrato produção de conteúdo, não preciso disso' → produção e gestão são etapas diferentes, upsell natural com o Conteúdo Mensal."
+  },
+  {
+    "arquivo": "18 - Design.pdf",
+    "servico": "Design Gráfico",
+    "pilar_sugerido": "Agência",
+    "tipo_cobranca": "RECORRENCIA_MENSAL",
+    "planos": [
+      {
+        "nome": "Avulso",
+        "valor_min": 400,
+        "valor_max": 900,
+        "prazo_dias": 7,
+        "prazo_texto": "5 a 7 dias",
+        "entregas": [
+          "Até 5 peças gráficas (posts, banners, artes pontuais)",
+          "Aplicação da identidade visual já existente do cliente",
+          "2 rodadas de ajuste",
+          "Entrega em arquivos prontos para uso (redes sociais e impressão)"
+        ]
+      },
+      {
+        "nome": "Recorrente Essencial",
+        "valor_min": 1500,
+        "valor_max": 2200,
+        "prazo_dias": null,
+        "prazo_texto": "Ciclo mensal",
+        "entregas": [
+          "Até 15 peças/mês (posts, stories, artes pontuais)",
+          "2 rodadas de ajuste por peça",
+          "Entrega em ciclo semanal",
+          "Aplicação consistente da identidade visual"
+        ]
+      },
+      {
+        "nome": "Recorrente Completo",
+        "valor_min": 2800,
+        "valor_max": 4000,
+        "prazo_dias": null,
+        "prazo_texto": "Ciclo mensal",
+        "entregas": [
+          "Até 30 peças/mês",
+          "Materiais institucionais inclusos (apresentações, catálogos, cardápios)",
+          "Gestão e evolução da identidade visual ao longo do tempo",
+          "Prioridade de prazo para pedidos urgentes"
+        ]
+      }
+    ],
+    "adicionais": [
+      {
+        "nome": "Criação de identidade visual/logo",
+        "valor": null,
+        "descricao": "Projeto à parte, R$ 2.500 – 5.000"
+      },
+      {
+        "nome": "Embalagens",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Apresentações comerciais avulsas",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Papelaria impressa",
+        "valor": null,
+        "descricao": null
+      }
+    ],
+    "argumentacao_venda": "Vender design como a peça que garante que tudo o que a empresa mostra — do post ao cardápio — tem o mesmo padrão profissional, reforçando a percepção de marca séria.",
+    "objecoes_comuns": "'Uso o Canva mesmo, funciona bem' → ferramentas prontas não substituem direção de arte e consistência de identidade; a diferença aparece lado a lado com concorrente mais profissional."
+  },
+  {
+    "arquivo": "19 - Trafego Pago.pdf",
+    "servico": "Gestão de Tráfego Pago",
+    "pilar_sugerido": "Agência",
+    "tipo_cobranca": "RECORRENCIA_MENSAL",
+    "planos": [
+      {
+        "nome": "Essencial",
+        "valor_min": 800,
+        "valor_max": 1200,
+        "prazo_dias": null,
+        "prazo_texto": "Ciclo mensal",
+        "entregas": [
+          "Gestão de 1 plataforma (Meta Ads ou Google Ads)",
+          "Verba de mídia recomendada até R$ 3.000/mês (paga pelo cliente à plataforma)",
+          "Criação de campanhas e segmentação de público",
+          "Otimização quinzenal",
+          "Relatório mensal de resultados"
+        ]
+      },
+      {
+        "nome": "Performance",
+        "valor_min": 1500,
+        "valor_max": 2500,
+        "prazo_dias": null,
+        "prazo_texto": "Ciclo mensal",
+        "entregas": [
+          "Gestão de 1 a 2 plataformas simultâneas",
+          "Verba de mídia recomendada até R$ 10.000/mês",
+          "Testes A/B de criativos e públicos",
+          "Otimização semanal",
+          "Relatório quinzenal de performance"
+        ]
+      },
+      {
+        "nome": "Escala",
+        "valor_min": 3000,
+        "valor_max": 5000,
+        "prazo_dias": null,
+        "prazo_texto": "Ciclo mensal",
+        "entregas": [
+          "Gestão de múltiplas plataformas e campanhas simultâneas",
+          "Verba de mídia acima de R$ 10.000/mês",
+          "Otimização diária",
+          "Integração de dados com o CRM (cross-sell com Implementação de CRM)",
+          "Reunião semanal de performance"
+        ]
+      }
+    ],
+    "adicionais": [
+      {
+        "nome": "Criação de criativos exclusivos para campanhas",
+        "valor": null,
+        "descricao": "Cross-sell com Conteúdo Mensal/Design"
+      },
+      {
+        "nome": "Landing page dedicada",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Integração com CRM",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Consultoria de precificação de anúncios",
+        "valor": null,
+        "descricao": null
+      }
+    ],
+    "argumentacao_venda": "Vender como a diferença entre 'gastar em anúncio' e 'investir com retorno rastreado'. É fee de gestão da YANG — a verba de mídia é paga diretamente pelo cliente à plataforma (Meta/Google), não está inclusa no valor do plano.",
+    "objecoes_comuns": "'Meu sobrinho mexe com isso, é mais barato' → diferenciar acompanhamento estratégico contínuo e otimização baseada em dados de conversão. 'Não sei se tenho verba suficiente' → começar com o plano Essencial e verba menor, validando o canal.",
+    "pipeline_etapas_sugeridas": [
+      "Criação de campanhas e segmentação de público",
+      "Otimização contínua (quinzenal/semanal/diária conforme plano)",
+      "Relatório de performance"
+    ]
+  },
+  {
+    "arquivo": "20 - Treinamento de Vendas.pdf",
+    "servico": "Treinamento de Vendas",
+    "pilar_sugerido": "Agência",
+    "tipo_cobranca": "PROJETO_UNICO",
+    "planos": [
+      {
+        "nome": "Workshop Essencial",
+        "valor_min": 1800,
+        "valor_max": 2800,
+        "prazo_dias": 5,
+        "prazo_texto": "1 dia + entrega em 5 dias",
+        "entregas": [
+          "1 dia de treinamento presencial ou online com o time comercial",
+          "Diagnóstico rápido do processo atual de vendas",
+          "Script básico de atendimento e follow-up entregue por escrito",
+          "Gravação da sessão para consulta futura"
+        ]
+      },
+      {
+        "nome": "Programa Completo",
+        "valor_min": 4500,
+        "valor_max": 7000,
+        "prazo_dias": 28,
+        "prazo_texto": "3 a 4 semanas",
+        "entregas": [
+          "Diagnóstico completo do funil comercial atual",
+          "Construção de script e playbook de vendas personalizado",
+          "2 sessões de treinamento prático com o time",
+          "Materiais de apoio (roteiros, respostas a objeções, checklist de follow-up)",
+          "Gravação das sessões para onboarding de novos vendedores"
+        ]
+      },
+      {
+        "nome": "Acompanhamento Contínuo",
+        "valor_min": 1500,
+        "valor_max": 2500,
+        "prazo_dias": null,
+        "prazo_texto": "3 a 6 meses (contratado como extensão do Programa Completo)",
+        "entregas": [
+          "Mentoria mensal de acompanhamento de resultados (3 a 6 meses)",
+          "Ajustes de script conforme performance real observada",
+          "Sessão mensal de revisão com o time comercial",
+          "Suporte via WhatsApp para dúvidas pontuais entre sessões"
+        ]
+      }
+    ],
+    "adicionais": [
+      {
+        "nome": "Script personalizado por produto/serviço",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Integração do script com o CRM",
+        "valor": null,
+        "descricao": "Cross-sell com Implementação de CRM"
+      },
+      {
+        "nome": "Treinamento de novos vendedores avulso",
+        "valor": null,
+        "descricao": null
+      }
+    ],
+    "argumentacao_venda": "Vender como o complemento natural de quem já investe em geração de leads (tráfego pago, redes sociais) — de nada adianta gerar demanda se o time não sabe converter.",
+    "objecoes_comuns": "'Meu time já sabe vender, só falta lead' → perguntar a taxa de conversão atual de lead para venda. 'Isso é coisa de empresa grande' → mostrar que é dimensionado para o porte do time, mesmo um vendedor sozinho se beneficia.",
+    "pipeline_etapas_sugeridas": [
+      "Diagnóstico do processo comercial atual",
+      "Construção de script e playbook de vendas",
+      "Treinamento prático da equipe",
+      "Acompanhamento e mentoria mensal de resultados"
+    ]
+  },
+  {
+    "arquivo": "21 - Implementacao CRM Kenra.pdf",
+    "servico": "Implementação & Gestão de CRM (KENRA)",
+    "pilar_sugerido": "Agência",
+    "tipo_cobranca": "PROJETO_UNICO",
+    "planos": [
+      {
+        "nome": "Implementação Essencial",
+        "valor_min": 1500,
+        "valor_max": 2500,
+        "prazo_dias": 21,
+        "prazo_texto": "2 a 3 semanas (pagamento único)",
+        "entregas": [
+          "Configuração do funil Kanban de vendas",
+          "Integração do WhatsApp oficial da empresa ao sistema",
+          "Cadastro inicial de produtos/serviços no catálogo",
+          "1 sessão de treinamento da equipe",
+          "Suporte na primeira semana de uso"
+        ]
+      },
+      {
+        "nome": "Implementação Completa",
+        "valor_min": 2800,
+        "valor_max": 4500,
+        "prazo_dias": 28,
+        "prazo_texto": "3 a 4 semanas (pagamento único)",
+        "entregas": [
+          "Tudo do plano Essencial",
+          "Integração com campanhas de Meta/Google Ads dentro do CRM",
+          "Configuração das automações de follow-up e cadência comercial",
+          "Catálogo de produtos completo com preços, custos e fotos",
+          "2 sessões de treinamento da equipe (comercial + gestor)"
+        ]
+      },
+      {
+        "nome": "Gestão Contínua",
+        "valor_min": 800,
+        "valor_max": 1500,
+        "prazo_dias": null,
+        "prazo_texto": "Ciclo mensal",
+        "entregas": [
+          "Tudo do plano Completo",
+          "Acompanhamento mensal de uso e performance do funil",
+          "Ajuste contínuo de automações e cadências",
+          "Suporte à equipe para dúvidas e novos vendedores",
+          "Relatório mensal de indicadores comerciais extraídos do CRM"
+        ]
+      }
+    ],
+    "adicionais": [
+      {
+        "nome": "Treinamento extra para novos vendedores",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Configuração de robôs/automações adicionais",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Relatório personalizado de indicadores",
+        "valor": null,
+        "descricao": null
+      },
+      {
+        "nome": "Integração com Treinamento de Vendas (produto 20)",
+        "valor": null,
+        "descricao": null
+      }
+    ],
+    "argumentacao_venda": "Vender como a organização que transforma leads gerados (por tráfego pago, redes sociais) em vendas rastreáveis — sem isso, o investimento em aquisição se perde em conversas soltas de WhatsApp. Importante: a assinatura mensal do KENRA CRM (R$ 1.200/mês, conforme proposta oficial da Kenra) é paga diretamente à Kenra e NÃO está inclusa nos valores dos planos da YANG acima — a YANG cobra apenas pela implementação e gestão.",
+    "objecoes_comuns": "'Já uso planilha, funciona' → perguntar quantos leads a empresa perde por esquecimento de follow-up. 'R$1.200/mês do CRM + implementação está caro' → comparar com custo de contratar separadamente CRM, WhatsApp, automação, gateway de pagamento e rastreio de entrega.",
+    "pipeline_etapas_sugeridas": [
+      "Configuração do funil Kanban",
+      "Integração de WhatsApp e catálogo",
+      "Automações de follow-up e integração com anúncios",
+      "Treinamento da equipe",
+      "Gestão contínua e relatórios mensais"
+    ]
+  }
+]
