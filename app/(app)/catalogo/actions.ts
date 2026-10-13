@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { str, num, int, list } from "@/lib/form";
-import type { TipoCobranca } from "@/app/generated/prisma/client";
+import type { TipoCobranca, TipoDocumento } from "@/app/generated/prisma/client";
 
 // ---------- Pilar ----------
 
@@ -241,5 +241,41 @@ export async function deleteTemplateEquipamento(formData: FormData) {
   const id = formData.get("id") as string;
   const servicoId = formData.get("servicoId") as string;
   await prisma.templateEquipamento.delete({ where: { id } });
+  revalidatePath(`/catalogo/servicos/${servicoId}`);
+}
+
+// ---------- Modelos de documento ----------
+
+export async function createModeloDocumento(formData: FormData) {
+  const servicoId = formData.get("servicoId") as string;
+  const tipo = formData.get("tipo") as TipoDocumento;
+  const nome = str(formData, "nome");
+  const conteudo = str(formData, "conteudo");
+  if (!servicoId || !tipo || !nome || !conteudo) return;
+
+  await prisma.modeloDocumento.create({ data: { servicoId, tipo, nome, conteudo } });
+  revalidatePath(`/catalogo/servicos/${servicoId}`);
+}
+
+export async function updateModeloDocumento(formData: FormData) {
+  const id = formData.get("id") as string;
+  const servicoId = formData.get("servicoId") as string;
+  if (!id) return;
+
+  await prisma.modeloDocumento.update({
+    where: { id },
+    data: {
+      tipo: (formData.get("tipo") as TipoDocumento) || undefined,
+      nome: str(formData, "nome") ?? undefined,
+      conteudo: str(formData, "conteudo") ?? undefined,
+    },
+  });
+  revalidatePath(`/catalogo/servicos/${servicoId}`);
+}
+
+export async function deleteModeloDocumento(formData: FormData) {
+  const id = formData.get("id") as string;
+  const servicoId = formData.get("servicoId") as string;
+  await prisma.modeloDocumento.delete({ where: { id } });
   revalidatePath(`/catalogo/servicos/${servicoId}`);
 }

@@ -18,12 +18,19 @@ import {
   removerAlocacaoEquipamento,
   criarEscala,
   removerEscala,
+  gerarDocumento,
+  criarDocumentoLink,
+  enviarParaAssinatura,
+  deletarDocumento,
 } from "../actions";
 import { StatusGeralSelect } from "./StatusGeralSelect";
 import {
   ETAPA_STATUS_VARIANT as ETAPA_VARIANT,
   ENTREGA_STATUS_VARIANT as ENTREGA_VARIANT,
   RECEBIMENTO_STATUS_VARIANT as RECEBIMENTO_VARIANT,
+  DOCUMENTO_STATUS_VARIANT,
+  DOCUMENTO_STATUS_LABEL,
+  DOCUMENTO_TIPO_LABEL,
 } from "@/lib/status";
 
 export default async function ProjetoDetalhePage({
@@ -50,14 +57,19 @@ export default async function ProjetoDetalhePage({
       custos: true,
       alocacoesEquipamento: { include: { equipamento: true }, orderBy: { data: "asc" } },
       escalas: { include: { profissional: true }, orderBy: { data: "asc" } },
+      documentos: { orderBy: { createdAt: "desc" } },
     },
   });
 
   if (!projeto) notFound();
 
-  const [equipamentosDisponiveis, profissionaisDisponiveis] = await Promise.all([
+  const [equipamentosDisponiveis, profissionaisDisponiveis, modelosDocumento] = await Promise.all([
     prisma.equipamento.findMany({ where: { ativo: true }, orderBy: { nome: "asc" } }),
     prisma.profissional.findMany({ where: { ativo: true }, orderBy: { nome: "asc" } }),
+    prisma.modeloDocumento.findMany({
+      where: { servicoId: projeto.servicoId, ativo: true },
+      orderBy: { nome: "asc" },
+    }),
   ]);
 
   const equipamentoIds = projeto.alocacoesEquipamento.map((a) => a.equipamentoId);
@@ -214,6 +226,119 @@ export default async function ProjetoDetalhePage({
             Registrar nova versão
           </Button>
         </form>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-lg font-semibold mb-3">Documentos</h2>
+        <div className="space-y-2 mb-3">
+          {projeto.documentos.map((doc) => (
+            <Card key={doc.id} className="p-3">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-sm font-medium">
+                  {doc.nome} <span className="text-neutral-400 text-xs">({DOCUMENTO_TIPO_LABEL[doc.tipo]})</span>
+                </span>
+                <Badge variant={DOCUMENTO_STATUS_VARIANT[doc.status]}>
+                  {DOCUMENTO_STATUS_LABEL[doc.status]}
+                </Badge>
+              </div>
+              {doc.link && (
+                <a
+                  href={doc.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-blue-600 underline break-all"
+                >
+                  {doc.link}
+                </a>
+              )}
+              {doc.conteudo && (
+                <details className="mt-1">
+                  <summary className="cursor-pointer text-xs text-neutral-500">Ver conteúdo</summary>
+                  <pre className="whitespace-pre-wrap text-xs text-neutral-700 font-sans mt-1 bg-neutral-50 p-2 rounded">
+                    {doc.conteudo}
+                  </pre>
+                </details>
+              )}
+              {doc.status === "ASSINADO" && (
+                <p className="text-xs text-neutral-500 mt-1">
+                  Assinado por {doc.assinanteNome} em {formatData(doc.assinadoEm)} · IP {doc.assinanteIp}
+                </p>
+              )}
+              <div className="flex gap-2 mt-2">
+                {doc.status === "RASCUNHO" && (
+                  <>
+                    <form action={enviarParaAssinatura}>
+                      <input type="hidden" name="id" value={doc.id} />
+                      <input type="hidden" name="projetoId" value={projeto.id} />
+                      <Button type="submit" variant="secondary" className="text-xs px-2 py-1">
+                        Enviar para assinatura
+                      </Button>
+                    </form>
+                    <form action={deletarDocumento}>
+                      <input type="hidden" name="id" value={doc.id} />
+                      <input type="hidden" name="projetoId" value={projeto.id} />
+                      <Button type="submit" variant="ghost" className="text-xs px-2 py-1 text-red-600">
+                        Remover
+                      </Button>
+                    </form>
+                  </>
+                )}
+              </div>
+            </Card>
+          ))}
+          {projeto.documentos.length === 0 && (
+            <p className="text-sm text-neutral-500">Nenhum documento ainda.</p>
+          )}
+        </div>
+
+        {modelosDocumento.length > 0 && (
+          <form action={gerarDocumento} className="flex items-end gap-2 mb-3">
+            <input type="hidden" name="projetoId" value={projeto.id} />
+            <div className="flex-1">
+              <Label>Gerar a partir de um modelo</Label>
+              <Select name="modeloDocumentoId" required>
+                {modelosDocumento.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.nome} ({DOCUMENTO_TIPO_LABEL[m.tipo]})
+                  </option>
+                ))}
+              </Select>
+            </div>
+            <Button type="submit" variant="secondary">
+              Gerar documento
+            </Button>
+          </form>
+        )}
+
+        <details>
+          <summary className="cursor-pointer text-sm text-neutral-500">
+            Ou adicionar só um link (documento já pronto em outro lugar)
+          </summary>
+          <form action={criarDocumentoLink} className="flex flex-wrap items-end gap-2 mt-2">
+            <input type="hidden" name="projetoId" value={projeto.id} />
+            <div className="flex-1 min-w-[160px]">
+              <Label>Nome</Label>
+              <Input name="nome" required />
+            </div>
+            <div>
+              <Label>Tipo</Label>
+              <Select name="tipo" defaultValue="OUTRO">
+                {Object.entries(DOCUMENTO_TIPO_LABEL).map(([valor, label]) => (
+                  <option key={valor} value={valor}>
+                    {label}
+                  </option>
+                ))}
+              </Select>
+            </div>
+            <div className="flex-1 min-w-[160px]">
+              <Label>Link</Label>
+              <Input name="link" placeholder="https://..." required />
+            </div>
+            <Button type="submit" variant="secondary">
+              Adicionar
+            </Button>
+          </form>
+        </details>
       </section>
 
       <section className="mb-8">

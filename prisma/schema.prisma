@@ -64,6 +64,7 @@ model Servico {
   etapasTemplate PipelineEtapaTemplate[]
   propostas Proposta[]
   projetos  Projeto[]
+  modelosDocumento ModeloDocumento[]
 }
 
 model Plano {
@@ -219,6 +220,7 @@ model Projeto {
   custos       Custo[]
   alocacoesEquipamento AlocacaoEquipamento[]
   escalas              Escala[]
+  documentos           Documento[]
 }
 
 model ProjetoEtapa {
@@ -346,4 +348,48 @@ model TemplateEquipe {
   plano      Plano  @relation(fields: [planoId], references: [id], onDelete: Cascade)
   funcao     String
   quantidade Int    @default(1)
+}
+
+// ---------- Documentos / assinatura ----------
+
+enum TipoDocumento {
+  CONTRATO
+  TERMO_USO_IMAGEM
+  BRIEFING
+  OUTRO
+}
+
+enum StatusDocumento {
+  RASCUNHO
+  AGUARDANDO_ASSINATURA
+  ASSINADO
+}
+
+model ModeloDocumento {
+  id        String        @id @default(cuid())
+  servicoId String
+  servico   Servico       @relation(fields: [servicoId], references: [id], onDelete: Cascade)
+  tipo      TipoDocumento
+  nome      String
+  conteudo  String
+  ativo     Boolean       @default(true)
+
+  documentos Documento[]
+}
+
+model Documento {
+  id                String           @id @default(cuid())
+  projetoId         String
+  projeto           Projeto          @relation(fields: [projetoId], references: [id], onDelete: Cascade)
+  modeloDocumentoId String?
+  modeloDocumento   ModeloDocumento? @relation(fields: [modeloDocumentoId], references: [id])
+  tipo              TipoDocumento
+  nome              String
+  conteudo          String?
+  link              String?
+  status            StatusDocumento  @default(RASCUNHO)
+  assinanteNome     String?
+  assinanteIp       String?
+  assinadoEm        DateTime?
+  createdAt         DateTime         @default(now())
 }

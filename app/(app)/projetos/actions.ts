@@ -4,7 +4,13 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { str, num, dataOrNull } from "@/lib/form";
-import type { StatusGeralProjeto, StatusEntrega, StatusRecebimento } from "@/app/generated/prisma/client";
+import { renderModeloDocumento } from "@/lib/documentos";
+import type {
+  StatusGeralProjeto,
+  StatusEntrega,
+  StatusRecebimento,
+  TipoDocumento,
+} from "@/app/generated/prisma/client";
 
 // ---------- Projeto ----------
 
@@ -321,4 +327,70 @@ export async function removerEscala(formData: FormData) {
 
   revalidatePath(`/projetos/${projetoId}`);
   revalidatePath("/financeiro");
+}
+
+// ---------- Documentos ----------
+
+export async function gerarDocumento(formData: FormData) {
+  const projetoId = formData.get("projetoId") as string;
+  const modeloDocumentoId = formData.get("modeloDocumentoId") as string;
+  if (!projetoId || !modeloDocumentoId) return;
+
+  const [projeto, modelo] = await Promise.all([
+    prisma.projeto.findUnique({ where: { id: projetoId }, include: { cliente: true, servico: true } }),
+    prisma.modeloDocumento.findUnique({ where: { id: modeloDocumentoId } }),
+  ]);
+  if (!projeto || !modelo) return;
+
+  const conteudo = renderModeloDocumento(modelo.conteudo, {
+    cliente: { nome: projeto.cliente.nome, empresa: projeto.cliente.empresa },
+    projeto: { nome: projeto.nome, valor: projeto.valor, prazoData: projeto.prazoData },
+    servico: { nome: projeto.servico.nome },
+  });
+
+  await prisma.documento.create({
+    data: {
+      projetoId,
+      modeloDocumentoId,
+      tipo: modelo.tipo,
+      nome: modelo.nome,
+      conteudo,
+    },
+  });
+
+  revalidatePath(`/projetos/${projetoId}`);
+}
+
+export async function criarDocumentoLink(formData: FormData) {
+  const projetoId = formData.get("projetoId") as string;
+  const tipo = formData.get("tipo") as TipoDocumento;
+  const nome = str(formData, "nome");
+  const link = str(formData, "link");
+  if (!projetoId || !tipo || !nome || !link) return;
+
+  await prisma.documento.create({ data: { projetoId, tipo, nome, link } });
+  revalidatePath(`/projetos/${projetoId}`);
+}
+
+export async function enviarParaAssinatura(formData: FormData) {
+  const id = formData.get("id") as string;
+  const projetoId = formData.get("projetoId") as string;
+  if (!id || !projetoId) return;
+
+  await prisma.documento.updateMany({
+    where: { id, status: "RASCUNHO" },
+    data: { status: "AGUARDANDO_ASSINATURA" },
+  });
+  revalidatePath(`/projetos/${projetoId}`);
+  revalidatePath("/portal");
+}
+
+export async function deletarDocumento(formData: FormData) {
+  const id = formData.get("id") as string;
+  const projetoId = formData.get("projetoId") as string;
+  if (!id || !projetoId) return;
+
+  // documento já assinado é registro/prova — não some pelo admin, só fica
+  await prisma.documento.deleteMany({ where: { id, status: { not: "ASSINADO" } } });
+  revalidatePath(`/projetos/${projetoId}`);
 }

@@ -1,13 +1,16 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
-import { PageHeader, Card, Badge, Button, Textarea, Label } from "@/components/ui";
+import { PageHeader, Card, Badge, Button, Textarea, Label, Input } from "@/components/ui";
 import { formatMoeda, formatData } from "@/lib/utils";
-import { avaliarEntrega } from "../../actions";
+import { avaliarEntrega, assinarDocumento } from "../../actions";
 import {
   ETAPA_STATUS_VARIANT as ETAPA_VARIANT,
   ENTREGA_STATUS_VARIANT as ENTREGA_VARIANT,
   RECEBIMENTO_STATUS_VARIANT as RECEBIMENTO_VARIANT,
+  DOCUMENTO_STATUS_VARIANT,
+  DOCUMENTO_STATUS_LABEL,
+  DOCUMENTO_TIPO_LABEL,
 } from "@/lib/status";
 
 export default async function PortalProjetoPage({
@@ -27,6 +30,10 @@ export default async function PortalProjetoPage({
       etapas: { orderBy: { ordem: "asc" } },
       entregas: { orderBy: { versao: "desc" } },
       recebimentos: { orderBy: { vencimento: "asc" } },
+      documentos: {
+        where: { status: { in: ["AGUARDANDO_ASSINATURA", "ASSINADO"] } },
+        orderBy: { createdAt: "desc" },
+      },
     },
   });
 
@@ -108,6 +115,60 @@ export default async function PortalProjetoPage({
           ))}
           {projeto.entregas.length === 0 && (
             <p className="text-sm text-neutral-500">Nenhuma entrega enviada ainda.</p>
+          )}
+        </div>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-lg font-semibold mb-3">Documentos</h2>
+        <div className="space-y-3">
+          {projeto.documentos.map((doc) => (
+            <Card key={doc.id} className="p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium">
+                  {doc.nome} <span className="text-neutral-400 text-xs">({DOCUMENTO_TIPO_LABEL[doc.tipo]})</span>
+                </span>
+                <Badge variant={DOCUMENTO_STATUS_VARIANT[doc.status]}>
+                  {DOCUMENTO_STATUS_LABEL[doc.status]}
+                </Badge>
+              </div>
+              {doc.link && (
+                <a
+                  href={doc.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-blue-600 underline break-all"
+                >
+                  {doc.link}
+                </a>
+              )}
+              {doc.conteudo && (
+                <pre className="whitespace-pre-wrap text-sm text-neutral-700 font-sans mt-1 bg-neutral-50 p-3 rounded max-h-64 overflow-y-auto">
+                  {doc.conteudo}
+                </pre>
+              )}
+              {doc.status === "ASSINADO" ? (
+                <p className="text-xs text-neutral-500 mt-2">
+                  Assinado por {doc.assinanteNome} em {formatData(doc.assinadoEm)}
+                </p>
+              ) : (
+                <form action={assinarDocumento} className="mt-3 space-y-2">
+                  <input type="hidden" name="id" value={doc.id} />
+                  <div>
+                    <Label>Digite seu nome completo</Label>
+                    <Input name="nomeCompleto" required />
+                  </div>
+                  <label className="flex items-center gap-2 text-sm text-neutral-700">
+                    <input type="checkbox" name="concordo" required />
+                    Li e concordo com o conteúdo acima
+                  </label>
+                  <Button type="submit">Assinar</Button>
+                </form>
+              )}
+            </Card>
+          ))}
+          {projeto.documentos.length === 0 && (
+            <p className="text-sm text-neutral-500">Nenhum documento para assinar ainda.</p>
           )}
         </div>
       </section>

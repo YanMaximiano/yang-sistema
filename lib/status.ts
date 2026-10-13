@@ -6,6 +6,8 @@ import type {
   StatusEtapa,
   StatusEntrega,
   StatusRecebimento,
+  StatusDocumento,
+  TipoDocumento,
 } from "@/app/generated/prisma/client";
 
 /**
@@ -58,4 +60,23 @@ export const RECEBIMENTO_STATUS_VARIANT: Record<StatusRecebimento, BadgeVariant>
   PENDENTE: "neutral",
   PAGO: "success",
   ATRASADO: "danger",
+};
+
+export const DOCUMENTO_STATUS_VARIANT: Record<StatusDocumento, BadgeVariant> = {
+  RASCUNHO: "neutral",
+  AGUARDANDO_ASSINATURA: "warning",
+  ASSINADO: "success",
+};
+
+export const DOCUMENTO_STATUS_LABEL: Record<StatusDocumento, string> = {
+  RASCUNHO: "Rascunho",
+  AGUARDANDO_ASSINATURA: "Aguardando assinatura",
+  ASSINADO: "Assinado",
+};
+
+export const DOCUMENTO_TIPO_LABEL: Record<TipoDocumento, string> = {
+  CONTRATO: "Contrato",
+  TERMO_USO_IMAGEM: "Termo de uso de imagem",
+  BRIEFING: "Briefing",
+  OUTRO: "Outro",
 };

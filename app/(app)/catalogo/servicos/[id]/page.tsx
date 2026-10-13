@@ -17,7 +17,11 @@ import {
   deleteTemplateEquipe,
   createTemplateEquipamento,
   deleteTemplateEquipamento,
+  createModeloDocumento,
+  updateModeloDocumento,
+  deleteModeloDocumento,
 } from "../../actions";
+import { DOCUMENTO_TIPO_LABEL } from "@/lib/status";
 
 export default async function ServicoDetalhePage({
   params,
@@ -39,6 +43,7 @@ export default async function ServicoDetalhePage({
         },
         adicionais: { orderBy: { nome: "asc" } },
         etapasTemplate: { orderBy: { ordem: "asc" } },
+        modelosDocumento: { orderBy: { nome: "asc" } },
       },
     }),
     prisma.pilar.findMany({ orderBy: { ordem: "asc" } }),
@@ -364,6 +369,92 @@ export default async function ServicoDetalhePage({
             <Button type="submit" variant="secondary">
               Adicionar etapa
             </Button>
+          </form>
+        </Card>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-lg font-semibold mb-3">Modelos de documento</h2>
+        <p className="text-sm text-neutral-500 mb-3">
+          Contrato, termo de uso de imagem, briefing etc. Use placeholders como{" "}
+          <code className="text-xs bg-neutral-100 px-1 rounded">{"{{cliente.nome}}"}</code>,{" "}
+          <code className="text-xs bg-neutral-100 px-1 rounded">{"{{projeto.valor}}"}</code>,{" "}
+          <code className="text-xs bg-neutral-100 px-1 rounded">{"{{projeto.prazoData}}"}</code>{" "}
+          — eles viram os dados reais quando o documento é gerado no projeto.
+        </p>
+        <div className="space-y-3">
+          {servico.modelosDocumento.map((modelo) => (
+            <Card key={modelo.id} className="p-4">
+              <form action={updateModeloDocumento} className="space-y-3">
+                <input type="hidden" name="id" value={modelo.id} />
+                <input type="hidden" name="servicoId" value={servico.id} />
+                <div className="grid md:grid-cols-2 gap-3">
+                  <div>
+                    <Label>Nome</Label>
+                    <Input name="nome" defaultValue={modelo.nome} required />
+                  </div>
+                  <div>
+                    <Label>Tipo</Label>
+                    <Select name="tipo" defaultValue={modelo.tipo}>
+                      {Object.entries(DOCUMENTO_TIPO_LABEL).map(([valor, label]) => (
+                        <option key={valor} value={valor}>
+                          {label}
+                        </option>
+                      ))}
+                    </Select>
+                  </div>
+                </div>
+                <div>
+                  <Label>Conteúdo</Label>
+                  <Textarea name="conteudo" defaultValue={modelo.conteudo} rows={8} required />
+                </div>
+                <Button type="submit" variant="secondary">
+                  Salvar
+                </Button>
+              </form>
+              <form action={deleteModeloDocumento} className="mt-2">
+                <input type="hidden" name="id" value={modelo.id} />
+                <input type="hidden" name="servicoId" value={servico.id} />
+                <Button type="submit" variant="ghost" className="text-xs text-red-600 px-0">
+                  Remover modelo
+                </Button>
+              </form>
+            </Card>
+          ))}
+        </div>
+
+        <Card className="p-4 mt-3">
+          <p className="text-sm font-medium mb-2">Novo modelo</p>
+          <form action={createModeloDocumento} className="space-y-3">
+            <input type="hidden" name="servicoId" value={servico.id} />
+            <div className="grid md:grid-cols-2 gap-3">
+              <div>
+                <Label>Nome</Label>
+                <Input name="nome" required placeholder="Ex: Contrato de prestação de serviço" />
+              </div>
+              <div>
+                <Label>Tipo</Label>
+                <Select name="tipo" defaultValue="CONTRATO">
+                  {Object.entries(DOCUMENTO_TIPO_LABEL).map(([valor, label]) => (
+                    <option key={valor} value={valor}>
+                      {label}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+            </div>
+            <div>
+              <Label>Conteúdo</Label>
+              <Textarea
+                name="conteudo"
+                rows={8}
+                required
+                placeholder={
+                  "Contrato entre Yang e {{cliente.nome}} para {{projeto.nome}}, no valor de {{projeto.valor}}, com prazo até {{projeto.prazoData}}."
+                }
+              />
+            </div>
+            <Button type="submit">Adicionar modelo</Button>
           </form>
         </Card>
       </section>
