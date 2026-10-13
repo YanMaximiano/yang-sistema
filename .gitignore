@@ -32,6 +32,11 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+
+# logs de ferramentas de recuperação de disco (podem conter caminhos pessoais)
+photorec.*
+testdisk.log
 
 # vercel
 .vercel

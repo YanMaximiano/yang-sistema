@@ -1,66 +1,103 @@
 # Yang — Sistema de Gestão
 
 Sistema de gestão para a Yang (produtora audiovisual full-service): catálogo de serviços,
-propostas, clientes (CRM), projetos com pipeline customizável, prazos/calendário e financeiro
-básico (recebimentos, custos e margem).
+propostas, clientes (CRM), projetos com pipeline customizável, prazos/calendário, financeiro
+(recebimentos, custos, margem e fluxo de caixa projetado), equipamentos, equipe e portal do cliente.
 
 ## Stack
 
 - Next.js 16 (App Router, TypeScript, Server Actions)
 - Prisma 7 + PostgreSQL (via driver adapter `@prisma/adapter-pg`)
 - Auth.js (NextAuth v5) — login por e-mail/senha, perfis ADMIN/EQUIPE/FREELANCER/CLIENTE
-- Tailwind CSS
+- Tailwind CSS (com modo escuro)
 
-## Banco de dados local
+Requisitos: **Node.js 20.19+** e **PostgreSQL 14+**.
 
-Este projeto usa **`prisma dev`**, um Postgres local gerenciado pelo próprio Prisma CLI —
-não precisa de Docker nem de instalar Postgres manualmente.
+---
 
-Antes de rodar o app pela primeira vez (ou depois de reiniciar o computador), suba o banco:
+## Deploy em produção
+
+### 1. Variáveis de ambiente
+
+Veja [`.env.example`](.env.example). Cadastre no painel da hospedagem (nunca commite o `.env`):
+
+| Variável | Obrigatória | Para quê |
+| --- | --- | --- |
+| `DATABASE_URL` | sim | Conexão PostgreSQL. Se a hospedagem exigir SSL, termine com `?sslmode=require` |
+| `AUTH_SECRET` | sim | Assina os logins. Gere um **novo** para produção: `openssl rand -base64 32` |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | só no 1º seed | Criam o primeiro administrador (ver passo 2) |
+
+### 2. Passo a passo
 
 ```bash
-npx prisma dev -d --name yang-db
+npm ci                          # instala dependências (precisa das devDependencies: build usa typescript/tsx)
+npx prisma migrate deploy       # cria/atualiza as tabelas — rodar a cada deploy
+ADMIN_EMAIL=voce@empresa.com ADMIN_PASSWORD='uma-senha-forte' npm run db:seed
+npm run build
+npm start                       # sobe na porta 3000 (use PORT=... para mudar)
 ```
 
-Isso inicia um Postgres local em background. Para ver se está rodando: `npx prisma dev ls`.
-Para parar: `npx prisma dev stop`.
+- **Em produção use sempre `prisma migrate deploy`** — nunca `db push` (que serve só para desenvolvimento local).
+- O `db:seed` é seguro de rodar de novo: **não** recria o catálogo se ele já existir (as edições feitas
+  em `/catalogo` são preservadas) e **não** mexe em admin existente. Só cria o que falta.
+- Depois do primeiro login, abra **/usuarios** para trocar a senha e cadastrar a equipe.
 
-A connection string já está configurada em `.env` (`DATABASE_URL`), apontando para esse
-banco local. Se a porta mudar (raro), ajuste o `.env` com o valor que `prisma dev ls` mostrar.
+### 3. Pontos de atenção da hospedagem
 
-## Primeira configuração
+- **HTTPS e proxy reverso**: o app precisa receber os cabeçalhos `Host`/`X-Forwarded-Host` e
+  `X-Forwarded-Proto` originais. As Server Actions do Next validam a origem da requisição e os cookies
+  de login só são marcados como seguros sob HTTPS; se esses cabeçalhos forem perdidos, formulários
+  falham e o login pode não persistir.
+- **Fotos de equipamentos** ficam no próprio banco (tabela `EquipamentoFoto`, até 5 MB cada), então
+  **não é necessário disco persistente** e o backup do Postgres cobre tudo. As fotos do catálogo inicial
+  (`public/equipamentos/`) vão junto com o código.
+- **Fuso horário**: o processo é fixado em `America/Sao_Paulo` (`next.config.ts`), independente do
+  fuso do servidor — "hoje" e "atrasado" seguem o horário de Brasília.
+- **Backup**: faça backup periódico do PostgreSQL; é onde está todo o dado do sistema.
+- **Login sem limite de tentativas**: não há rate limiting nesta versão. Se o sistema ficar exposto
+  na internet, aplique limitação de requisições na borda (Cloudflare, nginx etc.) para `/login`.
+- **Repositório privado**: `prisma/catalogo-fonte.json` contém o catálogo de preços real da empresa.
+
+---
+
+## Desenvolvimento local
+
+Este projeto usa **`prisma dev`**, um Postgres local gerenciado pelo Prisma CLI — não precisa de
+Docker nem de instalar Postgres. Copie `.env.example` para `.env` (a `DATABASE_URL` local é a que
+`npx prisma dev ls` mostrar, em "TCP", trocando o banco por `yang`).
 
 ```bash
 npm install
-npx prisma dev -d --name yang-db   # sobe o banco local
+npx prisma dev -d --name yang-db   # sobe o banco local (repita após reiniciar o computador)
 npx prisma db push                 # cria/atualiza as tabelas
-npm run db:seed                    # popula o catálogo com os 21 serviços reais + usuário admin
-npm run dev                        # inicia o app em http://localhost:3000
+ADMIN_EMAIL=voce@empresa.com ADMIN_PASSWORD='senha' npm run db:seed
+npm run dev                        # http://localhost:3000
 ```
 
-> **Nota sobre migrações**: use `npx prisma db push` para aplicar mudanças de schema neste projeto,
-> não `prisma migrate dev` — o banco de sombra (*shadow database*) que o `migrate dev` usa para
-> validar migrações não funciona de forma confiável com o Postgres local do `prisma dev` neste
-> ambiente (erro `P3006`/tipo já existe). `db push` aplica direto no banco de trabalho sem depender
-> do shadow db; para produção mais adiante, vale revisitar isso com um Postgres hospedado de verdade.
+Para ver se o banco está rodando: `npx prisma dev ls`. Para parar: `npx prisma dev stop`.
 
-Login inicial (admin): `yanfmaxi@gmail.com` / senha própria já definida — ainda não há tela de
-troca de senha nesta versão; pode ser atualizada direto no banco via `npx prisma studio` ou
-recriando o usuário.
+> **Migrações**: o Postgres do `prisma dev` usa um banco único para qualquer nome, o que quebra o
+> *shadow database* do `prisma migrate dev` (erro `P3006`/"type already exists"). Por isso, em
+> desenvolvimento aplica-se o schema com `npx prisma db push`. Ao mudar o `schema.prisma` de forma que
+> deva ir para produção, gere o SQL incremental com
+> `npx prisma migrate diff --from-schema <schema antigo> --to-schema prisma/schema.prisma --script`
+> e salve em uma nova pasta `prisma/migrations/<timestamp>_<nome>/migration.sql`. A pasta
+> `prisma/migrations` hoje contém uma migração *baseline* com o schema completo.
 
-## Atalho no desktop
+### Atalho no desktop (Mac do Yan)
 
-Há um atalho **"Abrir Yang.command"** no Desktop: dá dois cliques e ele sobe o banco local (se
-não estiver rodando), inicia o servidor na porta `3002` (evita conflito com outros apps que já
-usam a 3000/3001 nesta máquina) e abre o navegador — sem precisar do terminal. Se o app já
-estiver rodando (ex.: aberto por outra ferramenta), só abre o navegador direto.
+Há um atalho **"Abrir Yang.command"** no Desktop: dois cliques sobem o banco local (se não estiver
+rodando), iniciam o servidor na porta `3002` e abrem o navegador.
 
-## Scripts úteis
+### Scripts úteis
 
 - `npm run dev` — servidor de desenvolvimento
-- `npm run build` — build de produção
-- `npm run db:seed` — roda o seed do catálogo novamente (idempotente para pilares/serviços)
-- `npm run db:studio` — abre o Prisma Studio para inspecionar os dados
+- `npm run build` / `npm start` — build e execução de produção
+- `npm run lint` — ESLint
+- `npm run db:seed` — cria catálogo (se vazio) e primeiro admin (se não existir)
+- `npm run db:studio` — Prisma Studio para inspecionar os dados
+
+---
 
 ## Escopo desta versão
 

@@ -46,8 +46,8 @@ export default async function FinanceiroPage() {
       }),
     ]);
 
-  let saldoAcumulado = 0;
-  const fluxoCaixa = eachMonthOfInterval({ start: inicioProjecao, end: fimProjecao }).map((mes) => {
+  const fluxoCaixa: { mes: Date; aReceber: number; aPagar: number; saldoMes: number; saldoAcumulado: number }[] = [];
+  for (const mes of eachMonthOfInterval({ start: inicioProjecao, end: fimProjecao })) {
     const chave = format(mes, "yyyy-MM");
     const aReceber = recebimentosFuturos
       .filter((r) => format(r.vencimento, "yyyy-MM") === chave)
@@ -56,9 +56,9 @@ export default async function FinanceiroPage() {
       .filter((c) => c.dataPrevista && format(c.dataPrevista, "yyyy-MM") === chave)
       .reduce((acc, c) => acc + c.valor, 0);
     const saldoMes = aReceber - aPagar;
-    saldoAcumulado += saldoMes;
-    return { mes, aReceber, aPagar, saldoMes, saldoAcumulado };
-  });
+    const saldoAcumulado = (fluxoCaixa.at(-1)?.saldoAcumulado ?? 0) + saldoMes;
+    fluxoCaixa.push({ mes, aReceber, aPagar, saldoMes, saldoAcumulado });
+  }
 
   const porPilar = new Map<string, { nome: string; receita: number; custo: number }>();
   const porServico = new Map<string, { nome: string; receita: number; custo: number }>();

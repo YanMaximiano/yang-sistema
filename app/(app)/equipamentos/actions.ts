@@ -3,23 +3,39 @@
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
 import { str } from "@/lib/form";
 
-async function salvarFotoEquipamento(formData: FormData): Promise<string | undefined> {
+const FOTO_TIPOS_ACEITOS = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"];
+const FOTO_TAMANHO_MAXIMO = 5 * 1024 * 1024;
+
+// devolve a foto enviada no formulário, ou null se não veio arquivo válido
+// (SVG fica de fora de propósito: serviria script na mesma origem do sistema)
+async function lerFotoDoFormulario(formData: FormData) {
   const file = formData.get("foto");
-  if (!(file instanceof File) || file.size === 0 || !file.type.startsWith("image/")) {
-    return undefined;
+  if (
+    !(file instanceof File) ||
+    file.size === 0 ||
+    file.size > FOTO_TAMANHO_MAXIMO ||
+    !FOTO_TIPOS_ACEITOS.includes(file.type)
+  ) {
+    return null;
   }
+  return { tipo: file.type, dados: new Uint8Array(await file.arrayBuffer()) };
+}
 
-  const extensao = path.extname(file.name) || ".jpg";
-  const nomeArquivo = `${crypto.randomUUID()}${extensao}`;
-  const dir = path.join(process.cwd(), "public", "equipamentos");
-  await mkdir(dir, { recursive: true });
-  await writeFile(path.join(dir, nomeArquivo), Buffer.from(await file.arrayBuffer()));
-
-  return `/equipamentos/${nomeArquivo}`;
+async function gravarFoto(equipamentoId: string, foto: { tipo: string; dados: Uint8Array<ArrayBuffer> }) {
+  await prisma.$transaction([
+    prisma.equipamentoFoto.upsert({
+      where: { equipamentoId },
+      create: { equipamentoId, ...foto },
+      update: foto,
+    }),
+    // o ?v= muda a cada envio para o navegador não mostrar a foto antiga em cache
+    prisma.equipamento.update({
+      where: { id: equipamentoId },
+      data: { foto: `/api/equipamentos/${equipamentoId}/foto?v=${Date.now()}` },
+    }),
+  ]);
 }
 
 export async function createEquipamento(formData: FormData) {
@@ -28,10 +44,11 @@ export async function createEquipamento(formData: FormData) {
   const categoria = str(formData, "categoria");
   if (!nome || !categoria) return;
 
-  const foto = await salvarFotoEquipamento(formData);
-  await prisma.equipamento.create({
-    data: { nome, categoria, observacoes: str(formData, "observacoes"), foto },
+  const foto = await lerFotoDoFormulario(formData);
+  const equipamento = await prisma.equipamento.create({
+    data: { nome, categoria, observacoes: str(formData, "observacoes") },
   });
+  if (foto) await gravarFoto(equipamento.id, foto);
   revalidatePath("/equipamentos");
 }
 
@@ -40,16 +57,16 @@ export async function updateEquipamento(formData: FormData) {
   const id = formData.get("id") as string;
   if (!id) return;
 
-  const foto = await salvarFotoEquipamento(formData);
+  const foto = await lerFotoDoFormulario(formData);
   await prisma.equipamento.update({
     where: { id },
     data: {
       nome: str(formData, "nome") ?? undefined,
       categoria: str(formData, "categoria") ?? undefined,
       observacoes: str(formData, "observacoes"),
-      foto: foto ?? undefined,
     },
   });
+  if (foto) await gravarFoto(id, foto);
   revalidatePath("/equipamentos");
 }
 

@@ -32,8 +32,8 @@ export default async function EquipamentosPage() {
             <Input name="observacoes" />
           </div>
           <div>
-            <Label>Foto</Label>
-            <Input type="file" name="foto" accept="image/*" />
+            <Label>Foto (JPG, PNG ou WebP, até 5 MB)</Label>
+            <Input type="file" name="foto" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" />
           </div>
           <Button type="submit" className="md:col-span-4 md:w-fit">
             Adicionar equipamento
@@ -99,8 +99,8 @@ export default async function EquipamentosPage() {
                   <Input name="observacoes" defaultValue={eq.observacoes ?? ""} />
                 </div>
                 <div>
-                  <Label>Trocar foto</Label>
-                  <Input type="file" name="foto" accept="image/*" />
+                  <Label>Trocar foto (até 5 MB)</Label>
+                  <Input type="file" name="foto" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" />
                 </div>
                 <Button type="submit" variant="secondary" className="md:col-span-4 md:w-fit">
                   Salvar

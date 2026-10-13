@@ -25,9 +25,13 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <p className="text-xs text-neutral-500 dark:text-neutral-400 truncate md:hidden">
+            <Link
+              href="/conta"
+              title="Alterar minha senha"
+              className="text-xs text-neutral-500 dark:text-neutral-400 truncate md:hidden underline"
+            >
               {session.user.email}
-            </p>
+            </Link>
             <ThemeToggle />
           </div>
         </div>
@@ -48,9 +52,15 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           ))}
         </nav>
         <div className="hidden md:block px-4 py-4 border-t border-neutral-200 dark:border-neutral-800">
-          <p className="text-xs text-neutral-500 dark:text-neutral-400 truncate mb-2">
+          <p className="text-xs text-neutral-500 dark:text-neutral-400 truncate">
             {session.user.email}
           </p>
+          <Link
+            href="/conta"
+            className="block text-xs underline text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 mb-2"
+          >
+            Alterar minha senha
+          </Link>
           <form
             action={async () => {
               "use server";

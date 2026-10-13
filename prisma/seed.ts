@@ -67,7 +67,7 @@ type ServicoFonte = {
   pipeline_etapas_sugeridas?: string[];
 };
 
-async function main() {
+async function seedCatalogo() {
   console.log("Seed: criando pilares...");
   const pilarPorNome = new Map<string, string>();
   for (let i = 0; i < ORDEM_PILARES.length; i++) {
@@ -158,24 +158,46 @@ async function main() {
       });
     }
   }
+}
 
-  const adminEmail = process.env.ADMIN_EMAIL ?? "yanfmaxi@gmail.com";
-  const adminSenha = process.env.ADMIN_PASSWORD ?? "yang@2026";
-  const passwordHash = await bcrypt.hash(adminSenha, 10);
+// devolve as credenciais do primeiro admin, ou null se já existe um ADMIN;
+// falha logo no começo (antes de mexer no banco) se faltar a senha
+async function credenciaisDoNovoAdmin() {
+  if ((await prisma.user.count({ where: { role: "ADMIN" } })) > 0) return null;
 
-  await prisma.user.upsert({
-    where: { email: adminEmail },
-    update: { passwordHash, role: "ADMIN" },
-    create: {
-      name: "Admin Yang",
-      email: adminEmail,
-      passwordHash,
-      role: "ADMIN",
-    },
-  });
+  const email = process.env.ADMIN_EMAIL;
+  const senha = process.env.ADMIN_PASSWORD;
+  if (!email || !senha) {
+    throw new Error("Defina ADMIN_EMAIL e ADMIN_PASSWORD no ambiente para criar o primeiro usuário administrador.");
+  }
+  return { email, senha };
+}
 
+async function main() {
+  const novoAdmin = await credenciaisDoNovoAdmin();
+
+  // o catálogo é editável pela tela /catalogo — recriá-lo apagaria essas edições,
+  // então só roda em banco vazio (ou com SEED_FORCE=1, de forma explícita)
+  if ((await prisma.servico.count()) === 0 || process.env.SEED_FORCE === "1") {
+    await seedCatalogo();
+  } else {
+    console.log("Seed: catálogo já existe — pulado (use SEED_FORCE=1 para recriar; APAGA edições do catálogo).");
+  }
+
+  if (novoAdmin) {
+    await prisma.user.create({
+      data: {
+        name: "Admin Yang",
+        email: novoAdmin.email,
+        passwordHash: await bcrypt.hash(novoAdmin.senha, 10),
+        role: "ADMIN",
+      },
+    });
+    console.log(`Seed: administrador criado (${novoAdmin.email}).`);
+  } else {
+    console.log("Seed: já existe um usuário ADMIN — mantido sem alterações.");
+  }
   console.log("Seed concluído.");
-  console.log(`Login admin: ${adminEmail} / senha: ${adminSenha} (troque depois de logar)`);
 }
 
 main()

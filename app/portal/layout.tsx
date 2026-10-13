@@ -19,6 +19,12 @@ export default async function PortalLayout({ children }: { children: React.React
           <p className="text-xs text-neutral-500 dark:text-neutral-400 hidden md:block">
             {session.user.email}
           </p>
+          <Link
+            href="/portal/conta"
+            className="text-xs underline text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
+          >
+            Minha conta
+          </Link>
           <ThemeToggle />
           <form
             action={async () => {

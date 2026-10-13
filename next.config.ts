@@ -6,7 +6,11 @@ import type { NextConfig } from "next";
 process.env.TZ = "America/Sao_Paulo";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  experimental: {
+    // o padrão (1 MB) rejeitaria fotos de equipamento tiradas por celular/câmera;
+    // o limite real de 5 MB por foto é validado em equipamentos/actions.ts
+    serverActions: { bodySizeLimit: "6mb" },
+  },
 };
 
 export default nextConfig;

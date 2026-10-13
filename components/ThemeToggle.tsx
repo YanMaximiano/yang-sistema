@@ -1,21 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { Sun, Moon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export function ThemeToggle({ className }: { className?: string }) {
-  const [escuro, setEscuro] = useState(false);
+function observarTema(aoMudar: () => void) {
+  const observador = new MutationObserver(aoMudar);
+  observador.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+  return () => observador.disconnect();
+}
 
-  useEffect(() => {
-    setEscuro(document.documentElement.classList.contains("dark"));
-  }, []);
+const temaEscuroAtual = () => document.documentElement.classList.contains("dark");
+
+export function ThemeToggle({ className }: { className?: string }) {
+  const escuro = useSyncExternalStore(observarTema, temaEscuroAtual, () => false);
 
   function alternar() {
     const novoEscuro = !escuro;
     document.documentElement.classList.toggle("dark", novoEscuro);
-    localStorage.setItem("theme", novoEscuro ? "dark" : "light");
-    setEscuro(novoEscuro);
+    try {
+      localStorage.setItem("theme", novoEscuro ? "dark" : "light");
+    } catch {
+      // armazenamento bloqueado (aba anônima etc.): o tema vale só nesta sessão
+    }
   }
 
   return (

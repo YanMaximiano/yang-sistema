@@ -323,8 +323,19 @@ model Equipamento {
   ativo       Boolean           @default(true)
   createdAt   DateTime          @default(now())
 
-  alocacoes AlocacaoEquipamento[]
-  templates TemplateEquipamento[]
+  alocacoes   AlocacaoEquipamento[]
+  templates   TemplateEquipamento[]
+  fotoArquivo EquipamentoFoto?
+}
+
+// fotos enviadas pelo sistema ficam no banco (e não em disco) para funcionar
+// em qualquer host — inclusive com disco efêmero — e entrar no backup do banco.
+// Fica numa tabela à parte para não pesar nas listagens de equipamento.
+model EquipamentoFoto {
+  equipamentoId String      @id
+  equipamento   Equipamento @relation(fields: [equipamentoId], references: [id], onDelete: Cascade)
+  tipo          String
+  dados         Bytes
 }
 
 model AlocacaoEquipamento {
