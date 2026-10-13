@@ -301,6 +301,7 @@ model Equipamento {
   categoria   String
   status      StatusEquipamento @default(DISPONIVEL)
   observacoes String?
+  foto        String?
   ativo       Boolean           @default(true)
   createdAt   DateTime          @default(now())
 
