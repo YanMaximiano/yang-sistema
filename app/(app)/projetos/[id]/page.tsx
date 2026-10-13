@@ -41,38 +41,40 @@ export default async function ProjetoDetalhePage({
 }) {
   const { id } = await params;
 
-  const projeto = await prisma.projeto.findUnique({
-    where: { id },
-    include: {
-      cliente: true,
-      servico: true,
-      plano: {
-        include: {
-          templatesEquipe: { orderBy: { funcao: "asc" } },
-          templatesEquipamento: { include: { equipamento: true } },
+  // equipamentosDisponiveis/profissionaisDisponiveis não dependem do projeto — rodam em
+  // paralelo com a busca pesada do projeto em vez de esperar ela terminar primeiro.
+  const [projeto, equipamentosDisponiveis, profissionaisDisponiveis] = await Promise.all([
+    prisma.projeto.findUnique({
+      where: { id },
+      include: {
+        cliente: true,
+        servico: true,
+        plano: {
+          include: {
+            templatesEquipe: { orderBy: { funcao: "asc" } },
+            templatesEquipamento: { include: { equipamento: true } },
+          },
         },
+        etapas: { orderBy: { ordem: "asc" } },
+        checklistItens: { orderBy: { ordem: "asc" } },
+        entregas: { orderBy: { versao: "desc" } },
+        recebimentos: { orderBy: { vencimento: "asc" } },
+        custos: true,
+        alocacoesEquipamento: { include: { equipamento: true }, orderBy: { data: "asc" } },
+        escalas: { include: { profissional: true }, orderBy: { data: "asc" } },
+        documentos: { orderBy: { createdAt: "desc" } },
       },
-      etapas: { orderBy: { ordem: "asc" } },
-      checklistItens: { orderBy: { ordem: "asc" } },
-      entregas: { orderBy: { versao: "desc" } },
-      recebimentos: { orderBy: { vencimento: "asc" } },
-      custos: true,
-      alocacoesEquipamento: { include: { equipamento: true }, orderBy: { data: "asc" } },
-      escalas: { include: { profissional: true }, orderBy: { data: "asc" } },
-      documentos: { orderBy: { createdAt: "desc" } },
-    },
-  });
+    }),
+    prisma.equipamento.findMany({ where: { ativo: true }, orderBy: { nome: "asc" } }),
+    prisma.profissional.findMany({ where: { ativo: true }, orderBy: { nome: "asc" } }),
+  ]);
 
   if (!projeto) notFound();
 
-  const [equipamentosDisponiveis, profissionaisDisponiveis, modelosDocumento] = await Promise.all([
-    prisma.equipamento.findMany({ where: { ativo: true }, orderBy: { nome: "asc" } }),
-    prisma.profissional.findMany({ where: { ativo: true }, orderBy: { nome: "asc" } }),
-    prisma.modeloDocumento.findMany({
-      where: { servicoId: projeto.servicoId, ativo: true },
-      orderBy: { nome: "asc" },
-    }),
-  ]);
+  const modelosDocumento = await prisma.modeloDocumento.findMany({
+    where: { servicoId: projeto.servicoId, ativo: true },
+    orderBy: { nome: "asc" },
+  });
 
   const equipamentoIds = projeto.alocacoesEquipamento.map((a) => a.equipamentoId);
   const profissionalIds = projeto.escalas.map((e) => e.profissionalId);
@@ -143,7 +145,7 @@ export default async function ProjetoDetalhePage({
                         className={`shrink-0 w-4 h-4 rounded border flex items-center justify-center text-[10px] ${
                           item.concluido
                             ? "bg-green-600 border-green-600 text-white"
-                            : "border-neutral-300"
+                            : "border-neutral-300 dark:border-neutral-700"
                         }`}
                       >
                         {item.concluido && "✓"}

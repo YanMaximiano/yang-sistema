@@ -62,16 +62,22 @@ estiver rodando (ex.: aberto por outra ferramenta), só abre o navegador direto.
 - `npm run db:seed` — roda o seed do catálogo novamente (idempotente para pilares/serviços)
 - `npm run db:studio` — abre o Prisma Studio para inspecionar os dados
 
-## Escopo desta versão (MVP — Fase 1)
+## Escopo desta versão
 
-- Catálogo de serviços (pilares, serviços, planos, adicionais, pipeline de etapas) — totalmente
-  editável pela tela de admin em `/catalogo`
+- Catálogo de serviços (pilares, serviços, planos, adicionais, pipeline de etapas, checklist de
+  pré-produção, modelos de documento) — totalmente editável pela tela de admin em `/catalogo`
 - Clientes (CRM) com notas internas e funil de status
 - Propostas: cliente → serviço → plano → adicionais, com aprovação que cria o projeto
   automaticamente
-- Projetos com pipeline Kanban (etapas customizáveis por serviço), versionamento de entregas
+- Projetos com pipeline Kanban (etapas customizáveis por serviço), versionamento de entregas,
+  checklist de pré-produção, documentos e contratos com assinatura eletrônica nativa
 - Calendário de prazos com destaque de atrasados
-- Financeiro básico: recebimentos, custos e margem por projeto/pilar
+- Financeiro: recebimentos, custos e margem por projeto/pilar/serviço, e fluxo de caixa projetado
+  para os próximos 6 meses
+- Equipamentos (inventário com foto, alocação por projeto, alerta de conflito de agenda) e
+  equipe/escala de profissionais (mesma lógica de conflito)
+- Portal do cliente: aprovação de proposta, avaliação de entregas, assinatura de documentos
+- Central de avisos internos (prazos, pagamentos, propostas paradas) e modo escuro
 
-Fora de escopo por enquanto (fases seguintes): equipamentos, escala de profissionais, portal
-completo do cliente, contratos/assinatura digital, notificações automáticas, modo offline/desktop.
+Fora de escopo por enquanto: notificações automáticas por e-mail/WhatsApp (sem conta de envio
+configurada) e modo offline/desktop.

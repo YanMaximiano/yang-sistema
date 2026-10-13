@@ -26,7 +26,7 @@ export async function atualizarStatusPropostaCore(propostaId: string, status: St
     if (!existente) {
       let prazoData: Date | null = null;
       const dias = proposta.prazoPropostoDias ?? proposta.plano.prazoDias;
-      if (dias) {
+      if (dias != null) {
         prazoData = new Date();
         prazoData.setDate(prazoData.getDate() + dias);
       }

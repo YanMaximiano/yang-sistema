@@ -106,7 +106,7 @@ export default async function CalendarioPage({
           return (
             <Card
               key={dia.toISOString()}
-              className={`p-2 min-h-[90px] ${foraDoMes ? "opacity-40" : ""} ${ehHoje ? "border-neutral-900 border-2" : ""}`}
+              className={`p-2 min-h-[90px] ${foraDoMes ? "opacity-40" : ""} ${ehHoje ? "border-neutral-900 dark:border-neutral-100 border-2" : ""}`}
             >
               <p className="text-xs text-neutral-400 dark:text-neutral-500 mb-1">{format(dia, "d")}</p>
               <div className="space-y-1">

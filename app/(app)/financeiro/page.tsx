@@ -25,12 +25,23 @@ export default async function FinanceiroPage() {
         orderBy: { vencimento: "asc" },
       }),
       prisma.recebimento.findMany({
-        where: { status: { not: "PAGO" }, vencimento: { gte: inicioProjecao, lt: addMonths(fimProjecao, 1) } },
+        where: {
+          status: { not: "PAGO" },
+          vencimento: { gte: inicioProjecao, lt: addMonths(fimProjecao, 1) },
+          projeto: { statusGeral: { not: "CANCELADO" } },
+        },
       }),
       prisma.custo.findMany({
-        where: { dataPrevista: { gte: inicioProjecao, lt: addMonths(fimProjecao, 1) } },
+        where: {
+          dataPrevista: { gte: inicioProjecao, lt: addMonths(fimProjecao, 1) },
+          projeto: { statusGeral: { not: "CANCELADO" } },
+        },
       }),
-      prisma.custo.aggregate({ where: { dataPrevista: null }, _count: true, _sum: { valor: true } }),
+      prisma.custo.aggregate({
+        where: { dataPrevista: null, projeto: { statusGeral: { not: "CANCELADO" } } },
+        _count: true,
+        _sum: { valor: true },
+      }),
     ]);
 
   let saldoAcumulado = 0;

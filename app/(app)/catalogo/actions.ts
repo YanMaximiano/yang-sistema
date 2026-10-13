@@ -173,8 +173,13 @@ export async function createEtapaTemplate(formData: FormData) {
   const servicoId = formData.get("servicoId") as string;
   const nome = str(formData, "nome");
   if (!servicoId || !nome) return;
-  const count = await prisma.pipelineEtapaTemplate.count({ where: { servicoId } });
-  await prisma.pipelineEtapaTemplate.create({ data: { servicoId, nome, ordem: count } });
+  const ultima = await prisma.pipelineEtapaTemplate.aggregate({
+    where: { servicoId },
+    _max: { ordem: true },
+  });
+  await prisma.pipelineEtapaTemplate.create({
+    data: { servicoId, nome, ordem: (ultima._max.ordem ?? -1) + 1 },
+  });
   revalidatePath(`/catalogo/servicos/${servicoId}`);
 }
 
@@ -276,6 +281,12 @@ export async function updateModeloDocumento(formData: FormData) {
 export async function deleteModeloDocumento(formData: FormData) {
   const id = formData.get("id") as string;
   const servicoId = formData.get("servicoId") as string;
+
+  // não deixa apagar um modelo que já gerou documentos (contratos assinados
+  // inclusive) — apagaria o rastro; o admin desativa o modelo em vez disso.
+  const emUso = await prisma.documento.count({ where: { modeloDocumentoId: id } });
+  if (emUso > 0) return;
+
   await prisma.modeloDocumento.delete({ where: { id } });
   revalidatePath(`/catalogo/servicos/${servicoId}`);
 }
@@ -286,8 +297,13 @@ export async function createChecklistTemplateItem(formData: FormData) {
   const servicoId = formData.get("servicoId") as string;
   const nome = str(formData, "nome");
   if (!servicoId || !nome) return;
-  const count = await prisma.checklistPreProducaoTemplate.count({ where: { servicoId } });
-  await prisma.checklistPreProducaoTemplate.create({ data: { servicoId, nome, ordem: count } });
+  const ultima = await prisma.checklistPreProducaoTemplate.aggregate({
+    where: { servicoId },
+    _max: { ordem: true },
+  });
+  await prisma.checklistPreProducaoTemplate.create({
+    data: { servicoId, nome, ordem: (ultima._max.ordem ?? -1) + 1 },
+  });
   revalidatePath(`/catalogo/servicos/${servicoId}`);
 }
 
