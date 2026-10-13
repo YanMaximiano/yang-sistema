@@ -279,3 +279,43 @@ export async function deleteModeloDocumento(formData: FormData) {
   await prisma.modeloDocumento.delete({ where: { id } });
   revalidatePath(`/catalogo/servicos/${servicoId}`);
 }
+
+// ---------- Checklist de pré-produção ----------
+
+export async function createChecklistTemplateItem(formData: FormData) {
+  const servicoId = formData.get("servicoId") as string;
+  const nome = str(formData, "nome");
+  if (!servicoId || !nome) return;
+  const count = await prisma.checklistPreProducaoTemplate.count({ where: { servicoId } });
+  await prisma.checklistPreProducaoTemplate.create({ data: { servicoId, nome, ordem: count } });
+  revalidatePath(`/catalogo/servicos/${servicoId}`);
+}
+
+export async function deleteChecklistTemplateItem(formData: FormData) {
+  const id = formData.get("id") as string;
+  const servicoId = formData.get("servicoId") as string;
+  await prisma.checklistPreProducaoTemplate.delete({ where: { id } });
+  revalidatePath(`/catalogo/servicos/${servicoId}`);
+}
+
+export async function moverChecklistTemplateItem(formData: FormData) {
+  const id = formData.get("id") as string;
+  const servicoId = formData.get("servicoId") as string;
+  const direcao = formData.get("direcao") as "cima" | "baixo";
+
+  const itens = await prisma.checklistPreProducaoTemplate.findMany({
+    where: { servicoId },
+    orderBy: { ordem: "asc" },
+  });
+  const idx = itens.findIndex((i) => i.id === id);
+  const alvo = direcao === "cima" ? idx - 1 : idx + 1;
+  if (idx === -1 || alvo < 0 || alvo >= itens.length) return;
+
+  const a = itens[idx];
+  const b = itens[alvo];
+  await prisma.$transaction([
+    prisma.checklistPreProducaoTemplate.update({ where: { id: a.id }, data: { ordem: b.ordem } }),
+    prisma.checklistPreProducaoTemplate.update({ where: { id: b.id }, data: { ordem: a.ordem } }),
+  ]);
+  revalidatePath(`/catalogo/servicos/${servicoId}`);
+}

@@ -20,6 +20,9 @@ import {
   createModeloDocumento,
   updateModeloDocumento,
   deleteModeloDocumento,
+  createChecklistTemplateItem,
+  deleteChecklistTemplateItem,
+  moverChecklistTemplateItem,
 } from "../../actions";
 import { DOCUMENTO_TIPO_LABEL } from "@/lib/status";
 
@@ -44,6 +47,7 @@ export default async function ServicoDetalhePage({
         adicionais: { orderBy: { nome: "asc" } },
         etapasTemplate: { orderBy: { ordem: "asc" } },
         modelosDocumento: { orderBy: { nome: "asc" } },
+        checklistTemplate: { orderBy: { ordem: "asc" } },
       },
     }),
     prisma.pilar.findMany({ orderBy: { ordem: "asc" } }),
@@ -455,6 +459,63 @@ export default async function ServicoDetalhePage({
               />
             </div>
             <Button type="submit">Adicionar modelo</Button>
+          </form>
+        </Card>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-lg font-semibold mb-3">Checklist de pré-produção</h2>
+        <p className="text-sm text-neutral-500 mb-3">
+          Itens a conferir antes de começar a produção (autorizações, plano de captação, backup
+          etc.). Ao criar um projeto a partir deste serviço, esses itens serão copiados para o
+          projeto, desmarcados.
+        </p>
+        <Card className="p-4">
+          <ol className="space-y-2">
+            {servico.checklistTemplate.map((item, idx) => (
+              <li key={item.id} className="flex items-center gap-2">
+                <span className="w-6 text-sm text-neutral-400">{idx + 1}.</span>
+                <span className="flex-1 text-sm">{item.nome}</span>
+                <form action={moverChecklistTemplateItem}>
+                  <input type="hidden" name="id" value={item.id} />
+                  <input type="hidden" name="servicoId" value={servico.id} />
+                  <input type="hidden" name="direcao" value="cima" />
+                  <Button type="submit" variant="ghost" className="px-2 py-1 text-xs" disabled={idx === 0}>
+                    ↑
+                  </Button>
+                </form>
+                <form action={moverChecklistTemplateItem}>
+                  <input type="hidden" name="id" value={item.id} />
+                  <input type="hidden" name="servicoId" value={servico.id} />
+                  <input type="hidden" name="direcao" value="baixo" />
+                  <Button
+                    type="submit"
+                    variant="ghost"
+                    className="px-2 py-1 text-xs"
+                    disabled={idx === servico.checklistTemplate.length - 1}
+                  >
+                    ↓
+                  </Button>
+                </form>
+                <form action={deleteChecklistTemplateItem}>
+                  <input type="hidden" name="id" value={item.id} />
+                  <input type="hidden" name="servicoId" value={servico.id} />
+                  <Button type="submit" variant="ghost" className="px-2 py-1 text-xs text-red-600">
+                    Remover
+                  </Button>
+                </form>
+              </li>
+            ))}
+          </ol>
+          <form action={createChecklistTemplateItem} className="flex items-end gap-2 mt-4">
+            <input type="hidden" name="servicoId" value={servico.id} />
+            <div className="flex-1">
+              <Label>Novo item</Label>
+              <Input name="nome" required placeholder="Ex: Autorização de uso de imagem" />
+            </div>
+            <Button type="submit" variant="secondary">
+              Adicionar item
+            </Button>
           </form>
         </Card>
       </section>

@@ -24,7 +24,10 @@ export async function criarProjetoAvulso(formData: FormData) {
 
   const servico = await prisma.servico.findUnique({
     where: { id: servicoId },
-    include: { etapasTemplate: { orderBy: { ordem: "asc" } } },
+    include: {
+      etapasTemplate: { orderBy: { ordem: "asc" } },
+      checklistTemplate: { orderBy: { ordem: "asc" } },
+    },
   });
   if (!servico) return;
 
@@ -40,6 +43,9 @@ export async function criarProjetoAvulso(formData: FormData) {
       avulso: true,
       etapas: {
         create: servico.etapasTemplate.map((e) => ({ nome: e.nome, ordem: e.ordem })),
+      },
+      checklistItens: {
+        create: servico.checklistTemplate.map((c) => ({ nome: c.nome, ordem: c.ordem })),
       },
     },
   });
@@ -273,6 +279,21 @@ export async function alternarChecklistEquipamento(formData: FormData) {
   await prisma.alocacaoEquipamento.update({
     where: { id },
     data: { [campo]: !alocacao[campo] },
+  });
+  revalidatePath(`/projetos/${projetoId}`);
+}
+
+export async function alternarItemChecklist(formData: FormData) {
+  const id = formData.get("id") as string;
+  const projetoId = formData.get("projetoId") as string;
+  if (!id) return;
+
+  const item = await prisma.checklistPreProducaoItem.findUnique({ where: { id } });
+  if (!item) return;
+
+  await prisma.checklistPreProducaoItem.update({
+    where: { id },
+    data: { concluido: !item.concluido },
   });
   revalidatePath(`/projetos/${projetoId}`);
 }

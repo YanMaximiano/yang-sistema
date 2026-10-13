@@ -15,6 +15,7 @@ import {
   deletarCusto,
   alocarEquipamento,
   alternarChecklistEquipamento,
+  alternarItemChecklist,
   removerAlocacaoEquipamento,
   criarEscala,
   removerEscala,
@@ -52,6 +53,7 @@ export default async function ProjetoDetalhePage({
         },
       },
       etapas: { orderBy: { ordem: "asc" } },
+      checklistItens: { orderBy: { ordem: "asc" } },
       entregas: { orderBy: { versao: "desc" } },
       recebimentos: { orderBy: { vencimento: "asc" } },
       custos: true,
@@ -114,6 +116,47 @@ export default async function ProjetoDetalhePage({
         description={`${projeto.cliente.nome} · ${projeto.servico.nome} · ${formatMoeda(projeto.valor)} · prazo ${formatData(projeto.prazoData)}`}
         actions={<StatusGeralSelect projetoId={projeto.id} statusAtual={projeto.statusGeral} />}
       />
+
+      {projeto.checklistItens.length > 0 && (
+        <section className="mb-8">
+          <h2 className="text-lg font-semibold mb-3">
+            Checklist de pré-produção{" "}
+            <span className="text-sm font-normal text-neutral-500">
+              ({projeto.checklistItens.filter((i) => i.concluido).length}/
+              {projeto.checklistItens.length} concluídos)
+            </span>
+          </h2>
+          <Card className="p-4">
+            <ul className="space-y-2">
+              {projeto.checklistItens.map((item) => (
+                <li key={item.id}>
+                  <form action={alternarItemChecklist}>
+                    <input type="hidden" name="id" value={item.id} />
+                    <input type="hidden" name="projetoId" value={projeto.id} />
+                    <button
+                      type="submit"
+                      className="flex items-center gap-2 text-sm text-left w-full hover:text-neutral-600"
+                    >
+                      <span
+                        className={`shrink-0 w-4 h-4 rounded border flex items-center justify-center text-[10px] ${
+                          item.concluido
+                            ? "bg-green-600 border-green-600 text-white"
+                            : "border-neutral-300"
+                        }`}
+                      >
+                        {item.concluido && "✓"}
+                      </span>
+                      <span className={item.concluido ? "line-through text-neutral-400" : ""}>
+                        {item.nome}
+                      </span>
+                    </button>
+                  </form>
+                </li>
+              ))}
+            </ul>
+          </Card>
+        </section>
+      )}
 
       <section className="mb-8">
         <h2 className="text-lg font-semibold mb-3">Pipeline</h2>

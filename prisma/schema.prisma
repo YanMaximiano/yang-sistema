@@ -65,6 +65,7 @@ model Servico {
   propostas Proposta[]
   projetos  Projeto[]
   modelosDocumento ModeloDocumento[]
+  checklistTemplate ChecklistPreProducaoTemplate[]
 }
 
 model Plano {
@@ -102,6 +103,14 @@ model PipelineEtapaTemplate {
   id        String  @id @default(cuid())
   servicoId String
   servico   Servico @relation(fields: [servicoId], references: [id])
+  nome      String
+  ordem     Int     @default(0)
+}
+
+model ChecklistPreProducaoTemplate {
+  id        String  @id @default(cuid())
+  servicoId String
+  servico   Servico @relation(fields: [servicoId], references: [id], onDelete: Cascade)
   nome      String
   ordem     Int     @default(0)
 }
@@ -221,6 +230,7 @@ model Projeto {
   alocacoesEquipamento AlocacaoEquipamento[]
   escalas              Escala[]
   documentos           Documento[]
+  checklistItens       ChecklistPreProducaoItem[]
 }
 
 model ProjetoEtapa {
@@ -232,6 +242,15 @@ model ProjetoEtapa {
   status     StatusEtapa @default(PENDENTE)
   dataInicio DateTime?
   dataFim    DateTime?
+}
+
+model ChecklistPreProducaoItem {
+  id        String  @id @default(cuid())
+  projetoId String
+  projeto   Projeto @relation(fields: [projetoId], references: [id], onDelete: Cascade)
+  nome      String
+  ordem     Int     @default(0)
+  concluido Boolean @default(false)
 }
 
 model Entrega {

@@ -14,7 +14,11 @@ export async function atualizarStatusPropostaCore(propostaId: string, status: St
   const proposta = await prisma.proposta.update({
     where: { id: propostaId },
     data: { status },
-    include: { servico: { include: { etapasTemplate: true } }, plano: true, cliente: true },
+    include: {
+      servico: { include: { etapasTemplate: true, checklistTemplate: true } },
+      plano: true,
+      cliente: true,
+    },
   });
 
   if (status === "APROVADA") {
@@ -41,6 +45,11 @@ export async function atualizarStatusPropostaCore(propostaId: string, status: St
             create: proposta.servico.etapasTemplate
               .sort((a, b) => a.ordem - b.ordem)
               .map((etapa) => ({ nome: etapa.nome, ordem: etapa.ordem })),
+          },
+          checklistItens: {
+            create: proposta.servico.checklistTemplate
+              .sort((a, b) => a.ordem - b.ordem)
+              .map((item) => ({ nome: item.nome, ordem: item.ordem })),
           },
         },
       });
