@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import type { Role } from "@/lib/rotas";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
@@ -52,3 +53,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
 });
+
+/**
+ * Toda Server Action de área restrita precisa chamar isso primeiro — a
+ * proteção de rota em proxy.ts/lib/rotas.ts só filtra por pathname da
+ * página, e o Next.js despacha uma Server Action pelo id da própria
+ * action (Next-Action header), não pelo path que a renderizou. Sem essa
+ * checagem aqui, qualquer usuário autenticado (inclusive CLIENTE) pode
+ * chamar a action diretamente e pular a página que a esconderia.
+ */
+export async function requireRole(...roles: Role[]) {
+  const session = await auth();
+  if (!session?.user || !roles.includes(session.user.role as Role)) {
+    throw new Error("Não autorizado");
+  }
+  return session;
+}

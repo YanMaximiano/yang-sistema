@@ -19,6 +19,12 @@ export function formatFaixaValor(min: number | null, max: number | null) {
 
 export function formatData(data: Date | string | null | undefined) {
   if (!data) return "—";
-  const d = typeof data === "string" ? new Date(data) : data;
+  // uma string "yyyy-mm-dd" pura vira meia-noite UTC, que em fuso negativo
+  // (Brasil) exibe o dia anterior — mesmo problema que dataOrNull evita em
+  // lib/form.ts, ancorando ao meio-dia antes de converter.
+  const d =
+    typeof data === "string"
+      ? new Date(/^\d{4}-\d{2}-\d{2}$/.test(data) ? `${data}T12:00:00` : data)
+      : data;
   return d.toLocaleDateString("pt-BR");
 }

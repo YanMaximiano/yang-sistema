@@ -51,7 +51,11 @@ export default async function ServicoDetalhePage({
       },
     }),
     prisma.pilar.findMany({ orderBy: { ordem: "asc" } }),
-    prisma.equipamento.findMany({ where: { ativo: true }, orderBy: { nome: "asc" } }),
+    prisma.equipamento.findMany({
+      where: { ativo: true },
+      select: { id: true, nome: true },
+      orderBy: { nome: "asc" },
+    }),
   ]);
 
   if (!servico) notFound();
@@ -118,11 +122,11 @@ export default async function ServicoDetalhePage({
                   </div>
                   <div>
                     <Label>Valor mín. (R$)</Label>
-                    <Input name="valorMin" type="number" step="1" defaultValue={plano.valorMin ?? ""} />
+                    <Input name="valorMin" type="number" step="0.01" defaultValue={plano.valorMin ?? ""} />
                   </div>
                   <div>
                     <Label>Valor máx. (R$)</Label>
-                    <Input name="valorMax" type="number" step="1" defaultValue={plano.valorMax ?? ""} />
+                    <Input name="valorMax" type="number" step="0.01" defaultValue={plano.valorMax ?? ""} />
                   </div>
                   <div>
                     <Label>Prazo (dias)</Label>
@@ -247,11 +251,11 @@ export default async function ServicoDetalhePage({
             </div>
             <div>
               <Label>Valor mín. (R$)</Label>
-              <Input name="valorMin" type="number" step="1" />
+              <Input name="valorMin" type="number" step="0.01" />
             </div>
             <div>
               <Label>Valor máx. (R$)</Label>
-              <Input name="valorMax" type="number" step="1" />
+              <Input name="valorMax" type="number" step="0.01" />
             </div>
             <div>
               <Label>Prazo (dias)</Label>
@@ -280,7 +284,7 @@ export default async function ServicoDetalhePage({
                 </div>
                 <div className="w-32">
                   <Label>Valor (R$)</Label>
-                  <Input name="valor" type="number" step="1" defaultValue={adicional.valor ?? ""} />
+                  <Input name="valor" type="number" step="0.01" defaultValue={adicional.valor ?? ""} />
                 </div>
                 <div className="flex-1 min-w-[160px]">
                   <Label>Descrição</Label>
@@ -310,7 +314,7 @@ export default async function ServicoDetalhePage({
             </div>
             <div className="w-32">
               <Label>Valor (R$)</Label>
-              <Input name="valor" type="number" step="1" />
+              <Input name="valor" type="number" step="0.01" />
             </div>
             <div className="flex-1 min-w-[160px]">
               <Label>Descrição</Label>

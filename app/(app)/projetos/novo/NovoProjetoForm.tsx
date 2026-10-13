@@ -63,7 +63,7 @@ export function NovoProjetoForm({ clientes, servicos }: { clientes: Cliente[]; s
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label>Valor (R$)</Label>
-            <Input name="valor" type="number" step="1" required />
+            <Input name="valor" type="number" step="0.01" required />
           </div>
           <div>
             <Label>Prazo</Label>

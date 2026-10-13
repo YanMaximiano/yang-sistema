@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { requireRole } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
@@ -22,6 +23,7 @@ async function salvarFotoEquipamento(formData: FormData): Promise<string | undef
 }
 
 export async function createEquipamento(formData: FormData) {
+  await requireRole("ADMIN", "EQUIPE");
   const nome = str(formData, "nome");
   const categoria = str(formData, "categoria");
   if (!nome || !categoria) return;
@@ -34,6 +36,7 @@ export async function createEquipamento(formData: FormData) {
 }
 
 export async function updateEquipamento(formData: FormData) {
+  await requireRole("ADMIN", "EQUIPE");
   const id = formData.get("id") as string;
   if (!id) return;
 
@@ -51,6 +54,7 @@ export async function updateEquipamento(formData: FormData) {
 }
 
 export async function alternarStatusEquipamento(formData: FormData) {
+  await requireRole("ADMIN", "EQUIPE");
   const id = formData.get("id") as string;
   const equipamento = await prisma.equipamento.findUnique({ where: { id } });
   if (!equipamento) return;
@@ -62,6 +66,7 @@ export async function alternarStatusEquipamento(formData: FormData) {
 }
 
 export async function alternarAtivoEquipamento(formData: FormData) {
+  await requireRole("ADMIN", "EQUIPE");
   const id = formData.get("id") as string;
   const equipamento = await prisma.equipamento.findUnique({ where: { id } });
   if (!equipamento) return;

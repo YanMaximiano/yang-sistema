@@ -23,15 +23,28 @@ export const listarAvisos = cache(async (): Promise<Aviso[]> => {
       include: { cliente: true },
     }),
     prisma.recebimento.findMany({
-      where: { vencimento: { lt: hoje }, status: { not: "PAGO" } },
+      where: {
+        vencimento: { lt: hoje },
+        status: { not: "PAGO" },
+        projeto: { statusGeral: { not: "CANCELADO" } },
+      },
       include: { projeto: { include: { cliente: true } } },
     }),
     prisma.entrega.findMany({
-      where: { status: "EM_REVISAO", createdAt: { lt: addDays(hoje, -2) } },
+      where: {
+        status: "EM_REVISAO",
+        createdAt: { lt: addDays(hoje, -2) },
+        projeto: { statusGeral: { not: "CANCELADO" } },
+      },
       include: { projeto: true },
     }),
     prisma.alocacaoEquipamento.findMany({
-      where: { checklistSaida: true, checklistRetorno: false, data: { lt: hoje } },
+      where: {
+        checklistSaida: true,
+        checklistRetorno: false,
+        data: { lt: hoje },
+        projeto: { statusGeral: { not: "CANCELADO" } },
+      },
       include: { equipamento: true, projeto: true },
     }),
     prisma.proposta.findMany({

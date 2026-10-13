@@ -1,12 +1,14 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { requireRole } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { atualizarStatusPropostaCore } from "@/lib/propostas";
 import type { StatusProposta } from "@/app/generated/prisma/client";
 
 export async function createProposta(formData: FormData) {
+  await requireRole("ADMIN", "EQUIPE");
   const clienteId = formData.get("clienteId") as string;
   const servicoId = formData.get("servicoId") as string;
   const planoId = formData.get("planoId") as string;
@@ -16,6 +18,12 @@ export async function createProposta(formData: FormData) {
 
   if (!clienteId || !servicoId || !planoId || !Number.isFinite(valorProposto)) return;
 
+  // só aceita adicionais que realmente pertencem ao serviço escolhido — evita
+  // que um formulário adulterado misture add-ons de outro serviço na proposta
+  const adicionaisValidos = adicionaisIds.length
+    ? await prisma.adicional.findMany({ where: { id: { in: adicionaisIds }, servicoId } })
+    : [];
+
   const proposta = await prisma.proposta.create({
     data: {
       clienteId,
@@ -24,7 +32,7 @@ export async function createProposta(formData: FormData) {
       valorProposto,
       prazoPropostoDias: prazoPropostoDiasRaw ? parseInt(prazoPropostoDiasRaw as string, 10) : null,
       adicionais: {
-        create: adicionaisIds.map((adicionalId) => ({ adicionalId })),
+        create: adicionaisValidos.map((a) => ({ adicionalId: a.id })),
       },
     },
   });
@@ -42,6 +50,7 @@ export async function createProposta(formData: FormData) {
 }
 
 export async function atualizarStatusProposta(formData: FormData) {
+  await requireRole("ADMIN", "EQUIPE");
   const id = formData.get("id") as string;
   const status = formData.get("status") as StatusProposta;
   if (!id || !status) return;

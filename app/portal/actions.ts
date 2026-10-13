@@ -45,6 +45,7 @@ export async function avaliarEntrega(formData: FormData) {
     include: { projeto: true },
   });
   if (!entrega || entrega.projeto.clienteId !== clienteId) return;
+  if (entrega.projeto.statusGeral === "CANCELADO") return;
   if (status !== "APROVADA" && status !== "REPROVADA") return;
 
   await prisma.entrega.update({
@@ -68,6 +69,7 @@ export async function assinarDocumento(formData: FormData) {
     include: { projeto: true },
   });
   if (!documento || documento.projeto.clienteId !== clienteId) return;
+  if (documento.projeto.statusGeral === "CANCELADO") return;
   if (documento.status !== "AGUARDANDO_ASSINATURA") return;
 
   const cabecalhos = await headers();

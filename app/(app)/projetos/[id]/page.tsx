@@ -65,7 +65,11 @@ export default async function ProjetoDetalhePage({
         documentos: { orderBy: { createdAt: "desc" } },
       },
     }),
-    prisma.equipamento.findMany({ where: { ativo: true }, orderBy: { nome: "asc" } }),
+    prisma.equipamento.findMany({
+      where: { ativo: true },
+      select: { id: true, nome: true, categoria: true },
+      orderBy: { nome: "asc" },
+    }),
     prisma.profissional.findMany({ where: { ativo: true }, orderBy: { nome: "asc" } }),
   ]);
 
@@ -82,13 +86,21 @@ export default async function ProjetoDetalhePage({
   const [outrasAlocacoesMesmoEquip, outrasEscalasMesmoProfissional] = await Promise.all([
     equipamentoIds.length
       ? prisma.alocacaoEquipamento.findMany({
-          where: { equipamentoId: { in: equipamentoIds }, projetoId: { not: projeto.id } },
+          where: {
+            equipamentoId: { in: equipamentoIds },
+            projetoId: { not: projeto.id },
+            projeto: { statusGeral: { not: "CANCELADO" } },
+          },
           include: { projeto: true },
         })
       : Promise.resolve([]),
     profissionalIds.length
       ? prisma.escala.findMany({
-          where: { profissionalId: { in: profissionalIds }, projetoId: { not: projeto.id } },
+          where: {
+            profissionalId: { in: profissionalIds },
+            projetoId: { not: projeto.id },
+            projeto: { statusGeral: { not: "CANCELADO" } },
+          },
           include: { projeto: true },
         })
       : Promise.resolve([]),
@@ -535,7 +547,7 @@ export default async function ProjetoDetalhePage({
           </div>
           <div className="w-32">
             <Label>Cachê (R$)</Label>
-            <Input name="cache" type="number" step="1" />
+            <Input name="cache" type="number" step="0.01" />
           </div>
           <Button type="submit" variant="secondary">
             Escalar
@@ -593,7 +605,7 @@ export default async function ProjetoDetalhePage({
             <form action={criarRecebimento} className="space-y-2">
               <input type="hidden" name="projetoId" value={projeto.id} />
               <div className="grid grid-cols-2 gap-2">
-                <Input name="valor" type="number" step="1" placeholder="Valor" required />
+                <Input name="valor" type="number" step="0.01" placeholder="Valor" required />
                 <Input name="vencimento" type="date" required />
               </div>
               <Input name="formaPagamento" placeholder="Forma de pagamento (opcional)" />
@@ -630,7 +642,7 @@ export default async function ProjetoDetalhePage({
             <form action={criarCusto} className="space-y-2">
               <input type="hidden" name="projetoId" value={projeto.id} />
               <Input name="tipo" placeholder="Tipo (cachê, equipamento, transporte...)" required />
-              <Input name="valor" type="number" step="1" placeholder="Valor" required />
+              <Input name="valor" type="number" step="0.01" placeholder="Valor" required />
               <Input name="descricao" placeholder="Descrição (opcional)" />
               <div>
                 <Label>Data prevista (opcional)</Label>

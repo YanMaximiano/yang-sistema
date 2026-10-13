@@ -1,6 +1,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { addDays } from "date-fns";
 import type { StatusProposta } from "@/app/generated/prisma/client";
 
 /**
@@ -27,8 +28,11 @@ export async function atualizarStatusPropostaCore(propostaId: string, status: St
       let prazoData: Date | null = null;
       const dias = proposta.prazoPropostoDias ?? proposta.plano.prazoDias;
       if (dias != null) {
-        prazoData = new Date();
-        prazoData.setDate(prazoData.getDate() + dias);
+        // ancorado ao meio-dia, igual ao dataOrNull de lib/form.ts — evita que a
+        // conversão de fuso horário jogue a data pro dia anterior/seguinte.
+        const hoje = new Date();
+        hoje.setHours(12, 0, 0, 0);
+        prazoData = addDays(hoje, dias);
       }
 
       const projeto = await prisma.projeto.create({

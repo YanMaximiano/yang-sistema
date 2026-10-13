@@ -129,7 +129,12 @@ export default async function ClienteDetalhePage({
             <div className="space-y-1">
               {cliente.usuarios.map((u) => (
                 <p key={u.id} className="text-sm">
-                  {u.email} <Badge variant="success">Acesso criado</Badge>
+                  {u.email}{" "}
+                  {u.ativo ? (
+                    <Badge variant="success">Acesso criado</Badge>
+                  ) : (
+                    <Badge variant="danger">Acesso desativado</Badge>
+                  )}
                 </p>
               ))}
             </div>

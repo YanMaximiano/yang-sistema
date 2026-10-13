@@ -32,7 +32,7 @@ export default async function EquipePage() {
           </div>
           <div>
             <Label>Diária padrão (R$)</Label>
-            <Input name="diariaPadrao" type="number" step="1" />
+            <Input name="diariaPadrao" type="number" step="0.01" />
           </div>
           <div>
             <Label>Contato</Label>
