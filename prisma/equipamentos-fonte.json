@@ -1,0 +1,296 @@
+[
+  {
+    "nome": "Gaiola (Cage) Tilta para Sony A7",
+    "categoria": "Acessório",
+    "observacoes": "Gaiola de alumínio para corpos Sony série A7, com prancheta superior gravada 'TILTA'.",
+    "foto": "/equipamentos/tilta-cage.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Placa de Liberação Rápida",
+    "categoria": "Acessório",
+    "observacoes": "Placa rápida compatível com a cabeça de vídeo do tripé (Benro/genérica).",
+    "foto": "/equipamentos/placa-rapida.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Teleprompter TR-12",
+    "categoria": "Acessório",
+    "observacoes": "Capuz/hood de teleprompter, montado sobre o tripé Manfrotto 190.",
+    "foto": "/equipamentos/teleprompter-tr12.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Sony A6600",
+    "categoria": "Câmera",
+    "observacoes": "APS-C, 4K, Steady Shot.",
+    "foto": "/equipamentos/sony-a6600.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Sony A7 III #1",
+    "categoria": "Câmera",
+    "observacoes": "Full-frame, híbrida foto/vídeo.",
+    "foto": "/equipamentos/sony-a7iii.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Sony A7 III #2",
+    "categoria": "Câmera",
+    "observacoes": "Full-frame, híbrida foto/vídeo.",
+    "foto": "/equipamentos/sony-a7iii.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Sony A7C II",
+    "categoria": "Câmera",
+    "observacoes": "Full-frame, corpo compacto.",
+    "foto": "/equipamentos/sony-a7cii.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Sony A7R V",
+    "categoria": "Câmera",
+    "observacoes": "Full-frame, alta resolução. Modelo exato (III/IV/V) não confirmado com certeza pela etiqueta da foto.",
+    "foto": "/equipamentos/sony-a7rv.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Sony A7S III",
+    "categoria": "Câmera",
+    "observacoes": "Full-frame, 4K interno, foco em vídeo, Steady Shot.",
+    "foto": "/equipamentos/sony-a7siii.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "GoPro HERO10 Black",
+    "categoria": "Câmera de ação",
+    "observacoes": "Câmera de ação compacta.",
+    "foto": "/equipamentos/gopro-hero10.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "DJI Air 2S",
+    "categoria": "Drone",
+    "observacoes": "Dobrável, câmera com gimbal integrado, sensor 1\".",
+    "foto": "/equipamentos/dji-air2s-mini3pro.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "DJI Mini 3 Pro",
+    "categoria": "Drone",
+    "observacoes": "Dobrável, compacto (<249g), câmera com gimbal integrado.",
+    "foto": "/equipamentos/dji-air2s-mini3pro.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Aputure Amaran 200d #1",
+    "categoria": "Iluminação",
+    "observacoes": "Luz COB de 200W, usada com softbox octagonal.",
+    "foto": "/equipamentos/aputure-amaran-200d.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Aputure Amaran 200d #2",
+    "categoria": "Iluminação",
+    "observacoes": "Luz COB de 200W, usada com softbox octagonal.",
+    "foto": "/equipamentos/aputure-amaran-200d.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Mini Tocha LED LUXCEO P200 #1",
+    "categoria": "Iluminação",
+    "observacoes": "RGB portátil a bateria; CCT 3000-8000K; 6W; CRI/Ra95; bateria 3,7V 4000mAh.",
+    "foto": "/equipamentos/luxceo-p200.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Mini Tocha LED LUXCEO P200 #2",
+    "categoria": "Iluminação",
+    "observacoes": "RGB portátil a bateria; CCT 3000-8000K; 6W; CRI/Ra95; bateria 3,7V 4000mAh.",
+    "foto": "/equipamentos/luxceo-p200.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Mini Tocha LED LUXCEO P200 #3",
+    "categoria": "Iluminação",
+    "observacoes": "RGB portátil a bateria; CCT 3000-8000K; 6W; CRI/Ra95; bateria 3,7V 4000mAh.",
+    "foto": "/equipamentos/luxceo-p200.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Mini Tocha LED LUXCEO P200 #4",
+    "categoria": "Iluminação",
+    "observacoes": "RGB portátil a bateria; CCT 3000-8000K; 6W; CRI/Ra95; bateria 3,7V 4000mAh.",
+    "foto": "/equipamentos/luxceo-p200.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Softbox Godox Octabox",
+    "categoria": "Iluminação",
+    "observacoes": "Softbox octogonal para luz COB.",
+    "foto": "/equipamentos/softbox-godox.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Softbox Lantern",
+    "categoria": "Iluminação",
+    "observacoes": "Softbox tipo lanterna/esférico; marca não identificada.",
+    "foto": "/equipamentos/softbox-lantern.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Tubo LED Sokani X25-RGB #1",
+    "categoria": "Iluminação",
+    "observacoes": "Tubo LED RGB bicolor 2800K-10000K, controle CCT/HSI/RGB/FX.",
+    "foto": "/equipamentos/sokani-x25-rgb.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Tubo LED Sokani X25-RGB #2",
+    "categoria": "Iluminação",
+    "observacoes": "Tubo LED RGB bicolor 2800K-10000K, controle CCT/HSI/RGB/FX.",
+    "foto": "/equipamentos/sokani-x25-rgb.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Sigma 16mm f/1.4 DC DN #1",
+    "categoria": "Lente",
+    "observacoes": "Grande angular para sensor APS-C. Patrimônio 002779.",
+    "foto": "/equipamentos/lente-sigma-16mm.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Sigma 16mm f/1.4 DC DN #2",
+    "categoria": "Lente",
+    "observacoes": "Grande angular para sensor APS-C. Patrimônio 002780.",
+    "foto": "/equipamentos/lente-sigma-16mm.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Sony FE 12-24mm f/2.8 GM",
+    "categoria": "Lente",
+    "observacoes": "Grande angular profissional, abertura constante f/2.8.",
+    "foto": "/equipamentos/lente-sony-12-24mm.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Sony FE 24-70mm f/2.8 GM II",
+    "categoria": "Lente",
+    "observacoes": "Zoom padrão profissional, abertura constante f/2.8. Foto ilustrativa (Wikimedia Commons) — não fotografada isoladamente no levantamento do inventário.",
+    "foto": "/equipamentos/lente-sony-24-70mm.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Sony FE 28-70mm f/3.5-5.6 OSS",
+    "categoria": "Lente",
+    "observacoes": "Zoom padrão (lente kit), estabilização óptica.",
+    "foto": "/equipamentos/lente-sony-28-70mm.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Sony FE 70-200mm f/2.8 GM OSS II",
+    "categoria": "Lente",
+    "observacoes": "Teleobjetiva branca, estabilização óptica (OSS).",
+    "foto": "/equipamentos/lente-sony-70-200mm.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Zeiss Planar T* FE 50mm f/1.4 ZA",
+    "categoria": "Lente",
+    "observacoes": "Lente prime rápida, montura Sony E, revestimento T*.",
+    "foto": "/equipamentos/lente-zeiss-planar-50mm.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Cabeça de Vídeo Benro KH25P",
+    "categoria": "Suporte",
+    "observacoes": "Cabeça fluida para tripé de vídeo, com controle de arrasto (fluid drag control).",
+    "foto": "/equipamentos/benro-kh25p.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Gimbal DJI RS 2/3",
+    "categoria": "Suporte",
+    "observacoes": "Estabilizador de 3 eixos com trava automática ('Auto Lock'); distinção entre RS2/RS3/RSC2 não é 100% certa.",
+    "foto": "/equipamentos/gimbal-dji-rs.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Gimbal FeiyuTech Scorp-C",
+    "categoria": "Suporte",
+    "observacoes": "Estabilizador de 3 eixos.",
+    "foto": "/equipamentos/gimbal-feiyu-scorpc.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Gimbal Zhiyun (CR120)",
+    "categoria": "Suporte",
+    "observacoes": "Estabilizador de 3 eixos para câmera mirrorless; modelo comercial exato não confirmado (módulo traz a inscrição 'Model CR120').",
+    "foto": "/equipamentos/gimbal-zhiyun.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Tripé Fotográfico Manfrotto 190",
+    "categoria": "Suporte",
+    "observacoes": "Tripé leve de alumínio com cabeça de rótula (anel vermelho); usado como base do teleprompter.",
+    "foto": "/equipamentos/manfrotto-190.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Tripé de Vídeo Benro #1",
+    "categoria": "Suporte",
+    "observacoes": "Tripé profissional de vídeo em 2 estágios, usado com a cabeça KH25P.",
+    "foto": "/equipamentos/benro-tripe.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Tripé de Vídeo Benro #2",
+    "categoria": "Suporte",
+    "observacoes": "Tripé profissional de vídeo em 2 estágios, usado com a cabeça KH25P.",
+    "foto": "/equipamentos/benro-tripe.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Tripé de Vídeo Benro #3",
+    "categoria": "Suporte",
+    "observacoes": "Tripé profissional de vídeo em 2 estágios, usado com a cabeça KH25P.",
+    "foto": "/equipamentos/benro-tripe.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "DJI Mic (kit)",
+    "categoria": "Áudio",
+    "observacoes": "Kit com 2 transmissores + 1 receptor + estojo de carga com tela. Geração exata (Mic/Mic 2) não confirmada.",
+    "foto": "/equipamentos/dji-mic.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Hollyland Lark M2",
+    "categoria": "Áudio",
+    "observacoes": "Kit completo: estojo de carga + transmissores + receptor, sistema sem fio compacto.",
+    "foto": "/equipamentos/hollyland-larkm2.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Sony URX-P40 #1",
+    "categoria": "Áudio",
+    "observacoes": "Receptor sem fio UHF do sistema profissional Sony. Patrimônio 000564.",
+    "foto": "/equipamentos/sony-urxp40.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Sony URX-P40 #2",
+    "categoria": "Áudio",
+    "observacoes": "Receptor sem fio UHF do sistema profissional Sony. Patrimônio 002793.",
+    "foto": "/equipamentos/sony-urxp40.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Sony UTX-B40",
+    "categoria": "Áudio",
+    "observacoes": "Transmissor de lapela (bodypack) para sistema sem fio Sony.",
+    "foto": "/equipamentos/sony-utxb40.jpg",
+    "status": "DISPONIVEL"
+  }
+]

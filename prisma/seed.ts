@@ -1,7 +1,8 @@
-import { PrismaClient, TipoCobranca } from "../app/generated/prisma/client";
+import { PrismaClient, TipoCobranca, StatusEquipamento } from "../app/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcryptjs";
 import fonte from "./catalogo-fonte.json";
+import equipamentosFonte from "./equipamentos-fonte.json";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
@@ -160,6 +161,19 @@ async function seedCatalogo() {
   }
 }
 
+async function seedEquipamentos() {
+  console.log(`Seed: criando ${equipamentosFonte.length} equipamentos do inventário...`);
+  await prisma.equipamento.createMany({
+    data: equipamentosFonte.map((e) => ({
+      nome: e.nome,
+      categoria: e.categoria,
+      observacoes: "observacoes" in e ? e.observacoes : null,
+      foto: e.foto,
+      status: e.status as StatusEquipamento,
+    })),
+  });
+}
+
 // devolve as credenciais do primeiro admin, ou null se já existe um ADMIN;
 // falha logo no começo (antes de mexer no banco) se faltar a senha
 async function credenciaisDoNovoAdmin() {
@@ -182,6 +196,13 @@ async function main() {
     await seedCatalogo();
   } else {
     console.log("Seed: catálogo já existe — pulado (use SEED_FORCE=1 para recriar; APAGA edições do catálogo).");
+  }
+
+  // inventário é editável em /equipamentos — só carrega em tabela vazia
+  if ((await prisma.equipamento.count()) === 0) {
+    await seedEquipamentos();
+  } else {
+    console.log("Seed: equipamentos já existem — pulado.");
   }
 
   if (novoAdmin) {

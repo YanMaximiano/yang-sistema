@@ -38,8 +38,12 @@ npm start                       # sobe na porta 3000 (use PORT=... para mudar)
 ```
 
 - **Em produção use sempre `prisma migrate deploy`** — nunca `db push` (que serve só para desenvolvimento local).
-- O `db:seed` é seguro de rodar de novo: **não** recria o catálogo se ele já existir (as edições feitas
-  em `/catalogo` são preservadas) e **não** mexe em admin existente. Só cria o que falta.
+- O `db:seed` carrega o catálogo de serviços (`prisma/catalogo-fonte.json`), o inventário inicial de 42
+  equipamentos (`prisma/equipamentos-fonte.json`, com as fotos de `public/equipamentos/`) e o primeiro
+  administrador. É seguro de rodar de novo: **não** recria catálogo nem equipamentos que já existam
+  (as edições feitas em `/catalogo` e `/equipamentos` são preservadas) e **não** mexe em admin existente.
+- O sistema começa **sem clientes, projetos ou propostas** — os dados de teste do ambiente de
+  desenvolvimento não vão para produção. Para levar dados existentes, use `pg_dump`/`pg_restore`.
 - Depois do primeiro login, abra **/usuarios** para trocar a senha e cadastrar a equipe.
 
 ### 3. Pontos de atenção da hospedagem
@@ -94,7 +98,7 @@ rodando), iniciam o servidor na porta `3002` e abrem o navegador.
 - `npm run dev` — servidor de desenvolvimento
 - `npm run build` / `npm start` — build e execução de produção
 - `npm run lint` — ESLint
-- `npm run db:seed` — cria catálogo (se vazio) e primeiro admin (se não existir)
+- `npm run db:seed` — cria catálogo e equipamentos (se vazios) e primeiro admin (se não existir)
 - `npm run db:studio` — Prisma Studio para inspecionar os dados
 
 ---
