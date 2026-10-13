@@ -13,6 +13,10 @@ import {
   createEtapaTemplate,
   deleteEtapaTemplate,
   moverEtapaTemplate,
+  createTemplateEquipe,
+  deleteTemplateEquipe,
+  createTemplateEquipamento,
+  deleteTemplateEquipamento,
 } from "../../actions";
 
 export default async function ServicoDetalhePage({
@@ -22,16 +26,23 @@ export default async function ServicoDetalhePage({
 }) {
   const { id } = await params;
 
-  const [servico, pilares] = await Promise.all([
+  const [servico, pilares, equipamentos] = await Promise.all([
     prisma.servico.findUnique({
       where: { id },
       include: {
-        planos: { orderBy: { ordem: "asc" } },
+        planos: {
+          orderBy: { ordem: "asc" },
+          include: {
+            templatesEquipe: { orderBy: { funcao: "asc" } },
+            templatesEquipamento: { include: { equipamento: true }, orderBy: { id: "asc" } },
+          },
+        },
         adicionais: { orderBy: { nome: "asc" } },
         etapasTemplate: { orderBy: { ordem: "asc" } },
       },
     }),
     prisma.pilar.findMany({ orderBy: { ordem: "asc" } }),
+    prisma.equipamento.findMany({ where: { ativo: true }, orderBy: { nome: "asc" } }),
   ]);
 
   if (!servico) notFound();
@@ -128,6 +139,84 @@ export default async function ServicoDetalhePage({
                   </div>
                 </div>
               </form>
+              <details className="mt-3 border-t border-neutral-100 pt-3">
+                <summary className="cursor-pointer text-sm text-neutral-500">
+                  Equipe e equipamento sugeridos ({plano.templatesEquipe.length + plano.templatesEquipamento.length})
+                </summary>
+                <div className="grid md:grid-cols-2 gap-4 mt-3">
+                  <div>
+                    <p className="text-xs font-medium text-neutral-600 mb-2">Equipe sugerida</p>
+                    <div className="space-y-1 mb-2">
+                      {plano.templatesEquipe.map((te) => (
+                        <div key={te.id} className="flex items-center justify-between text-sm">
+                          <span>
+                            {te.quantidade}x {te.funcao}
+                          </span>
+                          <form action={deleteTemplateEquipe}>
+                            <input type="hidden" name="id" value={te.id} />
+                            <input type="hidden" name="servicoId" value={servico.id} />
+                            <Button type="submit" variant="ghost" className="text-xs px-2 py-0.5 text-red-600">
+                              Remover
+                            </Button>
+                          </form>
+                        </div>
+                      ))}
+                      {plano.templatesEquipe.length === 0 && (
+                        <p className="text-xs text-neutral-400">Nenhuma sugestão ainda.</p>
+                      )}
+                    </div>
+                    <form action={createTemplateEquipe} className="flex items-end gap-2">
+                      <input type="hidden" name="planoId" value={plano.id} />
+                      <input type="hidden" name="servicoId" value={servico.id} />
+                      <Input name="funcao" placeholder="Função" required className="flex-1" />
+                      <Input name="quantidade" type="number" defaultValue={1} className="w-16" />
+                      <Button type="submit" variant="secondary" className="text-xs px-2 py-1">
+                        Adicionar
+                      </Button>
+                    </form>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-neutral-600 mb-2">Equipamento sugerido</p>
+                    <div className="space-y-1 mb-2">
+                      {plano.templatesEquipamento.map((teq) => (
+                        <div key={teq.id} className="flex items-center justify-between text-sm">
+                          <span>{teq.equipamento.nome}</span>
+                          <form action={deleteTemplateEquipamento}>
+                            <input type="hidden" name="id" value={teq.id} />
+                            <input type="hidden" name="servicoId" value={servico.id} />
+                            <Button type="submit" variant="ghost" className="text-xs px-2 py-0.5 text-red-600">
+                              Remover
+                            </Button>
+                          </form>
+                        </div>
+                      ))}
+                      {plano.templatesEquipamento.length === 0 && (
+                        <p className="text-xs text-neutral-400">Nenhuma sugestão ainda.</p>
+                      )}
+                    </div>
+                    {equipamentos.length > 0 ? (
+                      <form action={createTemplateEquipamento} className="flex items-end gap-2">
+                        <input type="hidden" name="planoId" value={plano.id} />
+                        <input type="hidden" name="servicoId" value={servico.id} />
+                        <Select name="equipamentoId" required className="flex-1">
+                          {equipamentos.map((eq) => (
+                            <option key={eq.id} value={eq.id}>
+                              {eq.nome}
+                            </option>
+                          ))}
+                        </Select>
+                        <Button type="submit" variant="secondary" className="text-xs px-2 py-1">
+                          Adicionar
+                        </Button>
+                      </form>
+                    ) : (
+                      <p className="text-xs text-neutral-400">
+                        Cadastre equipamentos em &quot;Equipamentos&quot; para poder sugeri-los aqui.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </details>
               <form action={deletePlano} className="mt-2">
                 <input type="hidden" name="id" value={plano.id} />
                 <input type="hidden" name="servicoId" value={servico.id} />

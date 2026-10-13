@@ -30,6 +30,7 @@ function dataOrNull(formData: FormData, key: string): Date | null {
 export async function criarProjetoAvulso(formData: FormData) {
   const clienteId = formData.get("clienteId") as string;
   const servicoId = formData.get("servicoId") as string;
+  const planoId = str(formData, "planoId");
   const nome = str(formData, "nome");
   const valor = num(formData, "valor");
   if (!clienteId || !servicoId || !nome || valor === null) return;
@@ -44,6 +45,7 @@ export async function criarProjetoAvulso(formData: FormData) {
     data: {
       clienteId,
       servicoId,
+      planoId: planoId ?? undefined,
       nome,
       valor,
       tipoCobranca: servico.tipoCobranca,
@@ -214,6 +216,86 @@ export async function deletarCusto(formData: FormData) {
   const id = formData.get("id") as string;
   const projetoId = formData.get("projetoId") as string;
   await prisma.custo.delete({ where: { id } });
+  revalidatePath(`/projetos/${projetoId}`);
+  revalidatePath("/financeiro");
+}
+
+// ---------- Equipamento do projeto ----------
+
+export async function alocarEquipamento(formData: FormData) {
+  const projetoId = formData.get("projetoId") as string;
+  const equipamentoId = formData.get("equipamentoId") as string;
+  const data = dataOrNull(formData, "data");
+  if (!projetoId || !equipamentoId || !data) return;
+
+  await prisma.alocacaoEquipamento.create({ data: { projetoId, equipamentoId, data } });
+  revalidatePath(`/projetos/${projetoId}`);
+}
+
+export async function alternarChecklistEquipamento(formData: FormData) {
+  const id = formData.get("id") as string;
+  const projetoId = formData.get("projetoId") as string;
+  const campo = formData.get("campo") as "checklistSaida" | "checklistRetorno";
+  if (!id || !campo) return;
+
+  const alocacao = await prisma.alocacaoEquipamento.findUnique({ where: { id } });
+  if (!alocacao) return;
+
+  await prisma.alocacaoEquipamento.update({
+    where: { id },
+    data: { [campo]: !alocacao[campo] },
+  });
+  revalidatePath(`/projetos/${projetoId}`);
+}
+
+export async function removerAlocacaoEquipamento(formData: FormData) {
+  const id = formData.get("id") as string;
+  const projetoId = formData.get("projetoId") as string;
+  await prisma.alocacaoEquipamento.delete({ where: { id } });
+  revalidatePath(`/projetos/${projetoId}`);
+}
+
+// ---------- Escala do projeto ----------
+
+export async function criarEscala(formData: FormData) {
+  const projetoId = formData.get("projetoId") as string;
+  const profissionalId = formData.get("profissionalId") as string;
+  const funcao = str(formData, "funcao");
+  const data = dataOrNull(formData, "data");
+  const cache = num(formData, "cache");
+  if (!projetoId || !profissionalId || !funcao || !data) return;
+
+  await prisma.$transaction(async (tx) => {
+    let custoId: string | undefined;
+    if (cache !== null && cache > 0) {
+      const custo = await tx.custo.create({
+        data: { projetoId, tipo: `Cachê — ${funcao}`, valor: cache },
+      });
+      custoId = custo.id;
+    }
+    await tx.escala.create({
+      data: { projetoId, profissionalId, funcao, data, cache, custoId },
+    });
+  });
+
+  revalidatePath(`/projetos/${projetoId}`);
+  revalidatePath("/financeiro");
+}
+
+export async function removerEscala(formData: FormData) {
+  const id = formData.get("id") as string;
+  const projetoId = formData.get("projetoId") as string;
+  if (!id) return;
+
+  await prisma.$transaction(async (tx) => {
+    const escala = await tx.escala.findUnique({ where: { id } });
+    if (!escala) return;
+    await tx.escala.delete({ where: { id } });
+    if (escala.custoId) {
+      await tx.custo.delete({ where: { id: escala.custoId } });
+    }
+  });
+
   revalidatePath(`/projetos/${projetoId}`);
   revalidatePath("/financeiro");
 }

@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { PageHeader, Card, Input, Select, Textarea, Button, Badge, Label, LinkButton } from "@/components/ui";
-import { updateCliente, addNota } from "../actions";
+import { updateCliente, addNota, criarAcessoPortal } from "../actions";
 import { formatMoeda, formatData } from "@/lib/utils";
 import Link from "next/link";
 
@@ -30,6 +30,7 @@ export default async function ClienteDetalhePage({
         orderBy: { createdAt: "desc" },
         include: { servico: true },
       },
+      usuarios: true,
     },
   });
 
@@ -126,6 +127,41 @@ export default async function ClienteDetalhePage({
           </div>
         </section>
       </div>
+
+      <section className="mb-8">
+        <h2 className="text-lg font-semibold mb-3">Acesso ao portal</h2>
+        <Card className="p-4">
+          {cliente.usuarios.length > 0 ? (
+            <div className="space-y-1">
+              {cliente.usuarios.map((u) => (
+                <p key={u.id} className="text-sm">
+                  {u.email} <Badge variant="success">Acesso criado</Badge>
+                </p>
+              ))}
+            </div>
+          ) : (
+            <>
+              <p className="text-sm text-neutral-500 mb-3">
+                Este cliente ainda não tem login no portal. Crie um e-mail/senha e repasse para ele.
+              </p>
+              <form action={criarAcessoPortal} className="flex flex-wrap items-end gap-2">
+                <input type="hidden" name="clienteId" value={cliente.id} />
+                <div className="flex-1 min-w-[180px]">
+                  <Label>E-mail de acesso</Label>
+                  <Input name="email" type="email" defaultValue={cliente.email ?? ""} required />
+                </div>
+                <div className="flex-1 min-w-[160px]">
+                  <Label>Senha</Label>
+                  <Input name="senha" type="text" required placeholder="defina uma senha" />
+                </div>
+                <Button type="submit" variant="secondary">
+                  Criar acesso
+                </Button>
+              </form>
+            </>
+          )}
+        </Card>
+      </section>
 
       <section>
         <h2 className="text-lg font-semibold mb-3">Notas internas</h2>

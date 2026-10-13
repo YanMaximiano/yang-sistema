@@ -1,25 +1,9 @@
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Card, PageHeader, Badge } from "@/components/ui";
 import { formatMoeda } from "@/lib/utils";
 import Link from "next/link";
 
 export default async function PainelPage() {
-  const session = await auth();
-  const role = session?.user.role;
-
-  if (role === "CLIENTE") {
-    return (
-      <div>
-        <PageHeader title="Bem-vindo(a)" />
-        <p className="text-neutral-600">
-          O portal do cliente ainda está em desenvolvimento. Fale com a equipe Yang para
-          acompanhar seu projeto.
-        </p>
-      </div>
-    );
-  }
-
   const [propostasPorStatus, projetosAtivos, recebimentosPendentes, recebimentosAtrasados, custos] =
     await Promise.all([
       prisma.proposta.groupBy({ by: ["status"], _count: true }),

@@ -24,8 +24,13 @@ export default auth((req) => {
     return NextResponse.redirect(new URL("/", nextUrl));
   }
 
-  if (nextUrl.pathname.startsWith("/portal") && role !== "CLIENTE") {
-    return NextResponse.redirect(new URL("/", nextUrl));
+  if (nextUrl.pathname.startsWith("/portal")) {
+    if (role !== "CLIENTE") {
+      return NextResponse.redirect(new URL("/", nextUrl));
+    }
+  } else if (role === "CLIENTE") {
+    // cliente só acessa o portal, nunca as telas administrativas
+    return NextResponse.redirect(new URL("/portal", nextUrl));
   }
 
   return NextResponse.next();

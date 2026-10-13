@@ -20,6 +20,7 @@ export default async function FinanceiroPage() {
   });
 
   const porPilar = new Map<string, { receita: number; custo: number }>();
+  const porServico = new Map<string, { receita: number; custo: number }>();
   let receitaTotal = 0;
   let custoTotal = 0;
 
@@ -33,10 +34,16 @@ export default async function FinanceiroPage() {
     custoTotal += custo;
 
     const nomePilar = projeto.servico.pilar.nome;
-    const atual = porPilar.get(nomePilar) ?? { receita: 0, custo: 0 };
-    atual.receita += receita;
-    atual.custo += custo;
-    porPilar.set(nomePilar, atual);
+    const atualPilar = porPilar.get(nomePilar) ?? { receita: 0, custo: 0 };
+    atualPilar.receita += receita;
+    atualPilar.custo += custo;
+    porPilar.set(nomePilar, atualPilar);
+
+    const nomeServico = projeto.servico.nome;
+    const atualServico = porServico.get(nomeServico) ?? { receita: 0, custo: 0 };
+    atualServico.receita += receita;
+    atualServico.custo += custo;
+    porServico.set(nomeServico, atualServico);
   }
 
   const margemTotal = receitaTotal - custoTotal;
@@ -77,6 +84,24 @@ export default async function FinanceiroPage() {
             </Card>
           ))}
           {porPilar.size === 0 && <p className="text-sm text-neutral-500">Sem dados ainda.</p>}
+        </div>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-lg font-semibold mb-3">Margem por serviço</h2>
+        <div className="space-y-2">
+          {Array.from(porServico.entries()).map(([nome, v]) => (
+            <Card key={nome} className="p-3 flex items-center justify-between">
+              <span className="text-sm font-medium">{nome}</span>
+              <span className="text-sm text-neutral-500">
+                {formatMoeda(v.receita)} − {formatMoeda(v.custo)} ={" "}
+                <span className={v.receita - v.custo < 0 ? "text-red-600" : "text-green-700"}>
+                  {formatMoeda(v.receita - v.custo)}
+                </span>
+              </span>
+            </Card>
+          ))}
+          {porServico.size === 0 && <p className="text-sm text-neutral-500">Sem dados ainda.</p>}
         </div>
       </section>
 

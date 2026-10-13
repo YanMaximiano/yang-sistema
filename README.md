@@ -33,10 +33,16 @@ banco local. Se a porta mudar (raro), ajuste o `.env` com o valor que `prisma de
 ```bash
 npm install
 npx prisma dev -d --name yang-db   # sobe o banco local
-npx prisma migrate dev             # cria as tabelas
+npx prisma db push                 # cria/atualiza as tabelas
 npm run db:seed                    # popula o catálogo com os 21 serviços reais + usuário admin
 npm run dev                        # inicia o app em http://localhost:3000
 ```
+
+> **Nota sobre migrações**: use `npx prisma db push` para aplicar mudanças de schema neste projeto,
+> não `prisma migrate dev` — o banco de sombra (*shadow database*) que o `migrate dev` usa para
+> validar migrações não funciona de forma confiável com o Postgres local do `prisma dev` neste
+> ambiente (erro `P3006`/tipo já existe). `db push` aplica direto no banco de trabalho sem depender
+> do shadow db; para produção mais adiante, vale revisitar isso com um Postgres hospedado de verdade.
 
 Login inicial (admin): `yanfmaxi@gmail.com` / senha `yang@2026` — troque a senha depois de
 entrar (ainda não há tela de troca de senha nesta versão; pode ser atualizada direto no banco

@@ -234,3 +234,40 @@ export async function moverEtapaTemplate(formData: FormData) {
   ]);
   revalidatePath(`/catalogo/servicos/${servicoId}`);
 }
+
+// ---------- Templates de equipe e equipamento (por plano) ----------
+
+export async function createTemplateEquipe(formData: FormData) {
+  const planoId = formData.get("planoId") as string;
+  const servicoId = formData.get("servicoId") as string;
+  const funcao = str(formData, "funcao");
+  const quantidade = int(formData, "quantidade") ?? 1;
+  if (!planoId || !funcao) return;
+
+  await prisma.templateEquipe.create({ data: { planoId, funcao, quantidade } });
+  revalidatePath(`/catalogo/servicos/${servicoId}`);
+}
+
+export async function deleteTemplateEquipe(formData: FormData) {
+  const id = formData.get("id") as string;
+  const servicoId = formData.get("servicoId") as string;
+  await prisma.templateEquipe.delete({ where: { id } });
+  revalidatePath(`/catalogo/servicos/${servicoId}`);
+}
+
+export async function createTemplateEquipamento(formData: FormData) {
+  const planoId = formData.get("planoId") as string;
+  const servicoId = formData.get("servicoId") as string;
+  const equipamentoId = formData.get("equipamentoId") as string;
+  if (!planoId || !equipamentoId) return;
+
+  await prisma.templateEquipamento.create({ data: { planoId, equipamentoId } });
+  revalidatePath(`/catalogo/servicos/${servicoId}`);
+}
+
+export async function deleteTemplateEquipamento(formData: FormData) {
+  const id = formData.get("id") as string;
+  const servicoId = formData.get("servicoId") as string;
+  await prisma.templateEquipamento.delete({ where: { id } });
+  revalidatePath(`/catalogo/servicos/${servicoId}`);
+}

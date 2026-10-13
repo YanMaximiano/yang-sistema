@@ -10,6 +10,8 @@ const NAV = [
   { href: "/propostas", label: "Propostas", roles: ["ADMIN", "EQUIPE"] },
   { href: "/projetos", label: "Projetos", roles: ["ADMIN", "EQUIPE", "FREELANCER"] },
   { href: "/calendario", label: "Calendário", roles: ["ADMIN", "EQUIPE", "FREELANCER"] },
+  { href: "/equipamentos", label: "Equipamentos", roles: ["ADMIN", "EQUIPE"] },
+  { href: "/equipe", label: "Equipe", roles: ["ADMIN", "EQUIPE"] },
   { href: "/financeiro", label: "Financeiro", roles: ["ADMIN"] },
 ];
 

@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import { PageHeader, Card, Badge, Button, Input, Label } from "@/components/ui";
+import { PageHeader, Card, Badge, Button, Input, Select, Label } from "@/components/ui";
 import { formatMoeda, formatData } from "@/lib/utils";
 import {
   avancarEtapa,
@@ -12,6 +12,11 @@ import {
   atualizarRecebimento,
   criarCusto,
   deletarCusto,
+  alocarEquipamento,
+  alternarChecklistEquipamento,
+  removerAlocacaoEquipamento,
+  criarEscala,
+  removerEscala,
 } from "../actions";
 import { StatusGeralSelect } from "./StatusGeralSelect";
 
@@ -45,14 +50,55 @@ export default async function ProjetoDetalhePage({
     include: {
       cliente: true,
       servico: true,
+      plano: {
+        include: {
+          templatesEquipe: { orderBy: { funcao: "asc" } },
+          templatesEquipamento: { include: { equipamento: true } },
+        },
+      },
       etapas: { orderBy: { ordem: "asc" } },
       entregas: { orderBy: { versao: "desc" } },
       recebimentos: { orderBy: { vencimento: "asc" } },
       custos: true,
+      alocacoesEquipamento: { include: { equipamento: true }, orderBy: { data: "asc" } },
+      escalas: { include: { profissional: true }, orderBy: { data: "asc" } },
     },
   });
 
   if (!projeto) notFound();
+
+  const [equipamentosDisponiveis, profissionaisDisponiveis] = await Promise.all([
+    prisma.equipamento.findMany({ where: { ativo: true }, orderBy: { nome: "asc" } }),
+    prisma.profissional.findMany({ where: { ativo: true }, orderBy: { nome: "asc" } }),
+  ]);
+
+  const equipamentoIds = projeto.alocacoesEquipamento.map((a) => a.equipamentoId);
+  const outrasAlocacoesMesmoEquip = equipamentoIds.length
+    ? await prisma.alocacaoEquipamento.findMany({
+        where: { equipamentoId: { in: equipamentoIds }, projetoId: { not: projeto.id } },
+        include: { projeto: true },
+      })
+    : [];
+
+  const profissionalIds = projeto.escalas.map((e) => e.profissionalId);
+  const outrasEscalasMesmoProfissional = profissionalIds.length
+    ? await prisma.escala.findMany({
+        where: { profissionalId: { in: profissionalIds }, projetoId: { not: projeto.id } },
+        include: { projeto: true },
+      })
+    : [];
+
+  function conflitoEquipamento(equipamentoId: string, data: Date) {
+    return outrasAlocacoesMesmoEquip.find(
+      (a) => a.equipamentoId === equipamentoId && a.data.toDateString() === data.toDateString()
+    );
+  }
+
+  function conflitoProfissional(profissionalId: string, data: Date) {
+    return outrasEscalasMesmoProfissional.find(
+      (e) => e.profissionalId === profissionalId && e.data.toDateString() === data.toDateString()
+    );
+  }
 
   const totalRecebido = projeto.recebimentos
     .filter((r) => r.status === "PAGO")
@@ -178,6 +224,161 @@ export default async function ProjetoDetalhePage({
           </div>
           <Button type="submit" variant="secondary">
             Registrar nova versão
+          </Button>
+        </form>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-lg font-semibold mb-3">Equipamento</h2>
+        {projeto.plano && projeto.plano.templatesEquipamento.length > 0 && (
+          <p className="text-xs text-neutral-500 mb-3">
+            Sugerido pelo plano {projeto.plano.nome}:{" "}
+            {projeto.plano.templatesEquipamento.map((t) => t.equipamento.nome).join(", ")}
+          </p>
+        )}
+        <div className="space-y-2 mb-3">
+          {projeto.alocacoesEquipamento.map((alocacao) => {
+            const conflito = conflitoEquipamento(alocacao.equipamentoId, alocacao.data);
+            return (
+              <Card key={alocacao.id} className="p-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">{alocacao.equipamento.nome}</span>
+                  <span className="text-xs text-neutral-500">{formatData(alocacao.data)}</span>
+                </div>
+                {conflito && (
+                  <p className="text-xs text-amber-700 mt-1">
+                    ⚠ também alocado em &quot;{conflito.projeto.nome}&quot; nesse dia
+                  </p>
+                )}
+                <div className="flex items-center gap-3 mt-2">
+                  <form action={alternarChecklistEquipamento}>
+                    <input type="hidden" name="id" value={alocacao.id} />
+                    <input type="hidden" name="projetoId" value={projeto.id} />
+                    <input type="hidden" name="campo" value="checklistSaida" />
+                    <Button
+                      type="submit"
+                      variant={alocacao.checklistSaida ? "secondary" : "ghost"}
+                      className="text-xs px-2 py-1"
+                    >
+                      {alocacao.checklistSaida ? "✓ Saída conferida" : "Conferir saída"}
+                    </Button>
+                  </form>
+                  <form action={alternarChecklistEquipamento}>
+                    <input type="hidden" name="id" value={alocacao.id} />
+                    <input type="hidden" name="projetoId" value={projeto.id} />
+                    <input type="hidden" name="campo" value="checklistRetorno" />
+                    <Button
+                      type="submit"
+                      variant={alocacao.checklistRetorno ? "secondary" : "ghost"}
+                      className="text-xs px-2 py-1"
+                    >
+                      {alocacao.checklistRetorno ? "✓ Retorno conferido" : "Conferir retorno"}
+                    </Button>
+                  </form>
+                  <form action={removerAlocacaoEquipamento}>
+                    <input type="hidden" name="id" value={alocacao.id} />
+                    <input type="hidden" name="projetoId" value={projeto.id} />
+                    <Button type="submit" variant="ghost" className="text-xs px-2 py-1 text-red-600">
+                      Remover
+                    </Button>
+                  </form>
+                </div>
+              </Card>
+            );
+          })}
+          {projeto.alocacoesEquipamento.length === 0 && (
+            <p className="text-sm text-neutral-500">Nenhum equipamento alocado ainda.</p>
+          )}
+        </div>
+        <form action={alocarEquipamento} className="flex flex-wrap items-end gap-2">
+          <input type="hidden" name="projetoId" value={projeto.id} />
+          <div className="flex-1 min-w-[180px]">
+            <Label>Equipamento</Label>
+            <Select name="equipamentoId" required>
+              {equipamentosDisponiveis.map((eq) => (
+                <option key={eq.id} value={eq.id}>
+                  {eq.nome} ({eq.categoria})
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div>
+            <Label>Data</Label>
+            <Input name="data" type="date" required />
+          </div>
+          <Button type="submit" variant="secondary">
+            Alocar
+          </Button>
+        </form>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-lg font-semibold mb-3">Equipe</h2>
+        {projeto.plano && projeto.plano.templatesEquipe.length > 0 && (
+          <p className="text-xs text-neutral-500 mb-3">
+            Sugerido pelo plano {projeto.plano.nome}:{" "}
+            {projeto.plano.templatesEquipe.map((t) => `${t.quantidade}x ${t.funcao}`).join(", ")}
+          </p>
+        )}
+        <div className="space-y-2 mb-3">
+          {projeto.escalas.map((escala) => {
+            const conflito = conflitoProfissional(escala.profissionalId, escala.data);
+            return (
+              <Card key={escala.id} className="p-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">
+                    {escala.profissional.nome} — {escala.funcao}
+                  </span>
+                  <span className="text-xs text-neutral-500">{formatData(escala.data)}</span>
+                </div>
+                <p className="text-xs text-neutral-500">
+                  {escala.cache != null ? formatMoeda(escala.cache) : "sem cachê lançado"}
+                </p>
+                {conflito && (
+                  <p className="text-xs text-amber-700 mt-1">
+                    ⚠ também escalado em &quot;{conflito.projeto.nome}&quot; nesse dia
+                  </p>
+                )}
+                <form action={removerEscala} className="mt-1">
+                  <input type="hidden" name="id" value={escala.id} />
+                  <input type="hidden" name="projetoId" value={projeto.id} />
+                  <Button type="submit" variant="ghost" className="text-xs px-2 py-1 text-red-600">
+                    Remover
+                  </Button>
+                </form>
+              </Card>
+            );
+          })}
+          {projeto.escalas.length === 0 && (
+            <p className="text-sm text-neutral-500">Ninguém escalado ainda.</p>
+          )}
+        </div>
+        <form action={criarEscala} className="flex flex-wrap items-end gap-2">
+          <input type="hidden" name="projetoId" value={projeto.id} />
+          <div className="flex-1 min-w-[160px]">
+            <Label>Profissional</Label>
+            <Select name="profissionalId" required>
+              {profissionaisDisponiveis.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.nome} ({p.funcao})
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div className="flex-1 min-w-[140px]">
+            <Label>Função nesta escala</Label>
+            <Input name="funcao" required />
+          </div>
+          <div>
+            <Label>Data</Label>
+            <Input name="data" type="date" required />
+          </div>
+          <div className="w-32">
+            <Label>Cachê (R$)</Label>
+            <Input name="cache" type="number" step="1" />
+          </div>
+          <Button type="submit" variant="secondary">
+            Escalar
           </Button>
         </form>
       </section>

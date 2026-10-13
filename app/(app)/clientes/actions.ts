@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import bcrypt from "bcryptjs";
 
 function str(formData: FormData, key: string): string | null {
   const v = formData.get(key);
@@ -66,4 +67,21 @@ export async function addNota(formData: FormData) {
     data: { notasInternas: notasAtualizadas },
   });
   revalidatePath(`/clientes/${id}`);
+}
+
+export async function criarAcessoPortal(formData: FormData) {
+  const clienteId = formData.get("clienteId") as string;
+  const email = str(formData, "email");
+  const senha = str(formData, "senha");
+  if (!clienteId || !email || !senha) return;
+
+  const cliente = await prisma.cliente.findUnique({ where: { id: clienteId } });
+  if (!cliente) return;
+
+  const passwordHash = await bcrypt.hash(senha, 10);
+  await prisma.user.create({
+    data: { name: cliente.nome, email, passwordHash, role: "CLIENTE", clienteId },
+  });
+
+  revalidatePath(`/clientes/${clienteId}`);
 }

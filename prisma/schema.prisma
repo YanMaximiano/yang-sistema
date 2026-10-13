@@ -79,6 +79,9 @@ model Plano {
   ativo      Boolean  @default(true)
 
   propostas Proposta[]
+  projetos  Projeto[]
+  templatesEquipe       TemplateEquipe[]
+  templatesEquipamento  TemplateEquipamento[]
 }
 
 model Adicional {
@@ -198,6 +201,8 @@ model Projeto {
   cliente      Cliente             @relation(fields: [clienteId], references: [id])
   servicoId    String
   servico      Servico             @relation(fields: [servicoId], references: [id])
+  planoId      String?
+  plano        Plano?              @relation(fields: [planoId], references: [id])
   nome         String
   tipoCobranca TipoCobranca
   valor        Float
@@ -211,6 +216,8 @@ model Projeto {
   entregas     Entrega[]
   recebimentos Recebimento[]
   custos       Custo[]
+  alocacoesEquipamento AlocacaoEquipamento[]
+  escalas              Escala[]
 }
 
 model ProjetoEtapa {
@@ -255,4 +262,87 @@ model Custo {
   tipo      String
   descricao String?
   valor     Float
+
+  escala Escala?
+}
+
+// ---------- Equipamentos ----------
+
+enum StatusEquipamento {
+  DISPONIVEL
+  MANUTENCAO
+}
+
+model Equipamento {
+  id          String            @id @default(cuid())
+  nome        String
+  categoria   String
+  status      StatusEquipamento @default(DISPONIVEL)
+  observacoes String?
+  ativo       Boolean           @default(true)
+  createdAt   DateTime          @default(now())
+
+  alocacoes AlocacaoEquipamento[]
+  templates TemplateEquipamento[]
+}
+
+model AlocacaoEquipamento {
+  id                String      @id @default(cuid())
+  equipamentoId     String
+  equipamento       Equipamento @relation(fields: [equipamentoId], references: [id])
+  projetoId         String
+  projeto           Projeto     @relation(fields: [projetoId], references: [id], onDelete: Cascade)
+  data              DateTime
+  checklistSaida    Boolean     @default(false)
+  checklistRetorno  Boolean     @default(false)
+}
+
+model TemplateEquipamento {
+  id            String      @id @default(cuid())
+  planoId       String
+  plano         Plano       @relation(fields: [planoId], references: [id], onDelete: Cascade)
+  equipamentoId String
+  equipamento   Equipamento @relation(fields: [equipamentoId], references: [id])
+}
+
+// ---------- Equipe ----------
+
+enum TipoProfissional {
+  FIXO
+  FREELANCER
+}
+
+model Profissional {
+  id           String           @id @default(cuid())
+  nome         String
+  funcao       String
+  tipo         TipoProfissional @default(FREELANCER)
+  diariaPadrao Float?
+  contato      String?
+  email        String?
+  observacoes  String?
+  ativo        Boolean          @default(true)
+
+  escalas Escala[]
+}
+
+model Escala {
+  id             String       @id @default(cuid())
+  profissionalId String
+  profissional   Profissional @relation(fields: [profissionalId], references: [id])
+  projetoId      String
+  projeto        Projeto      @relation(fields: [projetoId], references: [id], onDelete: Cascade)
+  funcao         String
+  data           DateTime
+  cache          Float?
+  custoId        String?      @unique
+  custo          Custo?       @relation(fields: [custoId], references: [id], onDelete: SetNull)
+}
+
+model TemplateEquipe {
+  id         String @id @default(cuid())
+  planoId    String
+  plano      Plano  @relation(fields: [planoId], references: [id], onDelete: Cascade)
+  funcao     String
+  quantidade Int    @default(1)
 }
