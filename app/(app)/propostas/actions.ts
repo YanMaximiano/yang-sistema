@@ -27,8 +27,10 @@ export async function createProposta(formData: FormData) {
     },
   });
 
-  await prisma.cliente.update({
-    where: { id: clienteId },
+  // só promove o status do cliente se ele ainda estiver em "lead" — não regride
+  // um cliente já ativo/recorrente por causa de uma nova proposta
+  await prisma.cliente.updateMany({
+    where: { id: clienteId, statusRelacionamento: "LEAD" },
     data: { statusRelacionamento: "ORCAMENTO_ENVIADO" },
   });
 
@@ -77,8 +79,9 @@ export async function atualizarStatusProposta(formData: FormData) {
       revalidatePath("/projetos");
       revalidatePath(`/projetos/${projeto.id}`);
     }
-    await prisma.cliente.update({
-      where: { id: proposta.clienteId },
+    // não rebaixa um cliente já marcado manualmente como recorrente
+    await prisma.cliente.updateMany({
+      where: { id: proposta.clienteId, statusRelacionamento: { not: "CLIENTE_RECORRENTE" } },
       data: { statusRelacionamento: "CLIENTE_ATIVO" },
     });
   }
