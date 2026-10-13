@@ -18,11 +18,7 @@ export default async function EquipamentosPage() {
 
       <Card className="p-4 mb-8">
         <p className="text-sm font-medium mb-2">Novo equipamento</p>
-        <form
-          action={createEquipamento}
-          encType="multipart/form-data"
-          className="grid md:grid-cols-4 gap-3 items-end"
-        >
+        <form action={createEquipamento} className="grid md:grid-cols-4 gap-3 items-end">
           <div>
             <Label>Nome</Label>
             <Input name="nome" required placeholder="Ex: Sony A7S III" />
@@ -88,11 +84,7 @@ export default async function EquipamentosPage() {
 
             <details className="mt-3">
               <summary className="text-xs text-neutral-500 cursor-pointer w-fit">Editar</summary>
-              <form
-                action={updateEquipamento}
-                encType="multipart/form-data"
-                className="grid md:grid-cols-4 gap-3 items-end mt-2"
-              >
+              <form action={updateEquipamento} className="grid md:grid-cols-4 gap-3 items-end mt-2">
                 <input type="hidden" name="id" value={eq.id} />
                 <div>
                   <Label>Nome</Label>
