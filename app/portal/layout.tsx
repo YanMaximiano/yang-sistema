@@ -2,6 +2,7 @@ import { auth, signOut } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -9,13 +10,16 @@ export default async function PortalLayout({ children }: { children: React.React
 
   return (
     <div className="flex min-h-screen flex-1 flex-col">
-      <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-4 md:px-6 py-4">
+      <header className="flex items-center justify-between border-b border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900 px-4 md:px-6 py-4">
         <Link href="/portal">
-          <p className="font-semibold text-neutral-900">Yang</p>
-          <p className="text-xs text-neutral-500">Portal do Cliente</p>
+          <p className="font-semibold text-neutral-900 dark:text-neutral-100">Yang</p>
+          <p className="text-xs text-neutral-500 dark:text-neutral-400">Portal do Cliente</p>
         </Link>
         <div className="flex items-center gap-3">
-          <p className="text-xs text-neutral-500 hidden md:block">{session.user.email}</p>
+          <p className="text-xs text-neutral-500 dark:text-neutral-400 hidden md:block">
+            {session.user.email}
+          </p>
+          <ThemeToggle />
           <form
             action={async () => {
               "use server";

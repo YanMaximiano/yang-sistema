@@ -138,7 +138,7 @@ export default async function ServicoDetalhePage({
                   <Textarea name="entregas" defaultValue={plano.entregas.join("\n")} rows={4} />
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-neutral-500">
+                  <span className="text-sm text-neutral-500 dark:text-neutral-400">
                     Faixa atual: {formatFaixaValor(plano.valorMin, plano.valorMax)}
                   </span>
                   <div className="flex gap-2">
@@ -148,13 +148,13 @@ export default async function ServicoDetalhePage({
                   </div>
                 </div>
               </form>
-              <details className="mt-3 border-t border-neutral-100 pt-3">
-                <summary className="cursor-pointer text-sm text-neutral-500">
+              <details className="mt-3 border-t border-neutral-100 dark:border-neutral-800 pt-3">
+                <summary className="cursor-pointer text-sm text-neutral-500 dark:text-neutral-400">
                   Equipe e equipamento sugeridos ({plano.templatesEquipe.length + plano.templatesEquipamento.length})
                 </summary>
                 <div className="grid md:grid-cols-2 gap-4 mt-3">
                   <div>
-                    <p className="text-xs font-medium text-neutral-600 mb-2">Equipe sugerida</p>
+                    <p className="text-xs font-medium text-neutral-600 dark:text-neutral-400 mb-2">Equipe sugerida</p>
                     <div className="space-y-1 mb-2">
                       {plano.templatesEquipe.map((te) => (
                         <div key={te.id} className="flex items-center justify-between text-sm">
@@ -164,14 +164,14 @@ export default async function ServicoDetalhePage({
                           <form action={deleteTemplateEquipe}>
                             <input type="hidden" name="id" value={te.id} />
                             <input type="hidden" name="servicoId" value={servico.id} />
-                            <Button type="submit" variant="ghost" className="text-xs px-2 py-0.5 text-red-600">
+                            <Button type="submit" variant="ghost" className="text-xs px-2 py-0.5 text-red-600 dark:text-red-400">
                               Remover
                             </Button>
                           </form>
                         </div>
                       ))}
                       {plano.templatesEquipe.length === 0 && (
-                        <p className="text-xs text-neutral-400">Nenhuma sugestão ainda.</p>
+                        <p className="text-xs text-neutral-400 dark:text-neutral-500">Nenhuma sugestão ainda.</p>
                       )}
                     </div>
                     <form action={createTemplateEquipe} className="flex items-end gap-2">
@@ -185,7 +185,7 @@ export default async function ServicoDetalhePage({
                     </form>
                   </div>
                   <div>
-                    <p className="text-xs font-medium text-neutral-600 mb-2">Equipamento sugerido</p>
+                    <p className="text-xs font-medium text-neutral-600 dark:text-neutral-400 mb-2">Equipamento sugerido</p>
                     <div className="space-y-1 mb-2">
                       {plano.templatesEquipamento.map((teq) => (
                         <div key={teq.id} className="flex items-center justify-between text-sm">
@@ -193,14 +193,14 @@ export default async function ServicoDetalhePage({
                           <form action={deleteTemplateEquipamento}>
                             <input type="hidden" name="id" value={teq.id} />
                             <input type="hidden" name="servicoId" value={servico.id} />
-                            <Button type="submit" variant="ghost" className="text-xs px-2 py-0.5 text-red-600">
+                            <Button type="submit" variant="ghost" className="text-xs px-2 py-0.5 text-red-600 dark:text-red-400">
                               Remover
                             </Button>
                           </form>
                         </div>
                       ))}
                       {plano.templatesEquipamento.length === 0 && (
-                        <p className="text-xs text-neutral-400">Nenhuma sugestão ainda.</p>
+                        <p className="text-xs text-neutral-400 dark:text-neutral-500">Nenhuma sugestão ainda.</p>
                       )}
                     </div>
                     {equipamentos.length > 0 ? (
@@ -219,7 +219,7 @@ export default async function ServicoDetalhePage({
                         </Button>
                       </form>
                     ) : (
-                      <p className="text-xs text-neutral-400">
+                      <p className="text-xs text-neutral-400 dark:text-neutral-500">
                         Cadastre equipamentos em &quot;Equipamentos&quot; para poder sugeri-los aqui.
                       </p>
                     )}
@@ -229,7 +229,7 @@ export default async function ServicoDetalhePage({
               <form action={deletePlano} className="mt-2">
                 <input type="hidden" name="id" value={plano.id} />
                 <input type="hidden" name="servicoId" value={servico.id} />
-                <Button type="submit" variant="ghost" className="text-xs text-red-600 px-0">
+                <Button type="submit" variant="ghost" className="text-xs text-red-600 dark:text-red-400 px-0">
                   Remover plano
                 </Button>
               </form>
@@ -293,7 +293,7 @@ export default async function ServicoDetalhePage({
               <form action={deleteAdicional} className="mt-1">
                 <input type="hidden" name="id" value={adicional.id} />
                 <input type="hidden" name="servicoId" value={servico.id} />
-                <Button type="submit" variant="ghost" className="text-xs text-red-600 px-0">
+                <Button type="submit" variant="ghost" className="text-xs text-red-600 dark:text-red-400 px-0">
                   Remover
                 </Button>
               </form>
@@ -323,7 +323,7 @@ export default async function ServicoDetalhePage({
 
       <section>
         <h2 className="text-lg font-semibold mb-3">Pipeline de etapas (template)</h2>
-        <p className="text-sm text-neutral-500 mb-3">
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-3">
           Ao criar um projeto a partir deste serviço, essas etapas serão copiadas para o Kanban do
           projeto.
         </p>
@@ -331,7 +331,7 @@ export default async function ServicoDetalhePage({
           <ol className="space-y-2">
             {servico.etapasTemplate.map((etapa, idx) => (
               <li key={etapa.id} className="flex items-center gap-2">
-                <span className="w-6 text-sm text-neutral-400">{idx + 1}.</span>
+                <span className="w-6 text-sm text-neutral-400 dark:text-neutral-500">{idx + 1}.</span>
                 <span className="flex-1 text-sm">{etapa.nome}</span>
                 <form action={moverEtapaTemplate}>
                   <input type="hidden" name="id" value={etapa.id} />
@@ -357,7 +357,7 @@ export default async function ServicoDetalhePage({
                 <form action={deleteEtapaTemplate}>
                   <input type="hidden" name="id" value={etapa.id} />
                   <input type="hidden" name="servicoId" value={servico.id} />
-                  <Button type="submit" variant="ghost" className="px-2 py-1 text-xs text-red-600">
+                  <Button type="submit" variant="ghost" className="px-2 py-1 text-xs text-red-600 dark:text-red-400">
                     Remover
                   </Button>
                 </form>
@@ -379,11 +379,11 @@ export default async function ServicoDetalhePage({
 
       <section className="mt-8">
         <h2 className="text-lg font-semibold mb-3">Modelos de documento</h2>
-        <p className="text-sm text-neutral-500 mb-3">
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-3">
           Contrato, termo de uso de imagem, briefing etc. Use placeholders como{" "}
-          <code className="text-xs bg-neutral-100 px-1 rounded">{"{{cliente.nome}}"}</code>,{" "}
-          <code className="text-xs bg-neutral-100 px-1 rounded">{"{{projeto.valor}}"}</code>,{" "}
-          <code className="text-xs bg-neutral-100 px-1 rounded">{"{{projeto.prazoData}}"}</code>{" "}
+          <code className="text-xs bg-neutral-100 dark:bg-neutral-800 px-1 rounded">{"{{cliente.nome}}"}</code>,{" "}
+          <code className="text-xs bg-neutral-100 dark:bg-neutral-800 px-1 rounded">{"{{projeto.valor}}"}</code>,{" "}
+          <code className="text-xs bg-neutral-100 dark:bg-neutral-800 px-1 rounded">{"{{projeto.prazoData}}"}</code>{" "}
           — eles viram os dados reais quando o documento é gerado no projeto.
         </p>
         <div className="space-y-3">
@@ -419,7 +419,7 @@ export default async function ServicoDetalhePage({
               <form action={deleteModeloDocumento} className="mt-2">
                 <input type="hidden" name="id" value={modelo.id} />
                 <input type="hidden" name="servicoId" value={servico.id} />
-                <Button type="submit" variant="ghost" className="text-xs text-red-600 px-0">
+                <Button type="submit" variant="ghost" className="text-xs text-red-600 dark:text-red-400 px-0">
                   Remover modelo
                 </Button>
               </form>
@@ -465,7 +465,7 @@ export default async function ServicoDetalhePage({
 
       <section className="mt-8">
         <h2 className="text-lg font-semibold mb-3">Checklist de pré-produção</h2>
-        <p className="text-sm text-neutral-500 mb-3">
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-3">
           Itens a conferir antes de começar a produção (autorizações, plano de captação, backup
           etc.). Ao criar um projeto a partir deste serviço, esses itens serão copiados para o
           projeto, desmarcados.
@@ -474,7 +474,7 @@ export default async function ServicoDetalhePage({
           <ol className="space-y-2">
             {servico.checklistTemplate.map((item, idx) => (
               <li key={item.id} className="flex items-center gap-2">
-                <span className="w-6 text-sm text-neutral-400">{idx + 1}.</span>
+                <span className="w-6 text-sm text-neutral-400 dark:text-neutral-500">{idx + 1}.</span>
                 <span className="flex-1 text-sm">{item.nome}</span>
                 <form action={moverChecklistTemplateItem}>
                   <input type="hidden" name="id" value={item.id} />
@@ -500,7 +500,7 @@ export default async function ServicoDetalhePage({
                 <form action={deleteChecklistTemplateItem}>
                   <input type="hidden" name="id" value={item.id} />
                   <input type="hidden" name="servicoId" value={servico.id} />
-                  <Button type="submit" variant="ghost" className="px-2 py-1 text-xs text-red-600">
+                  <Button type="submit" variant="ghost" className="px-2 py-1 text-xs text-red-600 dark:text-red-400">
                     Remover
                   </Button>
                 </form>

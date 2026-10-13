@@ -35,20 +35,20 @@ export default async function PropostaDetalhePage({
 
       <Card className="p-5 mb-6 space-y-3 text-sm">
         <div className="flex justify-between">
-          <span className="text-neutral-500">Valor proposto</span>
+          <span className="text-neutral-500 dark:text-neutral-400">Valor proposto</span>
           <span className="font-medium">{formatMoeda(proposta.valorProposto)}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-neutral-500">Prazo proposto</span>
+          <span className="text-neutral-500 dark:text-neutral-400">Prazo proposto</span>
           <span>{proposta.prazoPropostoDias ? `${proposta.prazoPropostoDias} dias` : "—"}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-neutral-500">Criada em</span>
+          <span className="text-neutral-500 dark:text-neutral-400">Criada em</span>
           <span>{formatData(proposta.createdAt)}</span>
         </div>
         {proposta.adicionais.length > 0 && (
           <div>
-            <p className="text-neutral-500 mb-1">Adicionais</p>
+            <p className="text-neutral-500 dark:text-neutral-400 mb-1">Adicionais</p>
             <ul className="list-disc list-inside">
               {proposta.adicionais.map((pa) => (
                 <li key={pa.adicionalId}>{pa.adicional.nome}</li>

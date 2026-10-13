@@ -51,9 +51,9 @@ export default async function EquipePage() {
           <Card key={p.id} className="p-4 flex items-center justify-between gap-3 flex-wrap">
             <div>
               <p className="font-medium">
-                {p.nome} {!p.ativo && <span className="text-neutral-400">(inativo)</span>}
+                {p.nome} {!p.ativo && <span className="text-neutral-400 dark:text-neutral-500">(inativo)</span>}
               </p>
-              <p className="text-sm text-neutral-500">
+              <p className="text-sm text-neutral-500 dark:text-neutral-400">
                 {p.funcao} {p.diariaPadrao != null && `· ${formatMoeda(p.diariaPadrao)}/diária`}
                 {p.contato && ` · ${p.contato}`}
               </p>
@@ -72,7 +72,7 @@ export default async function EquipePage() {
           </Card>
         ))}
         {profissionais.length === 0 && (
-          <p className="text-sm text-neutral-500">Nenhum profissional cadastrado ainda.</p>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">Nenhum profissional cadastrado ainda.</p>
         )}
       </div>
     </div>

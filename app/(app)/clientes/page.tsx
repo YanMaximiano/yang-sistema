@@ -54,15 +54,15 @@ export default async function ClientesPage() {
       <div className="space-y-2">
         {clientes.map((cliente) => (
           <Link key={cliente.id} href={`/clientes/${cliente.id}`}>
-            <Card className="p-4 flex items-center justify-between hover:border-neutral-400 transition-colors">
+            <Card className="p-4 flex items-center justify-between hover:border-neutral-400 dark:hover:border-neutral-600 transition-colors">
               <div>
                 <p className="font-medium">{cliente.nome}</p>
-                <p className="text-sm text-neutral-500">
+                <p className="text-sm text-neutral-500 dark:text-neutral-400">
                   {cliente.empresa ?? "—"} {cliente.origem && `· ${cliente.origem}`}
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-xs text-neutral-400">
+                <span className="text-xs text-neutral-400 dark:text-neutral-500">
                   {cliente._count.propostas} proposta(s) · {cliente._count.projetos} projeto(s)
                 </span>
                 <Badge variant={CLIENTE_STATUS_VARIANT[cliente.statusRelacionamento]}>
@@ -73,7 +73,7 @@ export default async function ClientesPage() {
           </Link>
         ))}
         {clientes.length === 0 && (
-          <p className="text-sm text-neutral-500">Nenhum cliente cadastrado ainda.</p>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">Nenhum cliente cadastrado ainda.</p>
         )}
       </div>
     </div>

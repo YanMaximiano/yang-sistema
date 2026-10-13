@@ -88,9 +88,9 @@ export function NovaPropostaForm({
       )}
 
       {plano && (
-        <Card className="p-4 bg-neutral-50">
+        <Card className="p-4 bg-neutral-50 dark:bg-neutral-900">
           <p className="text-sm font-medium mb-2">Entregas do plano {plano.nome}</p>
-          <ul className="list-disc list-inside text-sm text-neutral-600 space-y-1">
+          <ul className="list-disc list-inside text-sm text-neutral-600 dark:text-neutral-400 space-y-1">
             {plano.entregas.map((e, i) => (
               <li key={i}>{e}</li>
             ))}

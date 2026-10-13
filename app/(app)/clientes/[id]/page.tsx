@@ -82,19 +82,19 @@ export default async function ClienteDetalhePage({
           <div className="space-y-2">
             {cliente.propostas.map((p) => (
               <Link key={p.id} href={`/propostas/${p.id}`}>
-                <Card className="p-3 hover:border-neutral-400 transition-colors">
+                <Card className="p-3 hover:border-neutral-400 dark:hover:border-neutral-600 transition-colors">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">
                       {p.servico.nome} — {p.plano.nome}
                     </span>
                     <Badge variant={PROPOSTA_STATUS_VARIANT[p.status]}>{p.status}</Badge>
                   </div>
-                  <p className="text-xs text-neutral-500">{formatMoeda(p.valorProposto)}</p>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">{formatMoeda(p.valorProposto)}</p>
                 </Card>
               </Link>
             ))}
             {cliente.propostas.length === 0 && (
-              <p className="text-sm text-neutral-500">Nenhuma proposta ainda.</p>
+              <p className="text-sm text-neutral-500 dark:text-neutral-400">Nenhuma proposta ainda.</p>
             )}
           </div>
         </section>
@@ -104,19 +104,19 @@ export default async function ClienteDetalhePage({
           <div className="space-y-2">
             {cliente.projetos.map((proj) => (
               <Link key={proj.id} href={`/projetos/${proj.id}`}>
-                <Card className="p-3 hover:border-neutral-400 transition-colors">
+                <Card className="p-3 hover:border-neutral-400 dark:hover:border-neutral-600 transition-colors">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">{proj.nome}</span>
                     <Badge>{proj.statusGeral}</Badge>
                   </div>
-                  <p className="text-xs text-neutral-500">
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
                     {proj.servico.nome} · prazo {formatData(proj.prazoData)}
                   </p>
                 </Card>
               </Link>
             ))}
             {cliente.projetos.length === 0 && (
-              <p className="text-sm text-neutral-500">Nenhum projeto ainda.</p>
+              <p className="text-sm text-neutral-500 dark:text-neutral-400">Nenhum projeto ainda.</p>
             )}
           </div>
         </section>
@@ -135,7 +135,7 @@ export default async function ClienteDetalhePage({
             </div>
           ) : (
             <>
-              <p className="text-sm text-neutral-500 mb-3">
+              <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-3">
                 Este cliente ainda não tem login no portal. Crie um e-mail/senha e repasse para ele.
               </p>
               <form action={criarAcessoPortal} className="flex flex-wrap items-end gap-2">
@@ -160,7 +160,7 @@ export default async function ClienteDetalhePage({
       <section>
         <h2 className="text-lg font-semibold mb-3">Notas internas</h2>
         <Card className="p-4">
-          <pre className="whitespace-pre-wrap text-sm text-neutral-700 font-sans mb-4">
+          <pre className="whitespace-pre-wrap text-sm text-neutral-700 dark:text-neutral-300 font-sans mb-4">
             {cliente.notasInternas || "Nenhuma nota registrada ainda."}
           </pre>
           <form action={addNota} className="flex items-end gap-2">

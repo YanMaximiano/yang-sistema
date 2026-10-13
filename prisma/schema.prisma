@@ -166,6 +166,9 @@ model Proposta {
 
   adicionais PropostaAdicional[]
   projeto    Projeto?
+
+  @@index([status, updatedAt])
+  @@index([clienteId])
 }
 
 model PropostaAdicional {
@@ -231,6 +234,10 @@ model Projeto {
   escalas              Escala[]
   documentos           Documento[]
   checklistItens       ChecklistPreProducaoItem[]
+
+  @@index([statusGeral, prazoData])
+  @@index([clienteId])
+  @@index([servicoId])
 }
 
 model ProjetoEtapa {
@@ -251,6 +258,8 @@ model ChecklistPreProducaoItem {
   nome      String
   ordem     Int     @default(0)
   concluido Boolean @default(false)
+
+  @@index([projetoId])
 }
 
 model Entrega {
@@ -262,6 +271,8 @@ model Entrega {
   status            StatusEntrega @default(EM_REVISAO)
   comentarioCliente String?
   createdAt         DateTime      @default(now())
+
+  @@index([projetoId])
 }
 
 // ---------- Financeiro ----------
@@ -275,6 +286,9 @@ model Recebimento {
   status        StatusRecebimento @default(PENDENTE)
   formaPagamento String?
   dataPagamento DateTime?
+
+  @@index([status, vencimento])
+  @@index([projetoId])
 }
 
 model Custo {
@@ -287,6 +301,9 @@ model Custo {
   dataPrevista DateTime?
 
   escala Escala?
+
+  @@index([dataPrevista])
+  @@index([projetoId])
 }
 
 // ---------- Equipamentos ----------
@@ -319,6 +336,9 @@ model AlocacaoEquipamento {
   data              DateTime
   checklistSaida    Boolean     @default(false)
   checklistRetorno  Boolean     @default(false)
+
+  @@index([equipamentoId])
+  @@index([projetoId])
 }
 
 model TemplateEquipamento {
@@ -361,6 +381,9 @@ model Escala {
   cache          Float?
   custoId        String?      @unique
   custo          Custo?       @relation(fields: [custoId], references: [id], onDelete: SetNull)
+
+  @@index([profissionalId])
+  @@index([projetoId])
 }
 
 model TemplateEquipe {
@@ -413,4 +436,6 @@ model Documento {
   assinanteIp       String?
   assinadoEm        DateTime?
   createdAt         DateTime         @default(now())
+
+  @@index([projetoId])
 }

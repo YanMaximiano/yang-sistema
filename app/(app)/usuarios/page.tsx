@@ -63,9 +63,9 @@ export default async function UsuariosPage() {
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div>
                     <p className="font-medium">
-                      {u.name} <span className="text-neutral-400 text-sm">(você)</span>
+                      {u.name} <span className="text-neutral-400 dark:text-neutral-500 text-sm">(você)</span>
                     </p>
-                    <p className="text-sm text-neutral-500">{u.email}</p>
+                    <p className="text-sm text-neutral-500 dark:text-neutral-400">{u.email}</p>
                   </div>
                   <Badge variant="info">{ROLE_LABEL[u.role]}</Badge>
                 </div>
@@ -78,7 +78,7 @@ export default async function UsuariosPage() {
                   </div>
                   <div className="min-w-[140px]">
                     <Label>E-mail</Label>
-                    <Input value={u.email} disabled className="bg-neutral-50 text-neutral-500" />
+                    <Input value={u.email} disabled className="bg-neutral-50 dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400" />
                   </div>
                   <div>
                     <Label>Perfil</Label>
@@ -100,7 +100,7 @@ export default async function UsuariosPage() {
                     type="submit"
                     formAction={alternarAtivoUsuario}
                     variant={u.ativo ? "ghost" : "secondary"}
-                    className={u.ativo ? "text-red-600" : ""}
+                    className={u.ativo ? "text-red-600 dark:text-red-400" : ""}
                   >
                     {u.ativo ? "Desativar" : "Ativar"}
                   </Button>
@@ -110,7 +110,7 @@ export default async function UsuariosPage() {
           );
         })}
         {usuarios.length === 0 && (
-          <p className="text-sm text-neutral-500">Nenhum usuário além de você ainda.</p>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">Nenhum usuário além de você ainda.</p>
         )}
       </div>
     </div>

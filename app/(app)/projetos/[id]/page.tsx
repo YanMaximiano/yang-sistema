@@ -75,20 +75,22 @@ export default async function ProjetoDetalhePage({
   ]);
 
   const equipamentoIds = projeto.alocacoesEquipamento.map((a) => a.equipamentoId);
-  const outrasAlocacoesMesmoEquip = equipamentoIds.length
-    ? await prisma.alocacaoEquipamento.findMany({
-        where: { equipamentoId: { in: equipamentoIds }, projetoId: { not: projeto.id } },
-        include: { projeto: true },
-      })
-    : [];
-
   const profissionalIds = projeto.escalas.map((e) => e.profissionalId);
-  const outrasEscalasMesmoProfissional = profissionalIds.length
-    ? await prisma.escala.findMany({
-        where: { profissionalId: { in: profissionalIds }, projetoId: { not: projeto.id } },
-        include: { projeto: true },
-      })
-    : [];
+
+  const [outrasAlocacoesMesmoEquip, outrasEscalasMesmoProfissional] = await Promise.all([
+    equipamentoIds.length
+      ? prisma.alocacaoEquipamento.findMany({
+          where: { equipamentoId: { in: equipamentoIds }, projetoId: { not: projeto.id } },
+          include: { projeto: true },
+        })
+      : Promise.resolve([]),
+    profissionalIds.length
+      ? prisma.escala.findMany({
+          where: { profissionalId: { in: profissionalIds }, projetoId: { not: projeto.id } },
+          include: { projeto: true },
+        })
+      : Promise.resolve([]),
+  ]);
 
   function conflitoEquipamento(equipamentoId: string, data: Date) {
     return outrasAlocacoesMesmoEquip.find(
@@ -121,7 +123,7 @@ export default async function ProjetoDetalhePage({
         <section className="mb-8">
           <h2 className="text-lg font-semibold mb-3">
             Checklist de pré-produção{" "}
-            <span className="text-sm font-normal text-neutral-500">
+            <span className="text-sm font-normal text-neutral-500 dark:text-neutral-400">
               ({projeto.checklistItens.filter((i) => i.concluido).length}/
               {projeto.checklistItens.length} concluídos)
             </span>
@@ -135,7 +137,7 @@ export default async function ProjetoDetalhePage({
                     <input type="hidden" name="projetoId" value={projeto.id} />
                     <button
                       type="submit"
-                      className="flex items-center gap-2 text-sm text-left w-full hover:text-neutral-600"
+                      className="flex items-center gap-2 text-sm text-left w-full hover:text-neutral-600 dark:hover:text-neutral-300"
                     >
                       <span
                         className={`shrink-0 w-4 h-4 rounded border flex items-center justify-center text-[10px] ${
@@ -146,7 +148,7 @@ export default async function ProjetoDetalhePage({
                       >
                         {item.concluido && "✓"}
                       </span>
-                      <span className={item.concluido ? "line-through text-neutral-400" : ""}>
+                      <span className={item.concluido ? "line-through text-neutral-400 dark:text-neutral-500" : ""}>
                         {item.nome}
                       </span>
                     </button>
@@ -167,7 +169,7 @@ export default async function ProjetoDetalhePage({
                 {etapa.status}
               </Badge>
               <p className="text-sm font-medium mb-2">{etapa.nome}</p>
-              <p className="text-xs text-neutral-400 mb-2">
+              <p className="text-xs text-neutral-400 dark:text-neutral-500 mb-2">
                 {etapa.dataInicio && `início ${formatData(etapa.dataInicio)}`}
                 {etapa.dataFim && ` · fim ${formatData(etapa.dataFim)}`}
               </p>
@@ -228,13 +230,13 @@ export default async function ProjetoDetalhePage({
                   href={entrega.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-blue-600 underline break-all"
+                  className="text-xs text-blue-600 dark:text-blue-400 underline break-all"
                 >
                   {entrega.link}
                 </a>
               )}
               {entrega.comentarioCliente && (
-                <p className="text-xs text-neutral-500 mt-1">&quot;{entrega.comentarioCliente}&quot;</p>
+                <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">&quot;{entrega.comentarioCliente}&quot;</p>
               )}
               {entrega.status === "EM_REVISAO" && (
                 <div className="flex gap-2 mt-2">
@@ -250,7 +252,7 @@ export default async function ProjetoDetalhePage({
                     <input type="hidden" name="id" value={entrega.id} />
                     <input type="hidden" name="projetoId" value={projeto.id} />
                     <input type="hidden" name="status" value="REPROVADA" />
-                    <Button type="submit" variant="ghost" className="text-xs px-2 py-1 text-red-600">
+                    <Button type="submit" variant="ghost" className="text-xs px-2 py-1 text-red-600 dark:text-red-400">
                       Marcar reprovada
                     </Button>
                   </form>
@@ -278,7 +280,7 @@ export default async function ProjetoDetalhePage({
             <Card key={doc.id} className="p-3">
               <div className="flex items-center justify-between mb-1">
                 <span className="text-sm font-medium">
-                  {doc.nome} <span className="text-neutral-400 text-xs">({DOCUMENTO_TIPO_LABEL[doc.tipo]})</span>
+                  {doc.nome} <span className="text-neutral-400 dark:text-neutral-500 text-xs">({DOCUMENTO_TIPO_LABEL[doc.tipo]})</span>
                 </span>
                 <Badge variant={DOCUMENTO_STATUS_VARIANT[doc.status]}>
                   {DOCUMENTO_STATUS_LABEL[doc.status]}
@@ -289,21 +291,21 @@ export default async function ProjetoDetalhePage({
                   href={doc.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-blue-600 underline break-all"
+                  className="text-xs text-blue-600 dark:text-blue-400 underline break-all"
                 >
                   {doc.link}
                 </a>
               )}
               {doc.conteudo && (
                 <details className="mt-1">
-                  <summary className="cursor-pointer text-xs text-neutral-500">Ver conteúdo</summary>
-                  <pre className="whitespace-pre-wrap text-xs text-neutral-700 font-sans mt-1 bg-neutral-50 p-2 rounded">
+                  <summary className="cursor-pointer text-xs text-neutral-500 dark:text-neutral-400">Ver conteúdo</summary>
+                  <pre className="whitespace-pre-wrap text-xs text-neutral-700 dark:text-neutral-300 font-sans mt-1 bg-neutral-50 dark:bg-neutral-900 p-2 rounded">
                     {doc.conteudo}
                   </pre>
                 </details>
               )}
               {doc.status === "ASSINADO" && (
-                <p className="text-xs text-neutral-500 mt-1">
+                <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
                   Assinado por {doc.assinanteNome} em {formatData(doc.assinadoEm)} · IP {doc.assinanteIp}
                 </p>
               )}
@@ -320,7 +322,7 @@ export default async function ProjetoDetalhePage({
                     <form action={deletarDocumento}>
                       <input type="hidden" name="id" value={doc.id} />
                       <input type="hidden" name="projetoId" value={projeto.id} />
-                      <Button type="submit" variant="ghost" className="text-xs px-2 py-1 text-red-600">
+                      <Button type="submit" variant="ghost" className="text-xs px-2 py-1 text-red-600 dark:text-red-400">
                         Remover
                       </Button>
                     </form>
@@ -330,7 +332,7 @@ export default async function ProjetoDetalhePage({
             </Card>
           ))}
           {projeto.documentos.length === 0 && (
-            <p className="text-sm text-neutral-500">Nenhum documento ainda.</p>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">Nenhum documento ainda.</p>
           )}
         </div>
 
@@ -354,7 +356,7 @@ export default async function ProjetoDetalhePage({
         )}
 
         <details>
-          <summary className="cursor-pointer text-sm text-neutral-500">
+          <summary className="cursor-pointer text-sm text-neutral-500 dark:text-neutral-400">
             Ou adicionar só um link (documento já pronto em outro lugar)
           </summary>
           <form action={criarDocumentoLink} className="flex flex-wrap items-end gap-2 mt-2">
@@ -387,7 +389,7 @@ export default async function ProjetoDetalhePage({
       <section className="mb-8">
         <h2 className="text-lg font-semibold mb-3">Equipamento</h2>
         {projeto.plano && projeto.plano.templatesEquipamento.length > 0 && (
-          <p className="text-xs text-neutral-500 mb-3">
+          <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-3">
             Sugerido pelo plano {projeto.plano.nome}:{" "}
             {projeto.plano.templatesEquipamento.map((t) => t.equipamento.nome).join(", ")}
           </p>
@@ -399,10 +401,10 @@ export default async function ProjetoDetalhePage({
               <Card key={alocacao.id} className="p-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">{alocacao.equipamento.nome}</span>
-                  <span className="text-xs text-neutral-500">{formatData(alocacao.data)}</span>
+                  <span className="text-xs text-neutral-500 dark:text-neutral-400">{formatData(alocacao.data)}</span>
                 </div>
                 {conflito && (
-                  <p className="text-xs text-amber-700 mt-1">
+                  <p className="text-xs text-amber-700 dark:text-amber-400 mt-1">
                     ⚠ também alocado em &quot;{conflito.projeto.nome}&quot; nesse dia
                   </p>
                 )}
@@ -434,7 +436,7 @@ export default async function ProjetoDetalhePage({
                   <form action={removerAlocacaoEquipamento}>
                     <input type="hidden" name="id" value={alocacao.id} />
                     <input type="hidden" name="projetoId" value={projeto.id} />
-                    <Button type="submit" variant="ghost" className="text-xs px-2 py-1 text-red-600">
+                    <Button type="submit" variant="ghost" className="text-xs px-2 py-1 text-red-600 dark:text-red-400">
                       Remover
                     </Button>
                   </form>
@@ -443,7 +445,7 @@ export default async function ProjetoDetalhePage({
             );
           })}
           {projeto.alocacoesEquipamento.length === 0 && (
-            <p className="text-sm text-neutral-500">Nenhum equipamento alocado ainda.</p>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">Nenhum equipamento alocado ainda.</p>
           )}
         </div>
         <form action={alocarEquipamento} className="flex flex-wrap items-end gap-2">
@@ -471,7 +473,7 @@ export default async function ProjetoDetalhePage({
       <section className="mb-8">
         <h2 className="text-lg font-semibold mb-3">Equipe</h2>
         {projeto.plano && projeto.plano.templatesEquipe.length > 0 && (
-          <p className="text-xs text-neutral-500 mb-3">
+          <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-3">
             Sugerido pelo plano {projeto.plano.nome}:{" "}
             {projeto.plano.templatesEquipe.map((t) => `${t.quantidade}x ${t.funcao}`).join(", ")}
           </p>
@@ -485,20 +487,20 @@ export default async function ProjetoDetalhePage({
                   <span className="text-sm font-medium">
                     {escala.profissional.nome} — {escala.funcao}
                   </span>
-                  <span className="text-xs text-neutral-500">{formatData(escala.data)}</span>
+                  <span className="text-xs text-neutral-500 dark:text-neutral-400">{formatData(escala.data)}</span>
                 </div>
-                <p className="text-xs text-neutral-500">
+                <p className="text-xs text-neutral-500 dark:text-neutral-400">
                   {escala.cache != null ? formatMoeda(escala.cache) : "sem cachê lançado"}
                 </p>
                 {conflito && (
-                  <p className="text-xs text-amber-700 mt-1">
+                  <p className="text-xs text-amber-700 dark:text-amber-400 mt-1">
                     ⚠ também escalado em &quot;{conflito.projeto.nome}&quot; nesse dia
                   </p>
                 )}
                 <form action={removerEscala} className="mt-1">
                   <input type="hidden" name="id" value={escala.id} />
                   <input type="hidden" name="projetoId" value={projeto.id} />
-                  <Button type="submit" variant="ghost" className="text-xs px-2 py-1 text-red-600">
+                  <Button type="submit" variant="ghost" className="text-xs px-2 py-1 text-red-600 dark:text-red-400">
                     Remover
                   </Button>
                 </form>
@@ -506,7 +508,7 @@ export default async function ProjetoDetalhePage({
             );
           })}
           {projeto.escalas.length === 0 && (
-            <p className="text-sm text-neutral-500">Ninguém escalado ainda.</p>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">Ninguém escalado ainda.</p>
           )}
         </div>
         <form action={criarEscala} className="flex flex-wrap items-end gap-2">
@@ -543,16 +545,16 @@ export default async function ProjetoDetalhePage({
         <h2 className="text-lg font-semibold mb-3">Financeiro do projeto</h2>
         <div className="grid grid-cols-3 gap-3 mb-4">
           <Card className="p-3">
-            <p className="text-xs text-neutral-500">Recebido</p>
+            <p className="text-xs text-neutral-500 dark:text-neutral-400">Recebido</p>
             <p className="font-semibold">{formatMoeda(totalRecebido)}</p>
           </Card>
           <Card className="p-3">
-            <p className="text-xs text-neutral-500">Custos</p>
+            <p className="text-xs text-neutral-500 dark:text-neutral-400">Custos</p>
             <p className="font-semibold">{formatMoeda(totalCustos)}</p>
           </Card>
           <Card className="p-3">
-            <p className="text-xs text-neutral-500">Margem</p>
-            <p className={`font-semibold ${margem < 0 ? "text-red-600" : "text-green-700"}`}>
+            <p className="text-xs text-neutral-500 dark:text-neutral-400">Margem</p>
+            <p className={`font-semibold ${margem < 0 ? "text-red-600 dark:text-red-400" : "text-green-700 dark:text-green-400"}`}>
               {formatMoeda(margem)}
             </p>
           </Card>
@@ -570,7 +572,7 @@ export default async function ProjetoDetalhePage({
                     <span className="text-sm">{formatMoeda(r.valor)}</span>
                     <Badge variant={RECEBIMENTO_VARIANT[r.status]}>{r.status}</Badge>
                   </div>
-                  <p className="text-xs text-neutral-500">
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
                     vencimento {formatData(r.vencimento)} {r.formaPagamento && `· ${r.formaPagamento}`}
                   </p>
                   {r.status !== "PAGO" && (
@@ -609,14 +611,14 @@ export default async function ProjetoDetalhePage({
                       {c.tipo} — {formatMoeda(c.valor)}
                     </span>
                   </div>
-                  {c.descricao && <p className="text-xs text-neutral-500">{c.descricao}</p>}
+                  {c.descricao && <p className="text-xs text-neutral-500 dark:text-neutral-400">{c.descricao}</p>}
                   {c.dataPrevista && (
-                    <p className="text-xs text-neutral-500">Previsto para {formatData(c.dataPrevista)}</p>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">Previsto para {formatData(c.dataPrevista)}</p>
                   )}
                   <form action={deletarCusto} className="mt-1">
                     <input type="hidden" name="id" value={c.id} />
                     <input type="hidden" name="projetoId" value={projeto.id} />
-                    <Button type="submit" variant="ghost" className="text-xs px-2 py-1 text-red-600">
+                    <Button type="submit" variant="ghost" className="text-xs px-2 py-1 text-red-600 dark:text-red-400">
                       Remover
                     </Button>
                   </form>

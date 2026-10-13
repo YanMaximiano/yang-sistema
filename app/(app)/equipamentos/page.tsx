@@ -51,14 +51,14 @@ export default async function EquipamentosPage() {
                   <img
                     src={eq.foto}
                     alt={eq.nome}
-                    className="w-14 h-14 rounded-md object-cover border border-neutral-200 shrink-0"
+                    className="w-14 h-14 rounded-md object-cover border border-neutral-200 dark:border-neutral-800 shrink-0"
                   />
                 )}
                 <div>
                   <p className="font-medium">
-                    {eq.nome} {!eq.ativo && <span className="text-neutral-400">(inativo)</span>}
+                    {eq.nome} {!eq.ativo && <span className="text-neutral-400 dark:text-neutral-500">(inativo)</span>}
                   </p>
-                  <p className="text-sm text-neutral-500">
+                  <p className="text-sm text-neutral-500 dark:text-neutral-400">
                     {eq.categoria} {eq.observacoes && `· ${eq.observacoes}`}
                   </p>
                 </div>
@@ -83,7 +83,7 @@ export default async function EquipamentosPage() {
             </div>
 
             <details className="mt-3">
-              <summary className="text-xs text-neutral-500 cursor-pointer w-fit">Editar</summary>
+              <summary className="text-xs text-neutral-500 dark:text-neutral-400 cursor-pointer w-fit">Editar</summary>
               <form action={updateEquipamento} className="grid md:grid-cols-4 gap-3 items-end mt-2">
                 <input type="hidden" name="id" value={eq.id} />
                 <div>
@@ -110,7 +110,7 @@ export default async function EquipamentosPage() {
           </Card>
         ))}
         {equipamentos.length === 0 && (
-          <p className="text-sm text-neutral-500">Nenhum equipamento cadastrado ainda.</p>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">Nenhum equipamento cadastrado ainda.</p>
         )}
       </div>
     </div>

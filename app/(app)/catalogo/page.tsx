@@ -30,7 +30,7 @@ export default async function CatalogoPage() {
       <Card className="p-4 mb-8">
         <form action={createPilar} className="flex items-end gap-2">
           <div className="flex-1">
-            <label className="block text-sm font-medium text-neutral-700 mb-1">Novo pilar</label>
+            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Novo pilar</label>
             <Input name="nome" placeholder="Ex: Conteúdo para Empresas" required />
           </div>
           <Button type="submit">Adicionar pilar</Button>
@@ -63,8 +63,8 @@ export default async function CatalogoPage() {
                     <span className="font-medium">{servico.nome}</span>
                     {!servico.ativo && <Badge variant="warning">Inativo</Badge>}
                   </div>
-                  <span className="text-xs text-neutral-500">{TIPO_LABEL[servico.tipoCobranca]}</span>
-                  <span className="text-xs text-neutral-500">
+                  <span className="text-xs text-neutral-500 dark:text-neutral-400">{TIPO_LABEL[servico.tipoCobranca]}</span>
+                  <span className="text-xs text-neutral-500 dark:text-neutral-400">
                     {servico.planos.length} plano(s)
                     {servico.planos[0] &&
                       ` · ${formatFaixaValor(servico.planos[0].valorMin, servico.planos[0].valorMax)}`}
@@ -74,15 +74,15 @@ export default async function CatalogoPage() {
             </div>
 
             <details className="text-sm">
-              <summary className="cursor-pointer text-neutral-500">Adicionar serviço a este pilar</summary>
+              <summary className="cursor-pointer text-neutral-500 dark:text-neutral-400">Adicionar serviço a este pilar</summary>
               <form action={createServico} className="flex items-end gap-2 mt-2 max-w-xl">
                 <input type="hidden" name="pilarId" value={pilar.id} />
                 <div className="flex-1">
-                  <label className="block text-xs font-medium text-neutral-700 mb-1">Nome</label>
+                  <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1">Nome</label>
                   <Input name="nome" required />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-neutral-700 mb-1">Cobrança</label>
+                  <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1">Cobrança</label>
                   <Select name="tipoCobranca" required>
                     <option value="PROJETO_UNICO">Projeto único</option>
                     <option value="RECORRENCIA_MENSAL">Recorrência mensal</option>

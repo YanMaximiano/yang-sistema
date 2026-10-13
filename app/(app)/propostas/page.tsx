@@ -35,18 +35,18 @@ export default async function PropostasPage() {
       <div className="grid md:grid-cols-4 gap-4">
         {COLUNAS.map((coluna) => (
           <div key={coluna.status}>
-            <p className="text-sm font-medium text-neutral-500 mb-2">
+            <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400 mb-2">
               {coluna.label} ({porStatus[coluna.status]?.length ?? 0})
             </p>
             <div className="space-y-2">
               {(porStatus[coluna.status] ?? []).map((p) => (
                 <Link key={p.id} href={`/propostas/${p.id}`}>
-                  <Card className="p-3 hover:border-neutral-400 transition-colors">
+                  <Card className="p-3 hover:border-neutral-400 dark:hover:border-neutral-600 transition-colors">
                     <p className="text-sm font-medium">{p.cliente.nome}</p>
-                    <p className="text-xs text-neutral-500">
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">
                       {p.servico.nome} — {p.plano.nome}
                     </p>
-                    <p className="text-xs text-neutral-700 mt-1">{formatMoeda(p.valorProposto)}</p>
+                    <p className="text-xs text-neutral-700 dark:text-neutral-300 mt-1">{formatMoeda(p.valorProposto)}</p>
                   </Card>
                 </Link>
               ))}

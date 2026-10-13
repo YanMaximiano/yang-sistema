@@ -36,19 +36,19 @@ export default async function PortalPropostaPage({
 
       <Card className="p-5 mb-6 space-y-3 text-sm">
         <div className="flex justify-between">
-          <span className="text-neutral-500">Valor proposto</span>
+          <span className="text-neutral-500 dark:text-neutral-400">Valor proposto</span>
           <span className="font-medium">{formatMoeda(proposta.valorProposto)}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-neutral-500">Prazo proposto</span>
+          <span className="text-neutral-500 dark:text-neutral-400">Prazo proposto</span>
           <span>{proposta.prazoPropostoDias ? `${proposta.prazoPropostoDias} dias` : "—"}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-neutral-500">Recebida em</span>
+          <span className="text-neutral-500 dark:text-neutral-400">Recebida em</span>
           <span>{formatData(proposta.createdAt)}</span>
         </div>
         <div>
-          <p className="text-neutral-500 mb-1">Entregas incluídas</p>
+          <p className="text-neutral-500 dark:text-neutral-400 mb-1">Entregas incluídas</p>
           <ul className="list-disc list-inside">
             {proposta.plano.entregas.map((entrega, i) => (
               <li key={i}>{entrega}</li>
@@ -57,7 +57,7 @@ export default async function PortalPropostaPage({
         </div>
         {proposta.adicionais.length > 0 && (
           <div>
-            <p className="text-neutral-500 mb-1">Adicionais</p>
+            <p className="text-neutral-500 dark:text-neutral-400 mb-1">Adicionais</p>
             <ul className="list-disc list-inside">
               {proposta.adicionais.map((pa) => (
                 <li key={pa.adicionalId}>{pa.adicional.nome}</li>

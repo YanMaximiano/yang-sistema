@@ -84,13 +84,13 @@ export default async function PortalProjetoPage({
                   href={entrega.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-blue-600 underline break-all"
+                  className="text-xs text-blue-600 dark:text-blue-400 underline break-all"
                 >
                   {entrega.link}
                 </a>
               )}
               {entrega.comentarioCliente && (
-                <p className="text-xs text-neutral-500 mt-1">
+                <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
                   Seu comentário: &quot;{entrega.comentarioCliente}&quot;
                 </p>
               )}
@@ -114,7 +114,7 @@ export default async function PortalProjetoPage({
             </Card>
           ))}
           {projeto.entregas.length === 0 && (
-            <p className="text-sm text-neutral-500">Nenhuma entrega enviada ainda.</p>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">Nenhuma entrega enviada ainda.</p>
           )}
         </div>
       </section>
@@ -126,7 +126,7 @@ export default async function PortalProjetoPage({
             <Card key={doc.id} className="p-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium">
-                  {doc.nome} <span className="text-neutral-400 text-xs">({DOCUMENTO_TIPO_LABEL[doc.tipo]})</span>
+                  {doc.nome} <span className="text-neutral-400 dark:text-neutral-500 text-xs">({DOCUMENTO_TIPO_LABEL[doc.tipo]})</span>
                 </span>
                 <Badge variant={DOCUMENTO_STATUS_VARIANT[doc.status]}>
                   {DOCUMENTO_STATUS_LABEL[doc.status]}
@@ -137,18 +137,18 @@ export default async function PortalProjetoPage({
                   href={doc.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-blue-600 underline break-all"
+                  className="text-xs text-blue-600 dark:text-blue-400 underline break-all"
                 >
                   {doc.link}
                 </a>
               )}
               {doc.conteudo && (
-                <pre className="whitespace-pre-wrap text-sm text-neutral-700 font-sans mt-1 bg-neutral-50 p-3 rounded max-h-64 overflow-y-auto">
+                <pre className="whitespace-pre-wrap text-sm text-neutral-700 dark:text-neutral-300 font-sans mt-1 bg-neutral-50 dark:bg-neutral-900 p-3 rounded max-h-64 overflow-y-auto">
                   {doc.conteudo}
                 </pre>
               )}
               {doc.status === "ASSINADO" ? (
-                <p className="text-xs text-neutral-500 mt-2">
+                <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-2">
                   Assinado por {doc.assinanteNome} em {formatData(doc.assinadoEm)}
                 </p>
               ) : (
@@ -158,7 +158,7 @@ export default async function PortalProjetoPage({
                     <Label>Digite seu nome completo</Label>
                     <Input name="nomeCompleto" required />
                   </div>
-                  <label className="flex items-center gap-2 text-sm text-neutral-700">
+                  <label className="flex items-center gap-2 text-sm text-neutral-700 dark:text-neutral-300">
                     <input type="checkbox" name="concordo" required />
                     Li e concordo com o conteúdo acima
                   </label>
@@ -168,7 +168,7 @@ export default async function PortalProjetoPage({
             </Card>
           ))}
           {projeto.documentos.length === 0 && (
-            <p className="text-sm text-neutral-500">Nenhum documento para assinar ainda.</p>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">Nenhum documento para assinar ainda.</p>
           )}
         </div>
       </section>
@@ -188,7 +188,7 @@ export default async function PortalProjetoPage({
             </Card>
           ))}
           {projeto.recebimentos.length === 0 && (
-            <p className="text-sm text-neutral-500">Nenhuma parcela lançada ainda.</p>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">Nenhuma parcela lançada ainda.</p>
           )}
         </div>
       </section>

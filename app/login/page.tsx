@@ -10,8 +10,12 @@ export default function LoginPage() {
   return (
     <div className="flex flex-1 items-center justify-center px-4">
       <Card className="w-full max-w-sm p-8">
-        <h1 className="text-xl font-semibold text-neutral-900 mb-1">Yang — Sistema de Gestão</h1>
-        <p className="text-sm text-neutral-500 mb-6">Entre com seu e-mail e senha.</p>
+        <h1 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-1">
+          Yang — Sistema de Gestão
+        </h1>
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-6">
+          Entre com seu e-mail e senha.
+        </p>
         <form action={formAction} className="space-y-4">
           <div>
             <Label htmlFor="email">E-mail</Label>

@@ -34,14 +34,14 @@ export default async function PortalHomePage() {
           <div className="space-y-2">
             {propostasPendentes.map((p) => (
               <Link key={p.id} href={`/portal/propostas/${p.id}`}>
-                <Card className="p-4 hover:border-neutral-400 transition-colors">
+                <Card className="p-4 hover:border-neutral-400 dark:hover:border-neutral-600 transition-colors">
                   <div className="flex items-center justify-between">
                     <span className="font-medium">
                       {p.servico.nome} — {p.plano.nome}
                     </span>
                     <Badge variant="warning">Aguardando resposta</Badge>
                   </div>
-                  <p className="text-sm text-neutral-500">{formatMoeda(p.valorProposto)}</p>
+                  <p className="text-sm text-neutral-500 dark:text-neutral-400">{formatMoeda(p.valorProposto)}</p>
                 </Card>
               </Link>
             ))}
@@ -54,19 +54,19 @@ export default async function PortalHomePage() {
         <div className="space-y-2">
           {projetos.map((proj) => (
             <Link key={proj.id} href={`/portal/projetos/${proj.id}`}>
-              <Card className="p-4 hover:border-neutral-400 transition-colors">
+              <Card className="p-4 hover:border-neutral-400 dark:hover:border-neutral-600 transition-colors">
                 <div className="flex items-center justify-between">
                   <span className="font-medium">{proj.nome}</span>
                   <Badge variant={PROJETO_STATUS_VARIANT[proj.statusGeral]}>{proj.statusGeral}</Badge>
                 </div>
-                <p className="text-sm text-neutral-500">
+                <p className="text-sm text-neutral-500 dark:text-neutral-400">
                   {proj.servico.nome} · prazo {formatData(proj.prazoData)}
                 </p>
               </Card>
             </Link>
           ))}
           {projetos.length === 0 && (
-            <p className="text-sm text-neutral-500">Nenhum projeto ainda.</p>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">Nenhum projeto ainda.</p>
           )}
         </div>
       </section>

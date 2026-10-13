@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 import { formatMoeda, formatData } from "@/lib/utils";
 import { startOfDay, isBefore, differenceInDays, addDays } from "date-fns";
@@ -10,7 +11,10 @@ export type Aviso = {
   href: string;
 };
 
-export async function listarAvisos(): Promise<Aviso[]> {
+// cache() memoiza por requisição — o layout (contador no menu) e a página /avisos
+// (lista completa) chamam isso na mesma requisição e reaproveitam o resultado em vez
+// de rodar as 5 sub-queries duas vezes.
+export const listarAvisos = cache(async (): Promise<Aviso[]> => {
   const hoje = startOfDay(new Date());
 
   const [projetos, recebimentos, entregas, alocacoes, propostas] = await Promise.all([
@@ -96,4 +100,4 @@ export async function listarAvisos(): Promise<Aviso[]> {
   }
 
   return avisos.sort((a, b) => (a.severidade === b.severidade ? 0 : a.severidade === "atraso" ? -1 : 1));
-}
+});

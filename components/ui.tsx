@@ -10,10 +10,13 @@ export function Button({
   variant?: "primary" | "secondary" | "danger" | "ghost";
 }) {
   const variants = {
-    primary: "bg-neutral-900 text-white hover:bg-neutral-700",
-    secondary: "bg-white text-neutral-900 border border-neutral-300 hover:bg-neutral-100",
-    danger: "bg-red-600 text-white hover:bg-red-700",
-    ghost: "bg-transparent text-neutral-700 hover:bg-neutral-100",
+    primary:
+      "bg-neutral-900 text-white hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300",
+    secondary:
+      "bg-white text-neutral-900 border border-neutral-300 hover:bg-neutral-100 dark:bg-neutral-900 dark:text-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-800",
+    danger: "bg-red-600 text-white hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600",
+    ghost:
+      "bg-transparent text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800",
   };
   return (
     <button
@@ -39,10 +42,13 @@ export function LinkButton({
   children: React.ReactNode;
 }) {
   const variants = {
-    primary: "bg-neutral-900 text-white hover:bg-neutral-700",
-    secondary: "bg-white text-neutral-900 border border-neutral-300 hover:bg-neutral-100",
-    danger: "bg-red-600 text-white hover:bg-red-700",
-    ghost: "bg-transparent text-neutral-700 hover:bg-neutral-100",
+    primary:
+      "bg-neutral-900 text-white hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300",
+    secondary:
+      "bg-white text-neutral-900 border border-neutral-300 hover:bg-neutral-100 dark:bg-neutral-900 dark:text-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-800",
+    danger: "bg-red-600 text-white hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600",
+    ghost:
+      "bg-transparent text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800",
   };
   return (
     <Link
@@ -62,7 +68,7 @@ export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElem
   return (
     <input
       className={cn(
-        "w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900",
+        "w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:focus:ring-neutral-100",
         className
       )}
       {...props}
@@ -74,7 +80,7 @@ export function Textarea({ className, ...props }: TextareaHTMLAttributes<HTMLTex
   return (
     <textarea
       className={cn(
-        "w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900",
+        "w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:focus:ring-neutral-100",
         className
       )}
       {...props}
@@ -86,7 +92,7 @@ export function Select({ className, ...props }: SelectHTMLAttributes<HTMLSelectE
   return (
     <select
       className={cn(
-        "w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900",
+        "w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:focus:ring-neutral-100",
         className
       )}
       {...props}
@@ -96,14 +102,20 @@ export function Select({ className, ...props }: SelectHTMLAttributes<HTMLSelectE
 
 export function Label({ className, ...props }: LabelHTMLAttributes<HTMLLabelElement>) {
   return (
-    <label className={cn("block text-sm font-medium text-neutral-700 mb-1", className)} {...props} />
+    <label
+      className={cn("block text-sm font-medium text-neutral-700 mb-1 dark:text-neutral-300", className)}
+      {...props}
+    />
   );
 }
 
 export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("rounded-lg border border-neutral-200 bg-white shadow-sm", className)}
+      className={cn(
+        "rounded-lg border border-neutral-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900",
+        className
+      )}
       {...props}
     />
   );
@@ -119,11 +131,11 @@ export function Badge({
   variant?: BadgeVariant;
 }) {
   const variants = {
-    neutral: "bg-neutral-100 text-neutral-700",
-    success: "bg-green-100 text-green-800",
-    warning: "bg-amber-100 text-amber-800",
-    danger: "bg-red-100 text-red-800",
-    info: "bg-blue-100 text-blue-800",
+    neutral: "bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300",
+    success: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
+    warning: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300",
+    danger: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
+    info: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
   };
   return (
     <span
@@ -149,10 +161,21 @@ export function PageHeader({
   return (
     <div className="flex items-start justify-between gap-4 mb-6">
       <div>
-        <h1 className="text-2xl font-semibold text-neutral-900">{title}</h1>
-        {description && <p className="text-sm text-neutral-500 mt-1">{description}</p>}
+        <h1 className="text-2xl font-semibold text-neutral-900 dark:text-neutral-100">{title}</h1>
+        {description && (
+          <p className="text-sm text-neutral-500 mt-1 dark:text-neutral-400">{description}</p>
+        )}
       </div>
       {actions && <div className="flex items-center gap-2 shrink-0">{actions}</div>}
+    </div>
+  );
+}
+
+export function LoadingSpinner({ label = "Carregando..." }: { label?: string }) {
+  return (
+    <div className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400 py-12 justify-center">
+      <span className="w-4 h-4 rounded-full border-2 border-neutral-300 dark:border-neutral-700 border-t-neutral-900 dark:border-t-neutral-100 animate-spin" />
+      {label}
     </div>
   );
 }

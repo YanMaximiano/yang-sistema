@@ -70,14 +70,14 @@ export default async function CalendarioPage({
       />
 
       {atrasados.length > 0 && (
-        <Card className="p-4 mb-6 border-red-300 bg-red-50">
-          <p className="text-sm font-medium text-red-800 mb-2">Projetos atrasados</p>
+        <Card className="p-4 mb-6 border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-950">
+          <p className="text-sm font-medium text-red-800 dark:text-red-300 mb-2">Projetos atrasados</p>
           <div className="space-y-1">
             {atrasados.map((p) => (
               <Link
                 key={p.id}
                 href={`/projetos/${p.id}`}
-                className="flex justify-between text-sm text-red-700 hover:underline"
+                className="flex justify-between text-sm text-red-700 dark:text-red-400 hover:underline"
               >
                 <span>
                   {p.nome} — {p.cliente.nome}
@@ -89,7 +89,7 @@ export default async function CalendarioPage({
         </Card>
       )}
 
-      <div className="grid grid-cols-7 gap-2 text-xs font-medium text-neutral-500 mb-1">
+      <div className="grid grid-cols-7 gap-2 text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1">
         {["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"].map((d) => (
           <div key={d} className="text-center">
             {d}
@@ -108,13 +108,13 @@ export default async function CalendarioPage({
               key={dia.toISOString()}
               className={`p-2 min-h-[90px] ${foraDoMes ? "opacity-40" : ""} ${ehHoje ? "border-neutral-900 border-2" : ""}`}
             >
-              <p className="text-xs text-neutral-400 mb-1">{format(dia, "d")}</p>
+              <p className="text-xs text-neutral-400 dark:text-neutral-500 mb-1">{format(dia, "d")}</p>
               <div className="space-y-1">
                 {projetosDoDia.map((p) => (
                   <Link
                     key={p.id}
                     href={`/projetos/${p.id}`}
-                    className="block text-[11px] leading-tight bg-neutral-100 rounded px-1 py-0.5 hover:bg-neutral-200 truncate"
+                    className="block text-[11px] leading-tight bg-neutral-100 dark:bg-neutral-800 rounded px-1 py-0.5 hover:bg-neutral-200 dark:hover:bg-neutral-700 truncate"
                     title={`${p.nome} — ${p.cliente.nome}`}
                   >
                     {p.nome}

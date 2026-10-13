@@ -6,33 +6,32 @@ import { ptBR } from "date-fns/locale";
 import Link from "next/link";
 
 export default async function FinanceiroPage() {
-  const projetos = await prisma.projeto.findMany({
-    include: {
-      cliente: true,
-      servico: { include: { pilar: true } },
-      recebimentos: true,
-      custos: true,
-    },
-  });
-
-  const recebimentosPendentes = await prisma.recebimento.findMany({
-    where: { status: { in: ["PENDENTE", "ATRASADO"] } },
-    include: { projeto: { include: { cliente: true } } },
-    orderBy: { vencimento: "asc" },
-  });
-
   const inicioProjecao = startOfMonth(new Date());
   const fimProjecao = addMonths(inicioProjecao, 5);
 
-  const [recebimentosFuturos, custosFuturos, custosSemData] = await Promise.all([
-    prisma.recebimento.findMany({
-      where: { status: { not: "PAGO" }, vencimento: { gte: inicioProjecao, lt: addMonths(fimProjecao, 1) } },
-    }),
-    prisma.custo.findMany({
-      where: { dataPrevista: { gte: inicioProjecao, lt: addMonths(fimProjecao, 1) } },
-    }),
-    prisma.custo.aggregate({ where: { dataPrevista: null }, _count: true, _sum: { valor: true } }),
-  ]);
+  const [projetos, recebimentosPendentes, recebimentosFuturos, custosFuturos, custosSemData] =
+    await Promise.all([
+      prisma.projeto.findMany({
+        include: {
+          cliente: true,
+          servico: { include: { pilar: true } },
+          recebimentos: true,
+          custos: true,
+        },
+      }),
+      prisma.recebimento.findMany({
+        where: { status: { in: ["PENDENTE", "ATRASADO"] } },
+        include: { projeto: { include: { cliente: true } } },
+        orderBy: { vencimento: "asc" },
+      }),
+      prisma.recebimento.findMany({
+        where: { status: { not: "PAGO" }, vencimento: { gte: inicioProjecao, lt: addMonths(fimProjecao, 1) } },
+      }),
+      prisma.custo.findMany({
+        where: { dataPrevista: { gte: inicioProjecao, lt: addMonths(fimProjecao, 1) } },
+      }),
+      prisma.custo.aggregate({ where: { dataPrevista: null }, _count: true, _sum: { valor: true } }),
+    ]);
 
   let saldoAcumulado = 0;
   const fluxoCaixa = eachMonthOfInterval({ start: inicioProjecao, end: fimProjecao }).map((mes) => {
@@ -83,16 +82,16 @@ export default async function FinanceiroPage() {
 
       <div className="grid grid-cols-3 gap-4 mb-8">
         <Card className="p-4">
-          <p className="text-xs text-neutral-500">Receita recebida (total)</p>
+          <p className="text-xs text-neutral-500 dark:text-neutral-400">Receita recebida (total)</p>
           <p className="text-xl font-semibold">{formatMoeda(receitaTotal)}</p>
         </Card>
         <Card className="p-4">
-          <p className="text-xs text-neutral-500">Custos (total)</p>
+          <p className="text-xs text-neutral-500 dark:text-neutral-400">Custos (total)</p>
           <p className="text-xl font-semibold">{formatMoeda(custoTotal)}</p>
         </Card>
         <Card className="p-4">
-          <p className="text-xs text-neutral-500">Margem</p>
-          <p className={`text-xl font-semibold ${margemTotal < 0 ? "text-red-600" : "text-green-700"}`}>
+          <p className="text-xs text-neutral-500 dark:text-neutral-400">Margem</p>
+          <p className={`text-xl font-semibold ${margemTotal < 0 ? "text-red-600 dark:text-red-400" : "text-green-700 dark:text-green-400"}`}>
             {formatMoeda(margemTotal)}
           </p>
         </Card>
@@ -100,14 +99,14 @@ export default async function FinanceiroPage() {
 
       <section className="mb-8">
         <h2 className="text-lg font-semibold mb-3">Fluxo de caixa projetado</h2>
-        <p className="text-sm text-neutral-500 mb-3">
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-3">
           Previsto a receber e a pagar nos próximos 6 meses — recebimentos ainda não pagos e
           custos com data prevista (não é o já efetivado, que já está nos cards acima).
         </p>
         <Card className="p-4 overflow-x-auto">
           <table className="w-full text-sm min-w-[500px]">
             <thead>
-              <tr className="text-left text-neutral-500 border-b border-neutral-200">
+              <tr className="text-left text-neutral-500 dark:text-neutral-400 border-b border-neutral-200 dark:border-neutral-800">
                 <th className="py-2 pr-4 font-medium">Mês</th>
                 <th className="py-2 pr-4 font-medium">A receber</th>
                 <th className="py-2 pr-4 font-medium">A pagar</th>
@@ -117,14 +116,14 @@ export default async function FinanceiroPage() {
             </thead>
             <tbody>
               {fluxoCaixa.map((linha) => (
-                <tr key={linha.mes.toISOString()} className="border-b border-neutral-100 last:border-0">
+                <tr key={linha.mes.toISOString()} className="border-b border-neutral-100 dark:border-neutral-800 last:border-0">
                   <td className="py-2 pr-4 capitalize">{format(linha.mes, "MMMM yyyy", { locale: ptBR })}</td>
                   <td className="py-2 pr-4">{formatMoeda(linha.aReceber)}</td>
                   <td className="py-2 pr-4">{formatMoeda(linha.aPagar)}</td>
-                  <td className={`py-2 pr-4 ${linha.saldoMes < 0 ? "text-red-600" : "text-green-700"}`}>
+                  <td className={`py-2 pr-4 ${linha.saldoMes < 0 ? "text-red-600 dark:text-red-400" : "text-green-700 dark:text-green-400"}`}>
                     {formatMoeda(linha.saldoMes)}
                   </td>
-                  <td className={linha.saldoAcumulado < 0 ? "text-red-600" : "text-green-700"}>
+                  <td className={linha.saldoAcumulado < 0 ? "text-red-600 dark:text-red-400" : "text-green-700 dark:text-green-400"}>
                     {formatMoeda(linha.saldoAcumulado)}
                   </td>
                 </tr>
@@ -133,7 +132,7 @@ export default async function FinanceiroPage() {
           </table>
         </Card>
         {custosSemData._count > 0 && (
-          <p className="text-xs text-neutral-500 mt-2">
+          <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-2">
             {custosSemData._count} custo(s) sem data prevista ({formatMoeda(custosSemData._sum.valor ?? 0)}) não
             entram nessa projeção.
           </p>
@@ -146,15 +145,15 @@ export default async function FinanceiroPage() {
           {Array.from(porPilar.entries()).map(([id, v]) => (
             <Card key={id} className="p-3 flex items-center justify-between">
               <span className="text-sm font-medium">{v.nome}</span>
-              <span className="text-sm text-neutral-500">
+              <span className="text-sm text-neutral-500 dark:text-neutral-400">
                 {formatMoeda(v.receita)} − {formatMoeda(v.custo)} ={" "}
-                <span className={v.receita - v.custo < 0 ? "text-red-600" : "text-green-700"}>
+                <span className={v.receita - v.custo < 0 ? "text-red-600 dark:text-red-400" : "text-green-700 dark:text-green-400"}>
                   {formatMoeda(v.receita - v.custo)}
                 </span>
               </span>
             </Card>
           ))}
-          {porPilar.size === 0 && <p className="text-sm text-neutral-500">Sem dados ainda.</p>}
+          {porPilar.size === 0 && <p className="text-sm text-neutral-500 dark:text-neutral-400">Sem dados ainda.</p>}
         </div>
       </section>
 
@@ -164,15 +163,15 @@ export default async function FinanceiroPage() {
           {Array.from(porServico.entries()).map(([id, v]) => (
             <Card key={id} className="p-3 flex items-center justify-between">
               <span className="text-sm font-medium">{v.nome}</span>
-              <span className="text-sm text-neutral-500">
+              <span className="text-sm text-neutral-500 dark:text-neutral-400">
                 {formatMoeda(v.receita)} − {formatMoeda(v.custo)} ={" "}
-                <span className={v.receita - v.custo < 0 ? "text-red-600" : "text-green-700"}>
+                <span className={v.receita - v.custo < 0 ? "text-red-600 dark:text-red-400" : "text-green-700 dark:text-green-400"}>
                   {formatMoeda(v.receita - v.custo)}
                 </span>
               </span>
             </Card>
           ))}
-          {porServico.size === 0 && <p className="text-sm text-neutral-500">Sem dados ainda.</p>}
+          {porServico.size === 0 && <p className="text-sm text-neutral-500 dark:text-neutral-400">Sem dados ainda.</p>}
         </div>
       </section>
 
@@ -181,12 +180,12 @@ export default async function FinanceiroPage() {
         <div className="space-y-2">
           {recebimentosPendentes.map((r) => (
             <Link key={r.id} href={`/projetos/${r.projeto.id}`}>
-              <Card className="p-3 flex items-center justify-between hover:border-neutral-400 transition-colors">
+              <Card className="p-3 flex items-center justify-between hover:border-neutral-400 dark:hover:border-neutral-600 transition-colors">
                 <div>
                   <p className="text-sm font-medium">
                     {r.projeto.nome} — {r.projeto.cliente.nome}
                   </p>
-                  <p className="text-xs text-neutral-500">vencimento {formatData(r.vencimento)}</p>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">vencimento {formatData(r.vencimento)}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-sm">{formatMoeda(r.valor)}</span>
@@ -196,7 +195,7 @@ export default async function FinanceiroPage() {
             </Link>
           ))}
           {recebimentosPendentes.length === 0 && (
-            <p className="text-sm text-neutral-500">Nenhum recebimento pendente.</p>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">Nenhum recebimento pendente.</p>
           )}
         </div>
       </section>
@@ -212,18 +211,18 @@ export default async function FinanceiroPage() {
             const margem = receita - custo;
             return (
               <Link key={projeto.id} href={`/projetos/${projeto.id}`}>
-                <Card className="p-3 flex items-center justify-between hover:border-neutral-400 transition-colors">
+                <Card className="p-3 flex items-center justify-between hover:border-neutral-400 dark:hover:border-neutral-600 transition-colors">
                   <span className="text-sm font-medium">
                     {projeto.nome} — {projeto.cliente.nome}
                   </span>
-                  <span className={`text-sm ${margem < 0 ? "text-red-600" : "text-green-700"}`}>
+                  <span className={`text-sm ${margem < 0 ? "text-red-600 dark:text-red-400" : "text-green-700 dark:text-green-400"}`}>
                     {formatMoeda(margem)}
                   </span>
                 </Card>
               </Link>
             );
           })}
-          {projetos.length === 0 && <p className="text-sm text-neutral-500">Nenhum projeto ainda.</p>}
+          {projetos.length === 0 && <p className="text-sm text-neutral-500 dark:text-neutral-400">Nenhum projeto ainda.</p>}
         </div>
       </section>
     </div>

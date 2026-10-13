@@ -51,7 +51,7 @@ export function NovoProjetoForm({ clientes, servicos }: { clientes: Cliente[]; s
                 </option>
               ))}
             </Select>
-            <p className="text-xs text-neutral-500 mt-1">
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
               Só serve para puxar as sugestões de equipe/equipamento desse plano no projeto.
             </p>
           </div>
