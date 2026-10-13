@@ -16,6 +16,7 @@ export const ROTAS_APP: { href: string; label: string; roles: Role[] }[] = [
   { href: "/calendario", label: "Calendário", roles: ["ADMIN", "EQUIPE", "FREELANCER"] },
   { href: "/equipamentos", label: "Equipamentos", roles: ["ADMIN", "EQUIPE"] },
   { href: "/equipe", label: "Equipe", roles: ["ADMIN", "EQUIPE"] },
+  { href: "/avisos", label: "Avisos", roles: ["ADMIN", "EQUIPE"] },
   { href: "/financeiro", label: "Financeiro", roles: ["ADMIN"] },
   { href: "/usuarios", label: "Usuários", roles: ["ADMIN"] },
 ];

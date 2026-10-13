@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui";
 import { ROTAS_APP, type Role } from "@/lib/rotas";
+import { listarAvisos } from "@/lib/avisos";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -10,6 +11,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   const role = session.user.role as Role;
   const nav = ROTAS_APP.filter((item) => item.roles.includes(role));
+  const totalAvisos = role === "ADMIN" || role === "EQUIPE" ? (await listarAvisos()).length : 0;
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen flex-1">
@@ -26,9 +28,14 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             <Link
               key={item.href}
               href={item.href}
-              className="shrink-0 rounded-md px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100 whitespace-nowrap"
+              className="shrink-0 rounded-md px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100 whitespace-nowrap inline-flex items-center gap-2"
             >
               {item.label}
+              {item.href === "/avisos" && totalAvisos > 0 && (
+                <span className="inline-flex items-center justify-center min-w-[1.25rem] h-5 rounded-full bg-red-100 text-red-800 text-xs font-medium px-1">
+                  {totalAvisos}
+                </span>
+              )}
             </Link>
           ))}
         </nav>
