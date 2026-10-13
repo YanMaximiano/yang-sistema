@@ -4,24 +4,11 @@ import { notFound, redirect } from "next/navigation";
 import { PageHeader, Card, Badge, Button, Textarea, Label } from "@/components/ui";
 import { formatMoeda, formatData } from "@/lib/utils";
 import { avaliarEntrega } from "../../actions";
-
-const ETAPA_VARIANT: Record<string, "neutral" | "success" | "info"> = {
-  PENDENTE: "neutral",
-  EM_ANDAMENTO: "info",
-  CONCLUIDA: "success",
-};
-
-const ENTREGA_VARIANT: Record<string, "neutral" | "success" | "danger"> = {
-  EM_REVISAO: "neutral",
-  APROVADA: "success",
-  REPROVADA: "danger",
-};
-
-const RECEBIMENTO_VARIANT: Record<string, "neutral" | "success" | "danger"> = {
-  PENDENTE: "neutral",
-  PAGO: "success",
-  ATRASADO: "danger",
-};
+import {
+  ETAPA_STATUS_VARIANT as ETAPA_VARIANT,
+  ENTREGA_STATUS_VARIANT as ENTREGA_VARIANT,
+  RECEBIMENTO_STATUS_VARIANT as RECEBIMENTO_VARIANT,
+} from "@/lib/status";
 
 export default async function PortalProjetoPage({
   params,

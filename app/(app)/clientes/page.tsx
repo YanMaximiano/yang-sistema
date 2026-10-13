@@ -2,20 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { PageHeader, Card, Input, Select, Button, Badge, Label } from "@/components/ui";
 import { createCliente } from "./actions";
 import Link from "next/link";
-
-const STATUS_LABEL: Record<string, string> = {
-  LEAD: "Lead",
-  ORCAMENTO_ENVIADO: "Orçamento enviado",
-  CLIENTE_ATIVO: "Cliente ativo",
-  CLIENTE_RECORRENTE: "Cliente recorrente",
-};
-
-const STATUS_VARIANT: Record<string, "neutral" | "success" | "warning" | "info"> = {
-  LEAD: "neutral",
-  ORCAMENTO_ENVIADO: "warning",
-  CLIENTE_ATIVO: "success",
-  CLIENTE_RECORRENTE: "info",
-};
+import { CLIENTE_STATUS_LABEL, CLIENTE_STATUS_VARIANT } from "@/lib/status";
 
 export default async function ClientesPage() {
   const clientes = await prisma.cliente.findMany({
@@ -78,8 +65,8 @@ export default async function ClientesPage() {
                 <span className="text-xs text-neutral-400">
                   {cliente._count.propostas} proposta(s) · {cliente._count.projetos} projeto(s)
                 </span>
-                <Badge variant={STATUS_VARIANT[cliente.statusRelacionamento]}>
-                  {STATUS_LABEL[cliente.statusRelacionamento]}
+                <Badge variant={CLIENTE_STATUS_VARIANT[cliente.statusRelacionamento]}>
+                  {CLIENTE_STATUS_LABEL[cliente.statusRelacionamento]}
                 </Badge>
               </div>
             </Card>

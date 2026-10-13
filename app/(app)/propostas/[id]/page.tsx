@@ -3,13 +3,7 @@ import { notFound } from "next/navigation";
 import { PageHeader, Card, Badge, Button, LinkButton } from "@/components/ui";
 import { formatMoeda, formatData } from "@/lib/utils";
 import { atualizarStatusProposta } from "../actions";
-
-const STATUS_VARIANT: Record<string, "neutral" | "success" | "warning" | "danger"> = {
-  ENVIADA: "neutral",
-  NEGOCIACAO: "warning",
-  APROVADA: "success",
-  RECUSADA: "danger",
-};
+import { PROPOSTA_STATUS_VARIANT } from "@/lib/status";
 
 export default async function PropostaDetalhePage({
   params,
@@ -36,7 +30,7 @@ export default async function PropostaDetalhePage({
       <PageHeader
         title={`Proposta — ${proposta.cliente.nome}`}
         description={`${proposta.servico.nome} — ${proposta.plano.nome}`}
-        actions={<Badge variant={STATUS_VARIANT[proposta.status]}>{proposta.status}</Badge>}
+        actions={<Badge variant={PROPOSTA_STATUS_VARIANT[proposta.status]}>{proposta.status}</Badge>}
       />
 
       <Card className="p-5 mb-6 space-y-3 text-sm">

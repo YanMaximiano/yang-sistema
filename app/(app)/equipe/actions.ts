@@ -2,32 +2,20 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-
-function str(formData: FormData, key: string): string | null {
-  const v = formData.get(key);
-  if (v === null) return null;
-  const s = String(v).trim();
-  return s === "" ? null : s;
-}
-
-function num(formData: FormData, key: string): number | null {
-  const v = formData.get(key);
-  if (v === null || v === "") return null;
-  const n = Number(v);
-  return Number.isFinite(n) ? n : null;
-}
+import { str, num } from "@/lib/form";
+import type { TipoProfissional } from "@/app/generated/prisma/client";
 
 export async function createProfissional(formData: FormData) {
   const nome = str(formData, "nome");
   const funcao = str(formData, "funcao");
-  const tipo = formData.get("tipo") as string;
+  const tipo = formData.get("tipo") as TipoProfissional;
   if (!nome || !funcao || !tipo) return;
 
   await prisma.profissional.create({
     data: {
       nome,
       funcao,
-      tipo: tipo as never,
+      tipo,
       diariaPadrao: num(formData, "diariaPadrao"),
       contato: str(formData, "contato"),
       email: str(formData, "email"),
@@ -44,7 +32,7 @@ export async function updateProfissional(formData: FormData) {
     data: {
       nome: str(formData, "nome") ?? undefined,
       funcao: str(formData, "funcao") ?? undefined,
-      tipo: (formData.get("tipo") as string as never) || undefined,
+      tipo: (formData.get("tipo") as TipoProfissional | null) || undefined,
       diariaPadrao: num(formData, "diariaPadrao"),
       contato: str(formData, "contato"),
       email: str(formData, "email"),

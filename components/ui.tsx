@@ -109,12 +109,14 @@ export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElemen
   );
 }
 
+export type BadgeVariant = "neutral" | "success" | "warning" | "danger" | "info";
+
 export function Badge({
   className,
   variant = "neutral",
   ...props
 }: React.HTMLAttributes<HTMLSpanElement> & {
-  variant?: "neutral" | "success" | "warning" | "danger" | "info";
+  variant?: BadgeVariant;
 }) {
   const variants = {
     neutral: "bg-neutral-100 text-neutral-700",

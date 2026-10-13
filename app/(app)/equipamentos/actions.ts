@@ -2,13 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-
-function str(formData: FormData, key: string): string | null {
-  const v = formData.get(key);
-  if (v === null) return null;
-  const s = String(v).trim();
-  return s === "" ? null : s;
-}
+import { str } from "@/lib/form";
 
 export async function createEquipamento(formData: FormData) {
   const nome = str(formData, "nome");

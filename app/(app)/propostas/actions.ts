@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { atualizarStatusPropostaCore } from "@/lib/propostas";
+import type { StatusProposta } from "@/app/generated/prisma/client";
 
 export async function createProposta(formData: FormData) {
   const clienteId = formData.get("clienteId") as string;
@@ -42,7 +43,7 @@ export async function createProposta(formData: FormData) {
 
 export async function atualizarStatusProposta(formData: FormData) {
   const id = formData.get("id") as string;
-  const status = formData.get("status") as string;
+  const status = formData.get("status") as StatusProposta;
   if (!id || !status) return;
   if (status !== "NEGOCIACAO" && status !== "APROVADA" && status !== "RECUSADA") return;
 

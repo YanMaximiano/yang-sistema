@@ -4,13 +4,7 @@ import { redirect } from "next/navigation";
 import { PageHeader, Card, Badge } from "@/components/ui";
 import { formatMoeda, formatData } from "@/lib/utils";
 import Link from "next/link";
-
-const STATUS_VARIANT: Record<string, "neutral" | "success" | "warning" | "danger"> = {
-  ATIVO: "success",
-  PAUSADO: "warning",
-  CONCLUIDO: "neutral",
-  CANCELADO: "danger",
-};
+import { PROJETO_STATUS_VARIANT } from "@/lib/status";
 
 export default async function PortalHomePage() {
   const session = await auth();
@@ -63,7 +57,7 @@ export default async function PortalHomePage() {
               <Card className="p-4 hover:border-neutral-400 transition-colors">
                 <div className="flex items-center justify-between">
                   <span className="font-medium">{proj.nome}</span>
-                  <Badge variant={STATUS_VARIANT[proj.statusGeral]}>{proj.statusGeral}</Badge>
+                  <Badge variant={PROJETO_STATUS_VARIANT[proj.statusGeral]}>{proj.statusGeral}</Badge>
                 </div>
                 <p className="text-sm text-neutral-500">
                   {proj.servico.nome} · prazo {formatData(proj.prazoData)}

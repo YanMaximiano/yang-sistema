@@ -4,13 +4,7 @@ import { PageHeader, Card, Input, Select, Textarea, Button, Badge, Label, LinkBu
 import { updateCliente, addNota, criarAcessoPortal } from "../actions";
 import { formatMoeda, formatData } from "@/lib/utils";
 import Link from "next/link";
-
-const STATUS_PROPOSTA_VARIANT: Record<string, "neutral" | "success" | "warning" | "danger"> = {
-  ENVIADA: "neutral",
-  NEGOCIACAO: "warning",
-  APROVADA: "success",
-  RECUSADA: "danger",
-};
+import { PROPOSTA_STATUS_VARIANT } from "@/lib/status";
 
 export default async function ClienteDetalhePage({
   params,
@@ -93,7 +87,7 @@ export default async function ClienteDetalhePage({
                     <span className="text-sm font-medium">
                       {p.servico.nome} — {p.plano.nome}
                     </span>
-                    <Badge variant={STATUS_PROPOSTA_VARIANT[p.status]}>{p.status}</Badge>
+                    <Badge variant={PROPOSTA_STATUS_VARIANT[p.status]}>{p.status}</Badge>
                   </div>
                   <p className="text-xs text-neutral-500">{formatMoeda(p.valorProposto)}</p>
                 </Card>

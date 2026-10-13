@@ -1,6 +1,7 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import type { StatusProposta } from "@/app/generated/prisma/client";
 
 /**
  * Transições de status de uma proposta compartilhadas entre a tela do admin
@@ -9,10 +10,10 @@ import { revalidatePath } from "next/cache";
  * sugestões de equipe/equipamento) e promove o status do cliente sem rebaixar
  * quem já está ativo/recorrente.
  */
-export async function atualizarStatusPropostaCore(propostaId: string, status: string) {
+export async function atualizarStatusPropostaCore(propostaId: string, status: StatusProposta) {
   const proposta = await prisma.proposta.update({
     where: { id: propostaId },
-    data: { status: status as never },
+    data: { status },
     include: { servico: { include: { etapasTemplate: true } }, plano: true, cliente: true },
   });
 

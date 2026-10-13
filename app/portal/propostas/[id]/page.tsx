@@ -4,13 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { PageHeader, Card, Badge, Button } from "@/components/ui";
 import { formatMoeda, formatData } from "@/lib/utils";
 import { responderProposta } from "../../actions";
-
-const STATUS_VARIANT: Record<string, "neutral" | "success" | "warning" | "danger"> = {
-  ENVIADA: "neutral",
-  NEGOCIACAO: "warning",
-  APROVADA: "success",
-  RECUSADA: "danger",
-};
+import { PROPOSTA_STATUS_VARIANT } from "@/lib/status";
 
 export default async function PortalPropostaPage({
   params,
@@ -37,7 +31,7 @@ export default async function PortalPropostaPage({
     <div className="max-w-2xl">
       <PageHeader
         title={`${proposta.servico.nome} — ${proposta.plano.nome}`}
-        actions={<Badge variant={STATUS_VARIANT[proposta.status]}>{proposta.status}</Badge>}
+        actions={<Badge variant={PROPOSTA_STATUS_VARIANT[proposta.status]}>{proposta.status}</Badge>}
       />
 
       <Card className="p-5 mb-6 space-y-3 text-sm">

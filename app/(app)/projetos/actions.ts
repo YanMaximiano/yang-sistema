@@ -3,27 +3,8 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-
-function str(formData: FormData, key: string): string | null {
-  const v = formData.get(key);
-  if (v === null) return null;
-  const s = String(v).trim();
-  return s === "" ? null : s;
-}
-
-function num(formData: FormData, key: string): number | null {
-  const v = formData.get(key);
-  if (v === null || v === "") return null;
-  const n = Number(v);
-  return Number.isFinite(n) ? n : null;
-}
-
-function dataOrNull(formData: FormData, key: string): Date | null {
-  const v = str(formData, key);
-  // meio-dia UTC evita que o fuso horário local jogue a data-only (yyyy-mm-dd)
-  // do <input type="date"> para o dia anterior ao exibir/comparar depois
-  return v ? new Date(`${v}T12:00:00`) : null;
-}
+import { str, num, dataOrNull } from "@/lib/form";
+import type { StatusGeralProjeto, StatusEntrega, StatusRecebimento } from "@/app/generated/prisma/client";
 
 // ---------- Projeto ----------
 
@@ -63,9 +44,9 @@ export async function criarProjetoAvulso(formData: FormData) {
 
 export async function atualizarStatusGeralProjeto(formData: FormData) {
   const id = formData.get("id") as string;
-  const statusGeral = formData.get("statusGeral") as string;
+  const statusGeral = formData.get("statusGeral") as StatusGeralProjeto;
   if (!id || !statusGeral) return;
-  await prisma.projeto.update({ where: { id }, data: { statusGeral: statusGeral as never } });
+  await prisma.projeto.update({ where: { id }, data: { statusGeral } });
   revalidatePath(`/projetos/${id}`);
   revalidatePath("/projetos");
 }
@@ -175,13 +156,13 @@ export async function criarEntrega(formData: FormData) {
 export async function atualizarStatusEntrega(formData: FormData) {
   const id = formData.get("id") as string;
   const projetoId = formData.get("projetoId") as string;
-  const status = formData.get("status") as string;
+  const status = formData.get("status") as StatusEntrega;
   if (!id || !projetoId || !status) return;
 
   await prisma.entrega.update({
     where: { id },
     data: {
-      status: status as never,
+      status,
       // só sobrescreve o comentário se o formulário realmente enviou o campo —
       // os botões de aprovar/reprovar do admin não têm esse campo e não podem
       // apagar o comentário que o cliente já deixou
@@ -216,13 +197,13 @@ export async function criarRecebimento(formData: FormData) {
 export async function atualizarRecebimento(formData: FormData) {
   const id = formData.get("id") as string;
   const projetoId = formData.get("projetoId") as string;
-  const status = formData.get("status") as string;
+  const status = formData.get("status") as StatusRecebimento;
   if (!id || !projetoId || !status) return;
 
   await prisma.recebimento.update({
     where: { id },
     data: {
-      status: status as never,
+      status,
       dataPagamento: status === "PAGO" ? new Date() : null,
     },
   });

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { atualizarStatusPropostaCore } from "@/lib/propostas";
+import type { StatusProposta, StatusEntrega } from "@/app/generated/prisma/client";
 
 async function clienteIdDaSessao() {
   const session = await auth();
@@ -13,7 +14,7 @@ async function clienteIdDaSessao() {
 
 export async function responderProposta(formData: FormData) {
   const id = formData.get("id") as string;
-  const status = formData.get("status") as string;
+  const status = formData.get("status") as StatusProposta;
   if (!id || !status) return;
 
   const clienteId = await clienteIdDaSessao();
@@ -31,7 +32,7 @@ export async function responderProposta(formData: FormData) {
 
 export async function avaliarEntrega(formData: FormData) {
   const id = formData.get("id") as string;
-  const status = formData.get("status") as string;
+  const status = formData.get("status") as StatusEntrega;
   const comentarioCliente = (formData.get("comentarioCliente") as string | null)?.trim() || null;
   if (!id || !status) return;
 
@@ -47,7 +48,7 @@ export async function avaliarEntrega(formData: FormData) {
 
   await prisma.entrega.update({
     where: { id },
-    data: { status: status as never, comentarioCliente },
+    data: { status, comentarioCliente },
   });
   revalidatePath(`/portal/projetos/${entrega.projetoId}`);
 }

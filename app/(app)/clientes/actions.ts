@@ -4,13 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
-
-function str(formData: FormData, key: string): string | null {
-  const v = formData.get(key);
-  if (v === null) return null;
-  const s = String(v).trim();
-  return s === "" ? null : s;
-}
+import { str } from "@/lib/form";
+import type { StatusRelacionamento } from "@/app/generated/prisma/client";
 
 export async function createCliente(formData: FormData) {
   const nome = str(formData, "nome");
@@ -42,7 +37,8 @@ export async function updateCliente(formData: FormData) {
       email: str(formData, "email"),
       telefone: str(formData, "telefone"),
       origem: str(formData, "origem"),
-      statusRelacionamento: (formData.get("statusRelacionamento") as never) || undefined,
+      statusRelacionamento:
+        (formData.get("statusRelacionamento") as StatusRelacionamento | null) || undefined,
     },
   });
   revalidatePath("/clientes");

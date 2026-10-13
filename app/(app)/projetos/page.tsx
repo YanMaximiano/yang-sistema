@@ -2,13 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { PageHeader, Card, Badge, LinkButton } from "@/components/ui";
 import { formatData } from "@/lib/utils";
 import Link from "next/link";
-
-const STATUS_VARIANT: Record<string, "neutral" | "success" | "warning" | "danger"> = {
-  ATIVO: "success",
-  PAUSADO: "warning",
-  CONCLUIDO: "neutral",
-  CANCELADO: "danger",
-};
+import { PROJETO_STATUS_VARIANT } from "@/lib/status";
 
 export default async function ProjetosPage() {
   const projetos = await prisma.projeto.findMany({
@@ -50,7 +44,7 @@ export default async function ProjetosPage() {
                       {concluidas}/{projeto.etapas.length} etapas · prazo {formatData(projeto.prazoData)}
                     </span>
                     {etapaAtual && <Badge variant="info">{etapaAtual.nome}</Badge>}
-                    <Badge variant={STATUS_VARIANT[projeto.statusGeral]}>{projeto.statusGeral}</Badge>
+                    <Badge variant={PROJETO_STATUS_VARIANT[projeto.statusGeral]}>{projeto.statusGeral}</Badge>
                   </div>
                 </div>
               </Card>

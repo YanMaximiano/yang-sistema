@@ -20,24 +20,11 @@ import {
   removerEscala,
 } from "../actions";
 import { StatusGeralSelect } from "./StatusGeralSelect";
-
-const ETAPA_VARIANT: Record<string, "neutral" | "success" | "info"> = {
-  PENDENTE: "neutral",
-  EM_ANDAMENTO: "info",
-  CONCLUIDA: "success",
-};
-
-const RECEBIMENTO_VARIANT: Record<string, "neutral" | "success" | "danger"> = {
-  PENDENTE: "neutral",
-  PAGO: "success",
-  ATRASADO: "danger",
-};
-
-const ENTREGA_VARIANT: Record<string, "neutral" | "success" | "danger"> = {
-  EM_REVISAO: "neutral",
-  APROVADA: "success",
-  REPROVADA: "danger",
-};
+import {
+  ETAPA_STATUS_VARIANT as ETAPA_VARIANT,
+  ENTREGA_STATUS_VARIANT as ENTREGA_VARIANT,
+  RECEBIMENTO_STATUS_VARIANT as RECEBIMENTO_VARIANT,
+} from "@/lib/status";
 
 export default async function ProjetoDetalhePage({
   params,

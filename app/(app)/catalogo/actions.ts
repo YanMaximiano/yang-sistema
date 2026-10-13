@@ -3,36 +3,8 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-
-function num(formData: FormData, key: string): number | null {
-  const v = formData.get(key);
-  if (v === null || v === "") return null;
-  const n = Number(v);
-  return Number.isFinite(n) ? n : null;
-}
-
-function int(formData: FormData, key: string): number | null {
-  const v = formData.get(key);
-  if (v === null || v === "") return null;
-  const n = parseInt(v as string, 10);
-  return Number.isFinite(n) ? n : null;
-}
-
-function str(formData: FormData, key: string): string | null {
-  const v = formData.get(key);
-  if (v === null) return null;
-  const s = String(v).trim();
-  return s === "" ? null : s;
-}
-
-function list(formData: FormData, key: string): string[] {
-  const raw = str(formData, key);
-  if (!raw) return [];
-  return raw
-    .split("\n")
-    .map((l) => l.trim())
-    .filter(Boolean);
-}
+import { str, num, int, list } from "@/lib/form";
+import type { TipoCobranca } from "@/app/generated/prisma/client";
 
 // ---------- Pilar ----------
 
@@ -65,14 +37,14 @@ export async function togglePilarAtivo(formData: FormData) {
 export async function createServico(formData: FormData) {
   const nome = str(formData, "nome");
   const pilarId = formData.get("pilarId") as string;
-  const tipoCobranca = formData.get("tipoCobranca") as string;
+  const tipoCobranca = formData.get("tipoCobranca") as TipoCobranca;
   if (!nome || !pilarId || !tipoCobranca) return;
 
   const servico = await prisma.servico.create({
     data: {
       nome,
       pilarId,
-      tipoCobranca: tipoCobranca as never,
+      tipoCobranca,
     },
   });
   revalidatePath("/catalogo");
@@ -84,14 +56,14 @@ export async function updateServico(formData: FormData) {
   if (!id) return;
   const nome = str(formData, "nome");
   const pilarId = formData.get("pilarId") as string;
-  const tipoCobranca = formData.get("tipoCobranca") as string;
+  const tipoCobranca = formData.get("tipoCobranca") as TipoCobranca | null;
 
   await prisma.servico.update({
     where: { id },
     data: {
       nome: nome ?? undefined,
       pilarId: pilarId || undefined,
-      tipoCobranca: (tipoCobranca as never) || undefined,
+      tipoCobranca: tipoCobranca || undefined,
       descricao: str(formData, "descricao"),
       argumentacaoVenda: str(formData, "argumentacaoVenda"),
       objecoesComuns: str(formData, "objecoesComuns"),
