@@ -17,6 +17,7 @@ export const ROTAS_APP: { href: string; label: string; roles: Role[] }[] = [
   { href: "/equipamentos", label: "Equipamentos", roles: ["ADMIN", "EQUIPE"] },
   { href: "/equipe", label: "Equipe", roles: ["ADMIN", "EQUIPE"] },
   { href: "/financeiro", label: "Financeiro", roles: ["ADMIN"] },
+  { href: "/usuarios", label: "Usuários", roles: ["ADMIN"] },
 ];
 
 export function rotaPermitidaParaPerfil(pathname: string, role: Role): boolean {
