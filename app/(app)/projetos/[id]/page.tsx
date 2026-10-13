@@ -610,6 +610,9 @@ export default async function ProjetoDetalhePage({
                     </span>
                   </div>
                   {c.descricao && <p className="text-xs text-neutral-500">{c.descricao}</p>}
+                  {c.dataPrevista && (
+                    <p className="text-xs text-neutral-500">Previsto para {formatData(c.dataPrevista)}</p>
+                  )}
                   <form action={deletarCusto} className="mt-1">
                     <input type="hidden" name="id" value={c.id} />
                     <input type="hidden" name="projetoId" value={projeto.id} />
@@ -625,6 +628,10 @@ export default async function ProjetoDetalhePage({
               <Input name="tipo" placeholder="Tipo (cachê, equipamento, transporte...)" required />
               <Input name="valor" type="number" step="1" placeholder="Valor" required />
               <Input name="descricao" placeholder="Descrição (opcional)" />
+              <div>
+                <Label>Data prevista (opcional)</Label>
+                <Input name="dataPrevista" type="date" />
+              </div>
               <Button type="submit" variant="secondary" className="w-full">
                 Adicionar custo
               </Button>

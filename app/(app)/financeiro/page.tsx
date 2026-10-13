@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { PageHeader, Card, Badge } from "@/components/ui";
 import { formatMoeda, formatData } from "@/lib/utils";
+import { startOfMonth, addMonths, eachMonthOfInterval, format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import Link from "next/link";
 
 export default async function FinanceiroPage() {
@@ -17,6 +19,33 @@ export default async function FinanceiroPage() {
     where: { status: { in: ["PENDENTE", "ATRASADO"] } },
     include: { projeto: { include: { cliente: true } } },
     orderBy: { vencimento: "asc" },
+  });
+
+  const inicioProjecao = startOfMonth(new Date());
+  const fimProjecao = addMonths(inicioProjecao, 5);
+
+  const [recebimentosFuturos, custosFuturos, custosSemData] = await Promise.all([
+    prisma.recebimento.findMany({
+      where: { status: { not: "PAGO" }, vencimento: { gte: inicioProjecao, lt: addMonths(fimProjecao, 1) } },
+    }),
+    prisma.custo.findMany({
+      where: { dataPrevista: { gte: inicioProjecao, lt: addMonths(fimProjecao, 1) } },
+    }),
+    prisma.custo.aggregate({ where: { dataPrevista: null }, _count: true, _sum: { valor: true } }),
+  ]);
+
+  let saldoAcumulado = 0;
+  const fluxoCaixa = eachMonthOfInterval({ start: inicioProjecao, end: fimProjecao }).map((mes) => {
+    const chave = format(mes, "yyyy-MM");
+    const aReceber = recebimentosFuturos
+      .filter((r) => format(r.vencimento, "yyyy-MM") === chave)
+      .reduce((acc, r) => acc + r.valor, 0);
+    const aPagar = custosFuturos
+      .filter((c) => c.dataPrevista && format(c.dataPrevista, "yyyy-MM") === chave)
+      .reduce((acc, c) => acc + c.valor, 0);
+    const saldoMes = aReceber - aPagar;
+    saldoAcumulado += saldoMes;
+    return { mes, aReceber, aPagar, saldoMes, saldoAcumulado };
   });
 
   const porPilar = new Map<string, { nome: string; receita: number; custo: number }>();
@@ -68,6 +97,48 @@ export default async function FinanceiroPage() {
           </p>
         </Card>
       </div>
+
+      <section className="mb-8">
+        <h2 className="text-lg font-semibold mb-3">Fluxo de caixa projetado</h2>
+        <p className="text-sm text-neutral-500 mb-3">
+          Previsto a receber e a pagar nos próximos 6 meses — recebimentos ainda não pagos e
+          custos com data prevista (não é o já efetivado, que já está nos cards acima).
+        </p>
+        <Card className="p-4 overflow-x-auto">
+          <table className="w-full text-sm min-w-[500px]">
+            <thead>
+              <tr className="text-left text-neutral-500 border-b border-neutral-200">
+                <th className="py-2 pr-4 font-medium">Mês</th>
+                <th className="py-2 pr-4 font-medium">A receber</th>
+                <th className="py-2 pr-4 font-medium">A pagar</th>
+                <th className="py-2 pr-4 font-medium">Saldo do mês</th>
+                <th className="py-2 font-medium">Saldo acumulado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {fluxoCaixa.map((linha) => (
+                <tr key={linha.mes.toISOString()} className="border-b border-neutral-100 last:border-0">
+                  <td className="py-2 pr-4 capitalize">{format(linha.mes, "MMMM yyyy", { locale: ptBR })}</td>
+                  <td className="py-2 pr-4">{formatMoeda(linha.aReceber)}</td>
+                  <td className="py-2 pr-4">{formatMoeda(linha.aPagar)}</td>
+                  <td className={`py-2 pr-4 ${linha.saldoMes < 0 ? "text-red-600" : "text-green-700"}`}>
+                    {formatMoeda(linha.saldoMes)}
+                  </td>
+                  <td className={linha.saldoAcumulado < 0 ? "text-red-600" : "text-green-700"}>
+                    {formatMoeda(linha.saldoAcumulado)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Card>
+        {custosSemData._count > 0 && (
+          <p className="text-xs text-neutral-500 mt-2">
+            {custosSemData._count} custo(s) sem data prevista ({formatMoeda(custosSemData._sum.valor ?? 0)}) não
+            entram nessa projeção.
+          </p>
+        )}
+      </section>
 
       <section className="mb-8">
         <h2 className="text-lg font-semibold mb-3">Margem por pilar</h2>

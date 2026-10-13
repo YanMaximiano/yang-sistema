@@ -278,12 +278,13 @@ model Recebimento {
 }
 
 model Custo {
-  id        String  @id @default(cuid())
-  projetoId String
-  projeto   Projeto @relation(fields: [projetoId], references: [id], onDelete: Cascade)
-  tipo      String
-  descricao String?
-  valor     Float
+  id           String    @id @default(cuid())
+  projetoId    String
+  projeto      Projeto   @relation(fields: [projetoId], references: [id], onDelete: Cascade)
+  tipo         String
+  descricao    String?
+  valor        Float
+  dataPrevista DateTime?
 
   escala Escala?
 }

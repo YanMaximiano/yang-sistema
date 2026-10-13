@@ -230,7 +230,13 @@ export async function criarCusto(formData: FormData) {
   if (!projetoId || !tipo || valor === null) return;
 
   await prisma.custo.create({
-    data: { projetoId, tipo, valor, descricao: str(formData, "descricao") },
+    data: {
+      projetoId,
+      tipo,
+      valor,
+      descricao: str(formData, "descricao"),
+      dataPrevista: dataOrNull(formData, "dataPrevista"),
+    },
   });
   revalidatePath(`/projetos/${projetoId}`);
   revalidatePath("/financeiro");
@@ -319,7 +325,7 @@ export async function criarEscala(formData: FormData) {
     let custoId: string | undefined;
     if (cache !== null && cache > 0) {
       const custo = await tx.custo.create({
-        data: { projetoId, tipo: `Cachê — ${funcao}`, valor: cache },
+        data: { projetoId, tipo: `Cachê — ${funcao}`, valor: cache, dataPrevista: data },
       });
       custoId = custo.id;
     }
