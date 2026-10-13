@@ -12,7 +12,7 @@ export default async function NovaPropostaPage({
   const [clientes, servicos] = await Promise.all([
     prisma.cliente.findMany({ orderBy: { nome: "asc" } }),
     prisma.servico.findMany({
-      where: { ativo: true },
+      where: { ativo: true, pilar: { ativo: true } },
       orderBy: { ordem: "asc" },
       include: {
         pilar: true,

@@ -5,7 +5,11 @@ import { criarProjetoAvulso } from "../actions";
 export default async function NovoProjetoPage() {
   const [clientes, servicos] = await Promise.all([
     prisma.cliente.findMany({ orderBy: { nome: "asc" } }),
-    prisma.servico.findMany({ where: { ativo: true }, orderBy: { ordem: "asc" }, include: { pilar: true } }),
+    prisma.servico.findMany({
+      where: { ativo: true, pilar: { ativo: true } },
+      orderBy: { ordem: "asc" },
+      include: { pilar: true },
+    }),
   ]);
 
   return (
