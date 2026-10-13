@@ -44,9 +44,16 @@ npm run dev                        # inicia o app em http://localhost:3000
 > ambiente (erro `P3006`/tipo já existe). `db push` aplica direto no banco de trabalho sem depender
 > do shadow db; para produção mais adiante, vale revisitar isso com um Postgres hospedado de verdade.
 
-Login inicial (admin): `yanfmaxi@gmail.com` / senha `yang@2026` — troque a senha depois de
-entrar (ainda não há tela de troca de senha nesta versão; pode ser atualizada direto no banco
-via `npx prisma studio` ou recriando o usuário).
+Login inicial (admin): `yanfmaxi@gmail.com` / senha própria já definida — ainda não há tela de
+troca de senha nesta versão; pode ser atualizada direto no banco via `npx prisma studio` ou
+recriando o usuário.
+
+## Atalho no desktop
+
+Há um atalho **"Abrir Yang.command"** no Desktop: dá dois cliques e ele sobe o banco local (se
+não estiver rodando), inicia o servidor na porta `3002` (evita conflito com outros apps que já
+usam a 3000/3001 nesta máquina) e abre o navegador — sem precisar do terminal. Se o app já
+estiver rodando (ex.: aberto por outra ferramenta), só abre o navegador direto.
 
 ## Scripts úteis
 
