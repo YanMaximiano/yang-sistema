@@ -128,9 +128,31 @@ export async function voltarEtapa(formData: FormData) {
   revalidatePath("/calendario");
 }
 
+// Reabre uma etapa CONCLUIDA (mexe só nela — ao contrário de voltarEtapa,
+// não reativa a etapa anterior, que continua concluída)
+export async function reabrirEtapa(formData: FormData) {
+  const projetoId = formData.get("projetoId") as string;
+  const etapaId = formData.get("etapaId") as string;
+
+  const etapa = await prisma.projetoEtapa.findFirst({ where: { id: etapaId, projetoId } });
+  if (!etapa) return;
+
+  await prisma.projetoEtapa.update({
+    where: { id: etapaId },
+    data: { status: "EM_ANDAMENTO", dataFim: null },
+  });
+
+  revalidatePath(`/projetos/${projetoId}`);
+  revalidatePath("/calendario");
+}
+
 export async function iniciarEtapa(formData: FormData) {
   const projetoId = formData.get("projetoId") as string;
   const etapaId = formData.get("etapaId") as string;
+
+  const etapa = await prisma.projetoEtapa.findFirst({ where: { id: etapaId, projetoId } });
+  if (!etapa) return;
+
   await prisma.projetoEtapa.update({
     where: { id: etapaId },
     data: { status: "EM_ANDAMENTO", dataInicio: new Date() },
@@ -154,11 +176,19 @@ export async function atualizarStatusEntrega(formData: FormData) {
   const id = formData.get("id") as string;
   const projetoId = formData.get("projetoId") as string;
   const status = formData.get("status") as string;
-  const comentarioCliente = str(formData, "comentarioCliente");
+  if (!id || !projetoId || !status) return;
 
   await prisma.entrega.update({
     where: { id },
-    data: { status: status as never, comentarioCliente },
+    data: {
+      status: status as never,
+      // só sobrescreve o comentário se o formulário realmente enviou o campo —
+      // os botões de aprovar/reprovar do admin não têm esse campo e não podem
+      // apagar o comentário que o cliente já deixou
+      ...(formData.has("comentarioCliente")
+        ? { comentarioCliente: str(formData, "comentarioCliente") }
+        : {}),
+    },
   });
   revalidatePath(`/projetos/${projetoId}`);
 }
@@ -187,6 +217,7 @@ export async function atualizarRecebimento(formData: FormData) {
   const id = formData.get("id") as string;
   const projetoId = formData.get("projetoId") as string;
   const status = formData.get("status") as string;
+  if (!id || !projetoId || !status) return;
 
   await prisma.recebimento.update({
     where: { id },
@@ -215,7 +246,18 @@ export async function criarCusto(formData: FormData) {
 export async function deletarCusto(formData: FormData) {
   const id = formData.get("id") as string;
   const projetoId = formData.get("projetoId") as string;
-  await prisma.custo.delete({ where: { id } });
+  if (!id || !projetoId) return;
+
+  await prisma.$transaction(async (tx) => {
+    // se este custo veio de uma escala (cachê), remove a escala junto —
+    // senão ela continua mostrando o cachê como se ainda estivesse custeado
+    const escalaVinculada = await tx.escala.findUnique({ where: { custoId: id } });
+    if (escalaVinculada) {
+      await tx.escala.delete({ where: { id: escalaVinculada.id } });
+    }
+    await tx.custo.delete({ where: { id } });
+  });
+
   revalidatePath(`/projetos/${projetoId}`);
   revalidatePath("/financeiro");
 }

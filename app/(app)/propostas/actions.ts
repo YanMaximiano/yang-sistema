@@ -44,6 +44,13 @@ export async function atualizarStatusProposta(formData: FormData) {
   const id = formData.get("id") as string;
   const status = formData.get("status") as string;
   if (!id || !status) return;
+  if (status !== "NEGOCIACAO" && status !== "APROVADA" && status !== "RECUSADA") return;
+
+  const proposta = await prisma.proposta.findUnique({ where: { id } });
+  if (!proposta) return;
+  // uma proposta já aprovada/recusada é estado final — evita que um duplo
+  // clique ou reenvio do formulário mude o status depois do projeto criado
+  if (proposta.status === "APROVADA" || proposta.status === "RECUSADA") return;
 
   await atualizarStatusPropostaCore(id, status);
 }

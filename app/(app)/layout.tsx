@@ -2,25 +2,14 @@ import { auth, signOut } from "@/lib/auth";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui";
-
-const NAV = [
-  { href: "/", label: "Painel", roles: ["ADMIN", "EQUIPE", "FREELANCER"] },
-  { href: "/catalogo", label: "Catálogo", roles: ["ADMIN"] },
-  { href: "/clientes", label: "Clientes", roles: ["ADMIN", "EQUIPE"] },
-  { href: "/propostas", label: "Propostas", roles: ["ADMIN", "EQUIPE"] },
-  { href: "/projetos", label: "Projetos", roles: ["ADMIN", "EQUIPE", "FREELANCER"] },
-  { href: "/calendario", label: "Calendário", roles: ["ADMIN", "EQUIPE", "FREELANCER"] },
-  { href: "/equipamentos", label: "Equipamentos", roles: ["ADMIN", "EQUIPE"] },
-  { href: "/equipe", label: "Equipe", roles: ["ADMIN", "EQUIPE"] },
-  { href: "/financeiro", label: "Financeiro", roles: ["ADMIN"] },
-];
+import { ROTAS_APP, type Role } from "@/lib/rotas";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
   if (!session?.user) redirect("/login");
 
-  const role = session.user.role;
-  const nav = NAV.filter((item) => item.roles.includes(role));
+  const role = session.user.role as Role;
+  const nav = ROTAS_APP.filter((item) => item.roles.includes(role));
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen flex-1">

@@ -5,6 +5,7 @@ import { formatMoeda, formatData } from "@/lib/utils";
 import {
   avancarEtapa,
   voltarEtapa,
+  reabrirEtapa,
   iniciarEtapa,
   criarEntrega,
   atualizarStatusEntrega,
@@ -157,7 +158,7 @@ export default async function ProjetoDetalhePage({
                   </>
                 )}
                 {etapa.status === "CONCLUIDA" && (
-                  <form action={voltarEtapa}>
+                  <form action={reabrirEtapa}>
                     <input type="hidden" name="projetoId" value={projeto.id} />
                     <input type="hidden" name="etapaId" value={etapa.id} />
                     <Button type="submit" variant="ghost" className="text-xs px-2 py-1">

@@ -6,10 +6,12 @@ import {
   endOfMonth,
   startOfWeek,
   endOfWeek,
+  startOfDay,
   eachDayOfInterval,
   isSameMonth,
   isSameDay,
   isBefore,
+  isValid,
   format,
   addMonths,
   subMonths,
@@ -23,7 +25,8 @@ export default async function CalendarioPage({
   searchParams: Promise<{ mes?: string }>;
 }) {
   const { mes } = await searchParams;
-  const referencia = mes ? parse(mes, "yyyy-MM", new Date()) : new Date();
+  const mesParseado = mes ? parse(mes, "yyyy-MM", new Date()) : new Date();
+  const referencia = isValid(mesParseado) ? mesParseado : new Date();
 
   const inicioMes = startOfMonth(referencia);
   const fimMes = endOfMonth(referencia);
@@ -39,7 +42,11 @@ export default async function CalendarioPage({
     orderBy: { prazoData: "asc" },
   });
 
-  const atrasados = projetos.filter((p) => p.prazoData && isBefore(p.prazoData, hoje));
+  // compara por dia, não pelo instante exato — um prazo "hoje" não pode
+  // virar atrasado só porque já passou do meio-dia
+  const atrasados = projetos.filter(
+    (p) => p.prazoData && isBefore(startOfDay(p.prazoData), startOfDay(hoje))
+  );
 
   const mesAnterior = format(subMonths(referencia, 1), "yyyy-MM");
   const proximoMes = format(addMonths(referencia, 1), "yyyy-MM");
