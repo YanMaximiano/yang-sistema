@@ -14,12 +14,12 @@ export default async function PortalHomePage() {
   const [propostasPendentes, projetos] = await Promise.all([
     prisma.proposta.findMany({
       where: { clienteId, status: { in: ["ENVIADA", "NEGOCIACAO"] } },
-      include: { servico: true, plano: true },
+      include: { servico: { select: { nome: true } }, plano: { select: { nome: true } } },
       orderBy: { createdAt: "desc" },
     }),
     prisma.projeto.findMany({
       where: { clienteId },
-      include: { servico: true },
+      include: { servico: { select: { nome: true } } },
       orderBy: { createdAt: "desc" },
     }),
   ]);

@@ -38,7 +38,7 @@ export default async function CalendarioPage({
 
   const projetos = await prisma.projeto.findMany({
     where: { prazoData: { not: null }, statusGeral: { in: ["ATIVO", "PAUSADO"] } },
-    include: { cliente: true },
+    include: { cliente: { select: { nome: true } } },
     orderBy: { prazoData: "asc" },
   });
 

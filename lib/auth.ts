@@ -61,10 +61,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
  * action (Next-Action header), não pelo path que a renderizou. Sem essa
  * checagem aqui, qualquer usuário autenticado (inclusive CLIENTE) pode
  * chamar a action diretamente e pular a página que a esconderia.
+ *
+ * Confere o cargo/status contra o banco (não o token JWT): a sessão
+ * fica válida por dias, então revogar acesso ou trocar o cargo de
+ * alguém só surtiria efeito no próximo login se confiássemos no token.
  */
 export async function requireRole(...roles: Role[]) {
   const session = await auth();
-  if (!session?.user || !roles.includes(session.user.role as Role)) {
+  if (!session?.user) throw new Error("Não autorizado");
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { ativo: true, role: true },
+  });
+  if (!user?.ativo || !roles.includes(user.role as Role)) {
     throw new Error("Não autorizado");
   }
   return session;

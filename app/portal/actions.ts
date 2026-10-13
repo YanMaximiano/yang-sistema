@@ -10,6 +10,16 @@ import type { StatusProposta, StatusEntrega } from "@/app/generated/prisma/clien
 async function clienteIdDaSessao() {
   const session = await auth();
   if (!session?.user || session.user.role !== "CLIENTE" || !session.user.clienteId) return null;
+
+  // confere o status contra o banco, não o token JWT — um acesso de
+  // portal desativado precisa parar de funcionar na hora, não só no
+  // próximo login (mesmo raciocínio de requireRole em lib/auth.ts)
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { ativo: true },
+  });
+  if (!user?.ativo) return null;
+
   return session.user.clienteId;
 }
 

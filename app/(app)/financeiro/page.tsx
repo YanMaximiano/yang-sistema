@@ -12,16 +12,18 @@ export default async function FinanceiroPage() {
   const [projetos, recebimentosPendentes, recebimentosFuturos, custosFuturos, custosSemData] =
     await Promise.all([
       prisma.projeto.findMany({
-        include: {
-          cliente: true,
-          servico: { include: { pilar: true } },
-          recebimentos: true,
-          custos: true,
+        select: {
+          id: true,
+          nome: true,
+          cliente: { select: { nome: true } },
+          servico: { select: { id: true, nome: true, pilar: { select: { id: true, nome: true } } } },
+          recebimentos: { select: { status: true, valor: true } },
+          custos: { select: { valor: true } },
         },
       }),
       prisma.recebimento.findMany({
         where: { status: { in: ["PENDENTE", "ATRASADO"] } },
-        include: { projeto: { include: { cliente: true } } },
+        include: { projeto: { select: { id: true, nome: true, cliente: { select: { nome: true } } } } },
         orderBy: { vencimento: "asc" },
       }),
       prisma.recebimento.findMany({

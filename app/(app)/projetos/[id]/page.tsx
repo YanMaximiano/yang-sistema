@@ -156,7 +156,7 @@ export default async function ProjetoDetalhePage({
                       <span
                         className={`shrink-0 w-4 h-4 rounded border flex items-center justify-center text-[10px] ${
                           item.concluido
-                            ? "bg-green-600 border-green-600 text-white"
+                            ? "bg-green-600 dark:bg-green-700 border-green-600 dark:border-green-700 text-white"
                             : "border-neutral-300 dark:border-neutral-700"
                         }`}
                       >

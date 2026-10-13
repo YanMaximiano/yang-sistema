@@ -15,7 +15,7 @@ export default async function PainelPage() {
     prisma.proposta.groupBy({ by: ["status"], _count: true }),
     prisma.projeto.findMany({
       where: { statusGeral: "ATIVO" },
-      include: { cliente: true, servico: true },
+      include: { cliente: { select: { nome: true } }, servico: { select: { nome: true } } },
       orderBy: { createdAt: "desc" },
       take: 8,
     }),

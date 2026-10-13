@@ -13,7 +13,11 @@ const COLUNAS: { status: "ENVIADA" | "NEGOCIACAO" | "APROVADA" | "RECUSADA"; lab
 export default async function PropostasPage() {
   const propostas = await prisma.proposta.findMany({
     orderBy: { createdAt: "desc" },
-    include: { cliente: true, servico: true, plano: true },
+    include: {
+      cliente: { select: { nome: true } },
+      servico: { select: { nome: true } },
+      plano: { select: { nome: true } },
+    },
   });
 
   const porStatus = Object.fromEntries(

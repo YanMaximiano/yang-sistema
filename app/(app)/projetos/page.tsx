@@ -8,9 +8,9 @@ export default async function ProjetosPage() {
   const projetos = await prisma.projeto.findMany({
     orderBy: { createdAt: "desc" },
     include: {
-      cliente: true,
-      servico: true,
-      etapas: { orderBy: { ordem: "asc" } },
+      cliente: { select: { nome: true } },
+      servico: { select: { nome: true } },
+      etapas: { orderBy: { ordem: "asc" }, select: { nome: true, status: true } },
     },
   });
 
