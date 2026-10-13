@@ -98,9 +98,9 @@ export default async function PainelPage() {
               <Link
                 key={p.id}
                 href={`/projetos/${p.id}`}
-                className="flex items-center justify-between text-sm rounded-md px-2 py-1.5 hover:bg-neutral-50"
+                className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-sm rounded-md px-2 py-1.5 hover:bg-neutral-50"
               >
-                <span>
+                <span className="min-w-0">
                   {p.nome} <span className="text-neutral-400">— {p.cliente.nome}</span>
                 </span>
                 <Badge>{p.servico.nome}</Badge>
