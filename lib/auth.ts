@@ -15,11 +15,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { label: "Senha", type: "password" },
       },
       authorize: async (credentials) => {
-        const email = credentials?.email as string | undefined;
+        const email = (credentials?.email as string | undefined)?.trim();
         const password = credentials?.password as string | undefined;
         if (!email || !password) return null;
 
-        const user = await prisma.user.findUnique({ where: { email } });
+        const user = await prisma.user.findFirst({
+          where: { email: { equals: email, mode: "insensitive" } },
+        });
         if (!user || !user.ativo) return null;
 
         const senhaValida = await bcrypt.compare(password, user.passwordHash);
@@ -53,6 +55,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
 });
+
+/**
+ * O token de login vale por dias; as telas (layouts) conferem no banco se a pessoa ainda
+ * está ativa e com o mesmo cargo, senão desativar alguém ou rebaixar um admin só teria
+ * efeito no próximo login.
+ */
+export async function sessaoAindaValida(session: { user: { id: string; role: string } }) {
+  const usuario = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { ativo: true, role: true },
+  });
+  return !!usuario?.ativo && usuario.role === session.user.role;
+}
 
 /**
  * Toda Server Action de área restrita precisa chamar isso primeiro — a

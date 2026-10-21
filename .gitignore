@@ -46,3 +46,7 @@ testdisk.log
 next-env.d.ts
 
 /app/generated/prisma
+
+# dados financeiros reais da Yang (pró-labore, salários, aporte, valor de compra dos equipamentos) e relatórios internos
+/prisma/dados-privados.json
+/relatorios/

@@ -8,10 +8,22 @@ export function str(formData: FormData, key: string): string | null {
   return s === "" ? null : s;
 }
 
+/** Lê um link do formulário; só aceita http(s) — outro esquema (javascript:, data:...) vira null. */
+export function linkHttp(formData: FormData, key: string): string | null {
+  const v = str(formData, key);
+  if (!v) return null;
+  try {
+    const u = new URL(v);
+    return u.protocol === "http:" || u.protocol === "https:" ? u.toString() : null;
+  } catch {
+    return null;
+  }
+}
+
 /** Lê um campo numérico (decimal) do FormData; vazio/inválido vira null. */
 export function num(formData: FormData, key: string): number | null {
   const v = formData.get(key);
-  if (v === null || v === "") return null;
+  if (v === null || String(v).trim() === "") return null;
   const n = Number(v);
   return Number.isFinite(n) ? n : null;
 }

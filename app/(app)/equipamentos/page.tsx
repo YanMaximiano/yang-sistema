@@ -3,7 +3,7 @@ import { PageHeader, Card, Input, Button, Badge, Label } from "@/components/ui";
 import {
   createEquipamento,
   updateEquipamento,
-  alternarStatusEquipamento,
+  definirStatusEquipamento,
   alternarAtivoEquipamento,
 } from "./actions";
 
@@ -64,15 +64,28 @@ export default async function EquipamentosPage() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Badge variant={eq.status === "DISPONIVEL" ? "success" : "warning"}>
-                  {eq.status === "DISPONIVEL" ? "Disponível" : "Manutenção"}
+                <Badge
+                  variant={eq.status === "DISPONIVEL" ? "success" : eq.status === "ESTRAGADO" ? "danger" : "warning"}
+                >
+                  {eq.status === "DISPONIVEL" ? "Disponível" : eq.status === "ESTRAGADO" ? "Estragado" : "Manutenção"}
                 </Badge>
-                <form action={alternarStatusEquipamento}>
-                  <input type="hidden" name="id" value={eq.id} />
-                  <Button type="submit" variant="secondary" className="text-xs px-2 py-1">
-                    {eq.status === "DISPONIVEL" ? "Marcar manutenção" : "Marcar disponível"}
-                  </Button>
-                </form>
+                {(
+                  [
+                    { status: "DISPONIVEL", rotulo: "Marcar disponível" },
+                    { status: "MANUTENCAO", rotulo: "Marcar manutenção" },
+                    { status: "ESTRAGADO", rotulo: "Marcar estragado" },
+                  ] as const
+                )
+                  .filter((o) => o.status !== eq.status)
+                  .map((o) => (
+                    <form key={o.status} action={definirStatusEquipamento}>
+                      <input type="hidden" name="id" value={eq.id} />
+                      <input type="hidden" name="status" value={o.status} />
+                      <Button type="submit" variant="secondary" className="text-xs px-2 py-1">
+                        {o.rotulo}
+                      </Button>
+                    </form>
+                  ))}
                 <form action={alternarAtivoEquipamento}>
                   <input type="hidden" name="id" value={eq.id} />
                   <Button type="submit" variant="ghost" className="text-xs px-2 py-1">

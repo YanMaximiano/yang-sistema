@@ -1,0 +1,54 @@
+[
+  {
+    "nome": "Kit leve (conteúdo simples)",
+    "itens": [
+      "Sony A7 III #1",
+      "Sony FE 28-70mm f/3.5-5.6 OSS",
+      "DJI Mic (kit)",
+      "5 Baterias Sony NP-FZ100",
+      "Cartões de Memória",
+      "Acessórios de Câmera"
+    ]
+  },
+  {
+    "nome": "Kit de ponta (vídeo principal)",
+    "itens": [
+      "Sony A7S III",
+      "Sony FE 24-70mm f/2.8 GM II",
+      "Gimbal DJI RS 2/3",
+      "DJI Mic (kit)",
+      "5 Baterias Sony NP-FZ100",
+      "Cartões de Memória",
+      "Acessórios de Câmera"
+    ]
+  },
+  {
+    "nome": "2ª câmera",
+    "itens": ["Sony A7 III #2", "Sony FE 28-70mm f/3.5-5.6 OSS", "Tripé de Vídeo Benro #1"]
+  },
+  {
+    "nome": "Foto",
+    "itens": [
+      "Sony A7R V",
+      "Sony FE 70-200mm f/2.8 GM OSS II",
+      "Zeiss Planar T* FE 50mm f/1.4 ZA",
+      "Tripé Fotográfico Manfrotto 190"
+    ]
+  },
+  {
+    "nome": "Luz",
+    "itens": [
+      "Aputure Amaran 200d #1",
+      "Aputure Amaran 200d #2",
+      "Softbox Godox Octabox",
+      "Tubo LED Sokani X25-RGB #1",
+      "Tubo LED Sokani X25-RGB #2"
+    ]
+  },
+  {
+    "nome": "Áudio",
+    "itens": ["Sony URX-P40 #1", "Sony URX-P40 #2", "Sony UTX-B40"]
+  },
+  { "nome": "Drone convencional", "itens": ["DJI Air 2S"] },
+  { "nome": "Drone FPV", "itens": ["DJI Avata 2 Fly More Combo"] }
+]

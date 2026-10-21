@@ -151,7 +151,7 @@ export default async function ClienteDetalhePage({
                 </div>
                 <div className="flex-1 min-w-[160px]">
                   <Label>Senha</Label>
-                  <Input name="senha" type="text" required placeholder="defina uma senha" />
+                  <Input name="senha" type="text" required minLength={8} placeholder="defina uma senha (mín. 8)" />
                 </div>
                 <Button type="submit" variant="secondary">
                   Criar acesso

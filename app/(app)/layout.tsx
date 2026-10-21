@@ -1,4 +1,4 @@
-import { auth, signOut } from "@/lib/auth";
+import { auth, signOut, sessaoAindaValida } from "@/lib/auth";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui";
@@ -8,7 +8,7 @@ import { listarAvisos } from "@/lib/avisos";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
-  if (!session?.user) redirect("/login");
+  if (!session?.user || !(await sessaoAindaValida(session))) redirect("/login");
 
   const role = session.user.role as Role;
   const nav = ROTAS_APP.filter((item) => item.roles.includes(role));

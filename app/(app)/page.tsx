@@ -1,9 +1,13 @@
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 import { Card, PageHeader, Badge } from "@/components/ui";
 import { formatMoeda } from "@/lib/utils";
 import Link from "next/link";
 
 export default async function PainelPage() {
+  const session = await auth();
+  // freelancer vê só os projetos; funil comercial e financeiro da empresa são da equipe
+  const verEmpresa = session?.user.role !== "FREELANCER";
   const [
     propostasPorStatus,
     projetosAtivos,
@@ -36,43 +40,51 @@ export default async function PainelPage() {
       <PageHeader title="Painel" description="Visão geral da produtora" />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <Card className="p-4">
-          <p className="text-xs text-neutral-500 dark:text-neutral-400">Propostas enviadas</p>
-          <p className="text-2xl font-semibold">{statusMap.ENVIADA ?? 0}</p>
-        </Card>
-        <Card className="p-4">
-          <p className="text-xs text-neutral-500 dark:text-neutral-400">Em negociação</p>
-          <p className="text-2xl font-semibold">{statusMap.NEGOCIACAO ?? 0}</p>
-        </Card>
+        {verEmpresa && (
+          <>
+            <Card className="p-4">
+              <p className="text-xs text-neutral-500 dark:text-neutral-400">Propostas enviadas</p>
+              <p className="text-2xl font-semibold">{statusMap.ENVIADA ?? 0}</p>
+            </Card>
+            <Card className="p-4">
+              <p className="text-xs text-neutral-500 dark:text-neutral-400">Em negociação</p>
+              <p className="text-2xl font-semibold">{statusMap.NEGOCIACAO ?? 0}</p>
+            </Card>
+          </>
+        )}
         <Card className="p-4">
           <p className="text-xs text-neutral-500 dark:text-neutral-400">Projetos ativos</p>
           <p className="text-2xl font-semibold">{projetosAtivos.length}</p>
         </Card>
-        <Card className="p-4">
-          <p className="text-xs text-neutral-500 dark:text-neutral-400">Margem (recebido − custos)</p>
-          <p className={`text-2xl font-semibold ${margem < 0 ? "text-red-600 dark:text-red-400" : "text-green-700 dark:text-green-400"}`}>
-            {formatMoeda(margem)}
-          </p>
-        </Card>
+        {verEmpresa && (
+          <Card className="p-4">
+            <p className="text-xs text-neutral-500 dark:text-neutral-400">Margem (recebido − custos)</p>
+            <p className={`text-2xl font-semibold ${margem < 0 ? "text-red-600 dark:text-red-400" : "text-green-700 dark:text-green-400"}`}>
+              {formatMoeda(margem)}
+            </p>
+          </Card>
+        )}
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
-        <Card className="p-5">
-          <h2 className="font-medium mb-3">Financeiro</h2>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-neutral-500 dark:text-neutral-400">Recebimentos pendentes</span>
-              <span>{formatMoeda(recebimentosPendentes._sum.valor)}</span>
+        {verEmpresa && (
+          <Card className="p-5">
+            <h2 className="font-medium mb-3">Financeiro</h2>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-neutral-500 dark:text-neutral-400">Recebimentos pendentes</span>
+                <span>{formatMoeda(recebimentosPendentes._sum.valor)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-neutral-500 dark:text-neutral-400">Recebimentos atrasados</span>
+                <span className="text-red-600 dark:text-red-400">{formatMoeda(recebimentosAtrasados._sum.valor)}</span>
+              </div>
+              <Link href="/financeiro" className="text-sm underline text-neutral-700 dark:text-neutral-300">
+                Ver financeiro completo →
+              </Link>
             </div>
-            <div className="flex justify-between">
-              <span className="text-neutral-500 dark:text-neutral-400">Recebimentos atrasados</span>
-              <span className="text-red-600 dark:text-red-400">{formatMoeda(recebimentosAtrasados._sum.valor)}</span>
-            </div>
-            <Link href="/financeiro" className="text-sm underline text-neutral-700 dark:text-neutral-300">
-              Ver financeiro completo →
-            </Link>
-          </div>
-        </Card>
+          </Card>
+        )}
 
         <Card className="p-5">
           <h2 className="font-medium mb-3">Projetos ativos recentes</h2>

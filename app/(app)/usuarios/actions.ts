@@ -1,21 +1,31 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { requireRole } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
 import { str } from "@/lib/form";
 import type { Role } from "@/app/generated/prisma/client";
 
+const SENHA_MINIMA = 8;
+const PERFIS_INTERNOS: Role[] = ["ADMIN", "EQUIPE", "FREELANCER"];
+
+// requireRole confere cargo e status no banco (e não no token, que vale por dias):
+// um admin rebaixado ou desativado não pode mais criar usuários nem trocar senhas.
 export async function createUsuario(formData: FormData) {
-  const session = await auth();
-  if (session?.user.role !== "ADMIN") return;
+  await requireRole("ADMIN");
 
   const name = str(formData, "name");
-  const email = str(formData, "email");
+  const email = str(formData, "email")?.toLowerCase();
   const senha = str(formData, "senha");
   const role = formData.get("role") as Role;
-  if (!name || !email || !senha || !role) return;
+  if (!name || !email || !senha || senha.length < SENHA_MINIMA || !PERFIS_INTERNOS.includes(role)) return;
+
+  const jaExiste = await prisma.user.findFirst({
+    where: { email: { equals: email, mode: "insensitive" } },
+    select: { id: true },
+  });
+  if (jaExiste) return;
 
   const passwordHash = await bcrypt.hash(senha, 10);
   await prisma.user.create({
@@ -26,18 +36,23 @@ export async function createUsuario(formData: FormData) {
 }
 
 export async function updateUsuario(formData: FormData) {
-  const session = await auth();
-  if (session?.user.role !== "ADMIN") return;
+  const session = await requireRole("ADMIN");
 
   const id = formData.get("id") as string;
   if (!id) return;
-  // ninguém edita a própria conta por aqui — evita se autobloquear
-  // (tirar o próprio ADMIN ou trocar a própria senha sem querer)
+  // ninguém edita a própria conta por aqui — evita se autobloquear (tirar o próprio ADMIN);
+  // a troca da própria senha é feita em "Alterar minha senha" (/conta)
   if (id === session.user.id) return;
 
   const name = str(formData, "name");
   const role = formData.get("role") as Role | null;
   const senha = str(formData, "senha");
+  if (role && !PERFIS_INTERNOS.includes(role)) return;
+  if (senha && senha.length < SENHA_MINIMA) return;
+
+  // esta tela só gere a equipe: clientes do portal têm o acesso criado na ficha do cliente
+  const alvo = await prisma.user.findUnique({ where: { id }, select: { role: true } });
+  if (!alvo || alvo.role === "CLIENTE") return;
 
   await prisma.user.update({
     where: { id },
@@ -52,8 +67,7 @@ export async function updateUsuario(formData: FormData) {
 }
 
 export async function alternarAtivoUsuario(formData: FormData) {
-  const session = await auth();
-  if (session?.user.role !== "ADMIN") return;
+  const session = await requireRole("ADMIN");
 
   const id = formData.get("id") as string;
   if (!id || id === session.user.id) return;

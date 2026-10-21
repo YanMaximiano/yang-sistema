@@ -1,4 +1,4 @@
-import { auth, signOut } from "@/lib/auth";
+import { auth, signOut, sessaoAindaValida } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui";
@@ -6,7 +6,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
-  if (!session?.user || session.user.role !== "CLIENTE") redirect("/login");
+  if (!session?.user || session.user.role !== "CLIENTE" || !(await sessaoAindaValida(session))) redirect("/login");
 
   return (
     <div className="flex min-h-screen flex-1 flex-col">

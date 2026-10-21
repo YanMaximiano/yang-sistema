@@ -1,0 +1,14 @@
+{
+  "_aviso": "Modelo do arquivo prisma/dados-privados.json (que fica fora do Git). Sem ele, o seed usa estes valores neutros e tudo é preenchido na tela /calculadora e /equipamentos. escopo: YANG | COMPARTILHADO | PESSOAL.",
+  "custosFixos": [],
+  "pessoas": [
+    {
+      "nome": "Responsável (edite em /calculadora)",
+      "funcao": "Quem gera horas cobráveis",
+      "horasMes": 160,
+      "ocupacaoPct": 75
+    }
+  ],
+  "valoresCompra": {},
+  "config": {}
+}

@@ -72,12 +72,17 @@ export async function addNota(formData: FormData) {
 export async function criarAcessoPortal(formData: FormData) {
   await requireRole("ADMIN", "EQUIPE");
   const clienteId = formData.get("clienteId") as string;
-  const email = str(formData, "email");
+  const email = str(formData, "email")?.toLowerCase();
   const senha = str(formData, "senha");
-  if (!clienteId || !email || !senha) return;
+  if (!clienteId || !email || !senha || senha.length < 8) return;
 
   const cliente = await prisma.cliente.findUnique({ where: { id: clienteId } });
   if (!cliente) return;
+  const jaExiste = await prisma.user.findFirst({
+    where: { email: { equals: email, mode: "insensitive" } },
+    select: { id: true },
+  });
+  if (jaExiste) return;
 
   const passwordHash = await bcrypt.hash(senha, 10);
   await prisma.user.create({

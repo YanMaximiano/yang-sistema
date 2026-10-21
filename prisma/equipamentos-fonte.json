@@ -39,7 +39,7 @@
     "categoria": "Câmera",
     "observacoes": "Full-frame, híbrida foto/vídeo.",
     "foto": "/equipamentos/sony-a7iii.jpg",
-    "status": "DISPONIVEL"
+    "status": "ESTRAGADO"
   },
   {
     "nome": "Sony A7C II",
@@ -53,7 +53,7 @@
     "categoria": "Câmera",
     "observacoes": "Full-frame, alta resolução. Modelo exato (III/IV/V) não confirmado com certeza pela etiqueta da foto.",
     "foto": "/equipamentos/sony-a7rv.jpg",
-    "status": "DISPONIVEL"
+    "status": "ESTRAGADO"
   },
   {
     "nome": "Sony A7S III",
@@ -95,7 +95,7 @@
     "categoria": "Iluminação",
     "observacoes": "Luz COB de 200W, usada com softbox octagonal.",
     "foto": "/equipamentos/aputure-amaran-200d.jpg",
-    "status": "DISPONIVEL"
+    "status": "ESTRAGADO"
   },
   {
     "nome": "Mini Tocha LED LUXCEO P200 #1",
@@ -291,6 +291,146 @@
     "categoria": "Áudio",
     "observacoes": "Transmissor de lapela (bodypack) para sistema sem fio Sony.",
     "foto": "/equipamentos/sony-utxb40.jpg",
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "DJI Avata 2 Fly More Combo",
+    "categoria": "Drone",
+    "observacoes": "Drone FPV com óculos e 3 baterias (preço de varejo BR).",
+    "foto": null,
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "MacBook Pro M5 14\"",
+    "categoria": "Computador",
+    "observacoes": "Notebook para edição (preço de tabela Apple Brasil, configuração base).",
+    "foto": null,
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Fujifilm X-H2S",
+    "categoria": "Câmera",
+    "observacoes": "Câmera principal da Spota ('Câmera XH2s'). Item da lista de patrimônio do app financeiro da Spota (valor registrado lá).",
+    "foto": null,
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "5 Baterias XH2s",
+    "categoria": "Bateria",
+    "observacoes": "Baterias extras da X-H2S. Item da lista de patrimônio do app financeiro da Spota (valor registrado lá).",
+    "foto": null,
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Acessórios de Câmera",
+    "categoria": "Acessório",
+    "observacoes": "Acessórios diversos de câmera. Item da lista de patrimônio do app financeiro da Spota (valor registrado lá).",
+    "foto": null,
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Filtros de Câmera",
+    "categoria": "Acessório",
+    "observacoes": "Filtros para lentes. Item da lista de patrimônio do app financeiro da Spota (valor registrado lá).",
+    "foto": null,
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Cartões de Memória",
+    "categoria": "Armazenamento",
+    "observacoes": "Cartões de memória. Item da lista de patrimônio do app financeiro da Spota (valor registrado lá).",
+    "foto": null,
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "HD 2TB",
+    "categoria": "Armazenamento",
+    "observacoes": "HD externo. Item da lista de patrimônio do app financeiro da Spota (valor registrado lá).",
+    "foto": null,
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "HD 4TB",
+    "categoria": "Armazenamento",
+    "observacoes": "HD externo. Item da lista de patrimônio do app financeiro da Spota (valor registrado lá).",
+    "foto": null,
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "SSD Externo 2TB",
+    "categoria": "Armazenamento",
+    "observacoes": "SSD externo. Item da lista de patrimônio do app financeiro da Spota (valor registrado lá).",
+    "foto": null,
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Monitor Samsung 4K",
+    "categoria": "Computador",
+    "observacoes": "Monitor 4K. Item da lista de patrimônio do app financeiro da Spota (valor registrado lá).",
+    "foto": null,
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Mouse Logitech",
+    "categoria": "Periférico",
+    "observacoes": "Mouse. Item da lista de patrimônio do app financeiro da Spota (valor registrado lá).",
+    "foto": null,
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Teclado Logitech",
+    "categoria": "Periférico",
+    "observacoes": "Teclado. Item da lista de patrimônio do app financeiro da Spota (valor registrado lá).",
+    "foto": null,
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "DJI Osmo Action 4 (kit)",
+    "categoria": "Câmera de ação",
+    "observacoes": "Câmera de ação. Item da lista de patrimônio do app financeiro da Spota (valor registrado lá).",
+    "foto": null,
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Iluminação (kit Spota)",
+    "categoria": "Iluminação",
+    "observacoes": "Kit de iluminação registrado como um único item. Item da lista de patrimônio do app financeiro da Spota (valor registrado lá).",
+    "foto": null,
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Kit de Limpeza",
+    "categoria": "Acessório",
+    "observacoes": "Kit de limpeza de câmera/lentes. Item da lista de patrimônio do app financeiro da Spota (valor registrado lá).",
+    "foto": null,
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Mochila",
+    "categoria": "Acessório",
+    "observacoes": "Mochila de transporte. Item da lista de patrimônio do app financeiro da Spota (valor registrado lá).",
+    "foto": null,
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "PowerBank",
+    "categoria": "Acessório",
+    "observacoes": "Carregador portátil. Item da lista de patrimônio do app financeiro da Spota (valor registrado lá).",
+    "foto": null,
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "Manutenção",
+    "categoria": "Outros investimentos",
+    "observacoes": "Reserva/gasto de manutenção contado no patrimônio da Spota. Item da lista de patrimônio do app financeiro da Spota (valor registrado lá).",
+    "foto": null,
+    "status": "DISPONIVEL"
+  },
+  {
+    "nome": "5 Baterias Sony NP-FZ100",
+    "categoria": "Bateria",
+    "observacoes": "5 baterias NP-FZ100 da YANG (R$ 400 cada), para as câmeras Sony (A7 III, A7S III, A7R V, A7C II, A6600).",
+    "foto": null,
     "status": "DISPONIVEL"
   }
 ]

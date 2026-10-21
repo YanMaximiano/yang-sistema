@@ -38,7 +38,7 @@ export default async function UsuariosPage() {
           </div>
           <div>
             <Label>Senha</Label>
-            <Input name="senha" type="text" required placeholder="defina uma senha" />
+            <Input name="senha" type="text" required minLength={8} placeholder="defina uma senha (mín. 8)" />
           </div>
           <div>
             <Label>Perfil</Label>
@@ -90,7 +90,7 @@ export default async function UsuariosPage() {
                   </div>
                   <div className="min-w-[140px]">
                     <Label>Nova senha (opcional)</Label>
-                    <Input name="senha" type="text" placeholder="deixe em branco p/ manter" />
+                    <Input name="senha" type="text" minLength={8} placeholder="deixe em branco p/ manter" />
                   </div>
                   <Button type="submit" variant="secondary">
                     Salvar

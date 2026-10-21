@@ -70,16 +70,19 @@ export async function updateEquipamento(formData: FormData) {
   revalidatePath("/equipamentos");
 }
 
-export async function alternarStatusEquipamento(formData: FormData) {
+const STATUS_VALIDOS = ["DISPONIVEL", "MANUTENCAO", "ESTRAGADO"] as const;
+
+export async function definirStatusEquipamento(formData: FormData) {
   await requireRole("ADMIN", "EQUIPE");
   const id = formData.get("id") as string;
-  const equipamento = await prisma.equipamento.findUnique({ where: { id } });
-  if (!equipamento) return;
-  await prisma.equipamento.update({
+  const status = formData.get("status") as string;
+  if (!id || !STATUS_VALIDOS.some((s) => s === status)) return;
+  await prisma.equipamento.updateMany({
     where: { id },
-    data: { status: equipamento.status === "DISPONIVEL" ? "MANUTENCAO" : "DISPONIVEL" },
+    data: { status: status as (typeof STATUS_VALIDOS)[number] },
   });
   revalidatePath("/equipamentos");
+  revalidatePath("/calculadora");
 }
 
 export async function alternarAtivoEquipamento(formData: FormData) {

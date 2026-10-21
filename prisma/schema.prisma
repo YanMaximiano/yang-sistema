@@ -59,12 +59,12 @@ model Servico {
   ordem             Int          @default(0)
   ativo             Boolean      @default(true)
 
-  planos    Plano[]
-  adicionais Adicional[]
-  etapasTemplate PipelineEtapaTemplate[]
-  propostas Proposta[]
-  projetos  Projeto[]
-  modelosDocumento ModeloDocumento[]
+  planos            Plano[]
+  adicionais        Adicional[]
+  etapasTemplate    PipelineEtapaTemplate[]
+  propostas         Proposta[]
+  projetos          Projeto[]
+  modelosDocumento  ModeloDocumento[]
   checklistTemplate ChecklistPreProducaoTemplate[]
 }
 
@@ -81,20 +81,20 @@ model Plano {
   ordem      Int      @default(0)
   ativo      Boolean  @default(true)
 
-  propostas Proposta[]
-  projetos  Projeto[]
-  templatesEquipe       TemplateEquipe[]
-  templatesEquipamento  TemplateEquipamento[]
+  propostas            Proposta[]
+  projetos             Projeto[]
+  templatesEquipe      TemplateEquipe[]
+  templatesEquipamento TemplateEquipamento[]
 }
 
 model Adicional {
-  id          String   @id @default(cuid())
-  servicoId   String
-  servico     Servico  @relation(fields: [servicoId], references: [id])
-  nome        String
-  valor       Float?
-  descricao   String?
-  ativo       Boolean  @default(true)
+  id        String  @id @default(cuid())
+  servicoId String
+  servico   Servico @relation(fields: [servicoId], references: [id])
+  nome      String
+  valor     Float?
+  descricao String?
+  ativo     Boolean @default(true)
 
   propostas PropostaAdicional[]
 }
@@ -158,8 +158,8 @@ model Proposta {
   servico           Servico        @relation(fields: [servicoId], references: [id])
   planoId           String
   plano             Plano          @relation(fields: [planoId], references: [id])
-  valorProposto      Float
-  prazoPropostoDias  Int?
+  valorProposto     Float
+  prazoPropostoDias Int?
   status            StatusProposta @default(ENVIADA)
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
@@ -208,28 +208,28 @@ enum StatusRecebimento {
 }
 
 model Projeto {
-  id           String              @id @default(cuid())
-  propostaId   String?             @unique
-  proposta     Proposta?           @relation(fields: [propostaId], references: [id])
+  id           String             @id @default(cuid())
+  propostaId   String?            @unique
+  proposta     Proposta?          @relation(fields: [propostaId], references: [id])
   clienteId    String
-  cliente      Cliente             @relation(fields: [clienteId], references: [id])
+  cliente      Cliente            @relation(fields: [clienteId], references: [id])
   servicoId    String
-  servico      Servico             @relation(fields: [servicoId], references: [id])
+  servico      Servico            @relation(fields: [servicoId], references: [id])
   planoId      String?
-  plano        Plano?              @relation(fields: [planoId], references: [id])
+  plano        Plano?             @relation(fields: [planoId], references: [id])
   nome         String
   tipoCobranca TipoCobranca
   valor        Float
   prazoData    DateTime?
-  avulso       Boolean             @default(false)
-  statusGeral  StatusGeralProjeto  @default(ATIVO)
+  avulso       Boolean            @default(false)
+  statusGeral  StatusGeralProjeto @default(ATIVO)
   cicloAtual   Int?
-  createdAt    DateTime            @default(now())
+  createdAt    DateTime           @default(now())
 
-  etapas       ProjetoEtapa[]
-  entregas     Entrega[]
-  recebimentos Recebimento[]
-  custos       Custo[]
+  etapas               ProjetoEtapa[]
+  entregas             Entrega[]
+  recebimentos         Recebimento[]
+  custos               Custo[]
   alocacoesEquipamento AlocacaoEquipamento[]
   escalas              Escala[]
   documentos           Documento[]
@@ -278,14 +278,14 @@ model Entrega {
 // ---------- Financeiro ----------
 
 model Recebimento {
-  id            String            @id @default(cuid())
-  projetoId     String
-  projeto       Projeto           @relation(fields: [projetoId], references: [id], onDelete: Cascade)
-  valor         Float
-  vencimento    DateTime
-  status        StatusRecebimento @default(PENDENTE)
+  id             String            @id @default(cuid())
+  projetoId      String
+  projeto        Projeto           @relation(fields: [projetoId], references: [id], onDelete: Cascade)
+  valor          Float
+  vencimento     DateTime
+  status         StatusRecebimento @default(PENDENTE)
   formaPagamento String?
-  dataPagamento DateTime?
+  dataPagamento  DateTime?
 
   @@index([status, vencimento])
   @@index([projetoId])
@@ -311,6 +311,8 @@ model Custo {
 enum StatusEquipamento {
   DISPONIVEL
   MANUTENCAO
+  // quebrado, sem previsão de volta: não conta na depreciação nem nos kits da calculadora
+  ESTRAGADO
 }
 
 model Equipamento {
@@ -323,9 +325,14 @@ model Equipamento {
   ativo       Boolean           @default(true)
   createdAt   DateTime          @default(now())
 
+  // entram na depreciação da calculadora de custo/hora (/calculadora)
+  valorCompra   Float?
+  vidaUtilMeses Int?
+
   alocacoes   AlocacaoEquipamento[]
   templates   TemplateEquipamento[]
   fotoArquivo EquipamentoFoto?
+  kits        KitEquipamentoItem[]
 }
 
 // fotos enviadas pelo sistema ficam no banco (e não em disco) para funcionar
@@ -339,14 +346,14 @@ model EquipamentoFoto {
 }
 
 model AlocacaoEquipamento {
-  id                String      @id @default(cuid())
-  equipamentoId     String
-  equipamento       Equipamento @relation(fields: [equipamentoId], references: [id])
-  projetoId         String
-  projeto           Projeto     @relation(fields: [projetoId], references: [id], onDelete: Cascade)
-  data              DateTime
-  checklistSaida    Boolean     @default(false)
-  checklistRetorno  Boolean     @default(false)
+  id               String      @id @default(cuid())
+  equipamentoId    String
+  equipamento      Equipamento @relation(fields: [equipamentoId], references: [id])
+  projetoId        String
+  projeto          Projeto     @relation(fields: [projetoId], references: [id], onDelete: Cascade)
+  data             DateTime
+  checklistSaida   Boolean     @default(false)
+  checklistRetorno Boolean     @default(false)
 
   @@index([equipamentoId])
   @@index([projetoId])
@@ -368,15 +375,17 @@ enum TipoProfissional {
 }
 
 model Profissional {
-  id           String           @id @default(cuid())
-  nome         String
-  funcao       String
-  tipo         TipoProfissional @default(FREELANCER)
-  diariaPadrao Float?
-  contato      String?
-  email        String?
-  observacoes  String?
-  ativo        Boolean          @default(true)
+  id            String           @id @default(cuid())
+  nome          String
+  funcao        String
+  tipo          TipoProfissional @default(FREELANCER)
+  diariaPadrao  Float?
+  contato       String?
+  email         String?
+  observacoes   String?
+  ativo         Boolean          @default(true)
+  // só para tipo FIXO: entra na folha da calculadora de custo/hora
+  salarioMensal Float?
 
   escalas Escala[]
 }
@@ -449,4 +458,93 @@ model Documento {
   createdAt         DateTime         @default(now())
 
   @@index([projetoId])
+}
+
+// ---------- Calculadora de custo/hora ----------
+
+// custos recorrentes da agência (energia, água, internet, aluguel, tráfego pago...).
+// O valor é uma média mensal — não precisa ser a conta exata.
+model CustoFixo {
+  id          String   @id @default(cuid())
+  nome        String
+  categoria   String
+  valorMensal Float
+  ativo       Boolean  @default(true)
+  // a quem o custo pertence: "YANG" entra inteiro na hora da produtora; "COMPARTILHADO"
+  // (serve a YANG e ao perfil Yan Maximiano) entra pelo rateio da config; "PESSOAL" não entra.
+  escopo      String   @default("YANG")
+  // sai do aporte do investidor (orçamento de lançamento)?
+  doAporte    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  meses CustoFixoMes[]
+}
+
+// valor de um custo fixo num mês específico ("2026-10"), quando difere do
+// valorMensal padrão (ex.: salário que sobe mês a mês, pró-labore reduzido).
+model CustoFixoMes {
+  custoFixoId String
+  custoFixo   CustoFixo @relation(fields: [custoFixoId], references: [id], onDelete: Cascade)
+  mes         String
+  valor       Float
+
+  @@id([custoFixoId, mes])
+}
+
+// parâmetros da calculadora; existe no máximo uma linha (id "singleton").
+// Sem a linha, valem os padrões de lib/calculadora.ts.
+model ConfigCalculadora {
+  id                String   @id @default("singleton")
+  horasMensais      Float    @default(176)
+  pessoasFaturaveis Int      @default(1)
+  ocupacaoPct       Float    @default(75)
+  impostoPct        Float    @default(6)
+  margemPct         Float    @default(30)
+  comissaoPct       Float    @default(10)
+  rateioYangPct     Float    @default(50)
+  ticketCasamento   Float    @default(4500)
+  aporteTotal       Float    @default(0)
+  aporteInicio      String   @default("2026-10")
+  aporteMeses       Int      @default(3)
+  diasUsoMes        Float    @default(8)
+  encargosPct       Float    @default(0)
+  depreciacaoPct    Float    @default(1.6)
+  precoCombustivel  Float    @default(6.2)
+  consumoKmL        Float    @default(10)
+  desgasteKm        Float    @default(0.25)
+  alimentacaoDia    Float    @default(60)
+  diariaHospedagem  Float    @default(200)
+  atualizadoEm      DateTime @updatedAt
+}
+
+// quem gera horas cobráveis para a YANG. Cada pessoa entra com horas/mês, ocupação e
+// escopo: o escopo vale para as horas o mesmo que vale para os custos (compartilhado
+// = só o rateio da config das horas dessa pessoa conta para a YANG).
+model PessoaHoras {
+  id          String   @id @default(cuid())
+  nome        String
+  funcao      String?
+  horasMes    Float    @default(176)
+  ocupacaoPct Float    @default(75)
+  escopo      String   @default("COMPARTILHADO")
+  ativo       Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+// conjuntos de equipamentos que costumam sair juntos (ex.: kit leve de conteúdo).
+// No simulador, aplicar um kit marca todos os itens de uma vez.
+model KitEquipamento {
+  id        String               @id @default(cuid())
+  nome      String
+  createdAt DateTime             @default(now())
+  itens     KitEquipamentoItem[]
+}
+
+model KitEquipamentoItem {
+  kitId         String
+  kit           KitEquipamento @relation(fields: [kitId], references: [id], onDelete: Cascade)
+  equipamentoId String
+  equipamento   Equipamento    @relation(fields: [equipamentoId], references: [id], onDelete: Cascade)
+
+  @@id([kitId, equipamentoId])
 }

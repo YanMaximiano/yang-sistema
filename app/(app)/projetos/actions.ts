@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { str, num, dataOrNull } from "@/lib/form";
+import { str, num, dataOrNull, linkHttp } from "@/lib/form";
 import { renderModeloDocumento } from "@/lib/documentos";
 import type {
   StatusGeralProjeto,
@@ -165,8 +165,8 @@ export async function iniciarEtapa(formData: FormData) {
 export async function criarEntrega(formData: FormData) {
   await requireRole("ADMIN", "EQUIPE", "FREELANCER");
   const projetoId = formData.get("projetoId") as string;
-  const link = str(formData, "link");
-  if (!projetoId) return;
+  const link = linkHttp(formData, "link");
+  if (!projetoId || (str(formData, "link") && !link)) return; // link preenchido mas inválido: não cria
 
   const count = await prisma.entrega.count({ where: { projetoId } });
   await prisma.entrega.create({ data: { projetoId, versao: count + 1, link } });
@@ -198,7 +198,7 @@ export async function atualizarStatusEntrega(formData: FormData) {
 // ---------- Financeiro do projeto ----------
 
 export async function criarRecebimento(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+  await requireRole("ADMIN", "EQUIPE");
   const projetoId = formData.get("projetoId") as string;
   const valor = num(formData, "valor");
   const vencimento = dataOrNull(formData, "vencimento");
@@ -217,7 +217,7 @@ export async function criarRecebimento(formData: FormData) {
 }
 
 export async function atualizarRecebimento(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+  await requireRole("ADMIN", "EQUIPE");
   const id = formData.get("id") as string;
   const projetoId = formData.get("projetoId") as string;
   const status = formData.get("status") as StatusRecebimento;
@@ -235,7 +235,7 @@ export async function atualizarRecebimento(formData: FormData) {
 }
 
 export async function criarCusto(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+  await requireRole("ADMIN", "EQUIPE");
   const projetoId = formData.get("projetoId") as string;
   const tipo = str(formData, "tipo");
   const valor = num(formData, "valor");
@@ -255,7 +255,7 @@ export async function criarCusto(formData: FormData) {
 }
 
 export async function deletarCusto(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+  await requireRole("ADMIN", "EQUIPE");
   const id = formData.get("id") as string;
   const projetoId = formData.get("projetoId") as string;
   if (!id || !projetoId) return;
@@ -282,6 +282,12 @@ export async function alocarEquipamento(formData: FormData) {
   const equipamentoId = formData.get("equipamentoId") as string;
   const data = dataOrNull(formData, "data");
   if (!projetoId || !equipamentoId || !data) return;
+
+  const equipamento = await prisma.equipamento.findUnique({
+    where: { id: equipamentoId },
+    select: { ativo: true, status: true },
+  });
+  if (!equipamento || !equipamento.ativo || equipamento.status === "ESTRAGADO") return;
 
   await prisma.alocacaoEquipamento.create({ data: { projetoId, equipamentoId, data } });
   revalidatePath(`/projetos/${projetoId}`);
@@ -332,12 +338,13 @@ export async function removerAlocacaoEquipamento(formData: FormData) {
 // ---------- Escala do projeto ----------
 
 export async function criarEscala(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+  const session = await requireRole("ADMIN", "EQUIPE", "FREELANCER");
   const projetoId = formData.get("projetoId") as string;
   const profissionalId = formData.get("profissionalId") as string;
   const funcao = str(formData, "funcao");
   const data = dataOrNull(formData, "data");
-  const cache = num(formData, "cache");
+  // cachê vira custo do projeto: freelancer escala, mas não lança valores
+  const cache = session.user.role === "FREELANCER" ? null : num(formData, "cache");
   if (!projetoId || !profissionalId || !funcao || !data) return;
 
   await prisma.$transaction(async (tx) => {
@@ -414,7 +421,7 @@ export async function criarDocumentoLink(formData: FormData) {
   const projetoId = formData.get("projetoId") as string;
   const tipo = formData.get("tipo") as TipoDocumento;
   const nome = str(formData, "nome");
-  const link = str(formData, "link");
+  const link = linkHttp(formData, "link");
   if (!projetoId || !tipo || !nome || !link) return;
 
   await prisma.documento.create({ data: { projetoId, tipo, nome, link } });
