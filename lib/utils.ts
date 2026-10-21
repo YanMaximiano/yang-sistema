@@ -12,7 +12,7 @@ export function formatMoeda(valor: number | null | undefined) {
 
 export function formatFaixaValor(min: number | null, max: number | null) {
   if (min == null && max == null) return "A combinar";
-  if (min != null && max != null) return `${formatMoeda(min)} – ${formatMoeda(max)}`;
+  if (min != null && max != null) return min === max ? formatMoeda(min) : `${formatMoeda(min)} – ${formatMoeda(max)}`;
   if (min != null) return `A partir de ${formatMoeda(min)}`;
   return `Até ${formatMoeda(max)}`;
 }

@@ -38,13 +38,14 @@ export default async function ServicoDetalhePage({
       where: { id },
       include: {
         planos: {
+          where: { ativo: true },
           orderBy: { ordem: "asc" },
           include: {
             templatesEquipe: { orderBy: { funcao: "asc" } },
             templatesEquipamento: { include: { equipamento: true }, orderBy: { id: "asc" } },
           },
         },
-        adicionais: { orderBy: { nome: "asc" } },
+        adicionais: { where: { ativo: true }, orderBy: { nome: "asc" } },
         etapasTemplate: { orderBy: { ordem: "asc" } },
         modelosDocumento: { orderBy: { nome: "asc" } },
         checklistTemplate: { orderBy: { ordem: "asc" } },
@@ -52,7 +53,7 @@ export default async function ServicoDetalhePage({
     }),
     prisma.pilar.findMany({ orderBy: { ordem: "asc" } }),
     prisma.equipamento.findMany({
-      where: { ativo: true },
+      where: { ativo: true, status: { not: "ESTRAGADO" } },
       select: { id: true, nome: true },
       orderBy: { nome: "asc" },
     }),
@@ -121,11 +122,11 @@ export default async function ServicoDetalhePage({
                     <Input name="nome" defaultValue={plano.nome} required />
                   </div>
                   <div>
-                    <Label>Valor mín. (R$)</Label>
+                    <Label>Lançamento / mín. (R$)</Label>
                     <Input name="valorMin" type="number" step="0.01" defaultValue={plano.valorMin ?? ""} />
                   </div>
                   <div>
-                    <Label>Valor máx. (R$)</Label>
+                    <Label>Tabela / máx. (R$)</Label>
                     <Input name="valorMax" type="number" step="0.01" defaultValue={plano.valorMax ?? ""} />
                   </div>
                   <div>
@@ -143,7 +144,7 @@ export default async function ServicoDetalhePage({
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-neutral-500 dark:text-neutral-400">
-                    Faixa atual: {formatFaixaValor(plano.valorMin, plano.valorMax)}
+                    Lançamento → tabela: {formatFaixaValor(plano.valorMin, plano.valorMax)}
                   </span>
                   <div className="flex gap-2">
                     <Button type="submit" variant="secondary">
@@ -250,11 +251,11 @@ export default async function ServicoDetalhePage({
               <Input name="nome" required placeholder="Ex: Essencial" />
             </div>
             <div>
-              <Label>Valor mín. (R$)</Label>
+              <Label>Lançamento / mín. (R$)</Label>
               <Input name="valorMin" type="number" step="0.01" />
             </div>
             <div>
-              <Label>Valor máx. (R$)</Label>
+              <Label>Tabela / máx. (R$)</Label>
               <Input name="valorMax" type="number" step="0.01" />
             </div>
             <div>

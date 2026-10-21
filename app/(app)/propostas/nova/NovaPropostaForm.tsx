@@ -118,7 +118,7 @@ export function NovaPropostaForm({
           <Input
             name="valorProposto"
             type="number"
-            step="1"
+            step="0.01"
             required
             defaultValue={plano?.valorMin ?? undefined}
             key={plano?.id}

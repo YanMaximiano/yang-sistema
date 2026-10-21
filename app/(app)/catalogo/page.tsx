@@ -15,7 +15,7 @@ export default async function CatalogoPage() {
     include: {
       servicos: {
         orderBy: { ordem: "asc" },
-        include: { planos: true },
+        include: { planos: { where: { ativo: true }, orderBy: { ordem: "asc" } } },
       },
     },
   });

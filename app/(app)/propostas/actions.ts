@@ -16,7 +16,8 @@ export async function createProposta(formData: FormData) {
   const prazoPropostoDiasRaw = formData.get("prazoPropostoDias");
   const adicionaisIds = formData.getAll("adicionais") as string[];
 
-  if (!clienteId || !servicoId || !planoId || !Number.isFinite(valorProposto)) return;
+  if (!clienteId || !servicoId || !planoId || !Number.isFinite(valorProposto) || valorProposto <= 0) return;
+  const prazoDias = prazoPropostoDiasRaw ? parseInt(prazoPropostoDiasRaw as string, 10) : NaN;
 
   // só aceita adicionais que realmente pertencem ao serviço escolhido — evita
   // que um formulário adulterado misture add-ons de outro serviço na proposta
@@ -30,7 +31,7 @@ export async function createProposta(formData: FormData) {
       servicoId,
       planoId,
       valorProposto,
-      prazoPropostoDias: prazoPropostoDiasRaw ? parseInt(prazoPropostoDiasRaw as string, 10) : null,
+      prazoPropostoDias: Number.isFinite(prazoDias) && prazoDias > 0 ? prazoDias : null,
       adicionais: {
         create: adicionaisValidos.map((a) => ({ adicionalId: a.id })),
       },

@@ -272,6 +272,12 @@ export async function createTemplateEquipamento(formData: FormData) {
   const equipamentoId = formData.get("equipamentoId") as string;
   if (!planoId || !equipamentoId) return;
 
+  const equipamento = await prisma.equipamento.findUnique({
+    where: { id: equipamentoId },
+    select: { ativo: true, status: true },
+  });
+  if (!equipamento || !equipamento.ativo || equipamento.status === "ESTRAGADO") return;
+
   await prisma.templateEquipamento.create({ data: { planoId, equipamentoId } });
   revalidatePath(`/catalogo/servicos/${servicoId}`);
 }
