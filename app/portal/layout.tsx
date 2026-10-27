@@ -10,18 +10,20 @@ export default async function PortalLayout({ children }: { children: React.React
 
   return (
     <div className="flex min-h-screen flex-1 flex-col">
-      <header className="flex items-center justify-between border-b border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900 px-4 md:px-6 py-4">
-        <Link href="/portal">
-          <p className="font-semibold text-neutral-900 dark:text-neutral-100">Yang</p>
-          <p className="text-xs text-neutral-500 dark:text-neutral-400">Portal do Cliente</p>
+      <header className="flex items-center justify-between border-b border-neutral-200 px-5 py-5 dark:border-neutral-800 md:px-12">
+        <Link href="/portal" className="block">
+          <span className="block text-[15px] font-extrabold tracking-[0.32em] text-neutral-900 dark:text-neutral-100">
+            YANG
+          </span>
+          <span className="mt-1 block text-[10px] font-bold uppercase tracking-[0.16em] text-neutral-500 dark:text-neutral-400">
+            Portal do cliente
+          </span>
         </Link>
         <div className="flex items-center gap-3">
-          <p className="text-xs text-neutral-500 dark:text-neutral-400 hidden md:block">
-            {session.user.email}
-          </p>
+          <p className="hidden text-xs text-neutral-500 dark:text-neutral-400 md:block">{session.user.email}</p>
           <Link
             href="/portal/conta"
-            className="text-xs underline text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
+            className="text-xs font-semibold text-neutral-600 underline-offset-2 hover:underline dark:text-neutral-300"
           >
             Minha conta
           </Link>
@@ -38,7 +40,7 @@ export default async function PortalLayout({ children }: { children: React.React
           </form>
         </div>
       </header>
-      <main className="flex-1 px-4 md:px-6 py-6 md:py-8 max-w-4xl w-full mx-auto">{children}</main>
+      <main className="mx-auto w-full max-w-4xl flex-1 px-5 py-8 md:px-12 md:py-12">{children}</main>
     </div>
   );
 }

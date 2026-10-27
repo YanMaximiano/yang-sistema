@@ -8,14 +8,16 @@ export default function LoginPage() {
   const [error, formAction, pending] = useActionState(login, undefined);
 
   return (
-    <div className="flex flex-1 items-center justify-center px-4">
-      <Card className="w-full max-w-sm p-8">
-        <h1 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-1">
-          Yang — Sistema de Gestão
-        </h1>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-6">
-          Entre com seu e-mail e senha.
+    <div className="flex flex-1 flex-col items-center justify-center px-5 py-12">
+      <p className="mb-10 text-[15px] font-extrabold tracking-[0.32em] text-neutral-900 dark:text-neutral-100">YANG</p>
+      <Card className="w-full max-w-sm p-9">
+        <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400">
+          Sistema de gestão
         </p>
+        <h1 className="mb-2 text-3xl font-extrabold leading-[1.08] tracking-tight text-neutral-900 dark:text-neutral-100">
+          Bem-vindo de <span className="destaque">volta</span>
+        </h1>
+        <p className="mb-8 text-sm text-neutral-500 dark:text-neutral-400">Entre com seu e-mail e senha.</p>
         <form action={formAction} className="space-y-4">
           <div>
             <Label htmlFor="email">E-mail</Label>

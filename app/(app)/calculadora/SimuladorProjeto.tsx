@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type Dispatch, type SetStateAction } from "react";
-import { Card, Input, Label, Button } from "@/components/ui";
+import { Card, Input, Label, Button, Nota } from "@/components/ui";
 import { formatMoeda } from "@/lib/utils";
 import { simularProjeto, type ConfigCalculadora } from "@/lib/calculadora";
 
@@ -386,34 +386,35 @@ export function SimuladorProjeto({
           <Linha nome="Custo total do projeto" valor={moeda(r.custoTotal)} destaque />
         </div>
 
-        <div className="mt-4 space-y-2">
-          <div className="rounded-md bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-900 p-3">
-            <p className="text-xs text-amber-800 dark:text-amber-300">
-              Preço mínimo (cobre custos, {config.impostoPct}% de imposto
-              {comissao ? ` e ${config.comissaoPct}% de comissão` : ""}; lucro zero)
+        <div className="mt-6 space-y-6 border-t border-neutral-200 pt-6 dark:border-neutral-800">
+          <div>
+            <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400">
+              Preço mínimo
             </p>
-            <p className="text-xl font-semibold text-amber-900 dark:text-amber-200">
+            <p className="text-3xl font-extrabold leading-none tracking-tight tabular-nums">
               {temDados ? moeda(r.precoMinimo) : "—"}
             </p>
-          </div>
-          <div className="rounded-md bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-900 p-3">
-            <p className="text-xs text-green-800 dark:text-green-300">
-              Preço sugerido (com {config.margemPct}% de margem)
+            <p className="mt-2 text-xs leading-relaxed text-neutral-500 dark:text-neutral-400">
+              Cobre os custos, {config.impostoPct}% de imposto
+              {comissao ? ` e ${config.comissaoPct}% de comissão` : ""}; lucro zero.
             </p>
-            <p className="text-xl font-semibold text-green-900 dark:text-green-200">
+          </div>
+          <div>
+            <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400">
+              Preço sugerido
+            </p>
+            <p className="texto-destaque text-3xl font-extrabold leading-none tracking-tight tabular-nums">
               {temDados ? moeda(r.precoSugerido) : "—"}
+            </p>
+            <p className="mt-2 text-xs leading-relaxed text-neutral-500 dark:text-neutral-400">
+              Com {config.margemPct}% de margem sobre o preço.
             </p>
           </div>
         </div>
 
         {r.lucro != null && (
-          <div
-            className={`mt-4 rounded-md border p-3 text-sm ${
-              r.lucro < 0
-                ? "bg-red-50 border-red-200 text-red-900 dark:bg-red-950 dark:border-red-900 dark:text-red-200"
-                : "bg-neutral-50 border-neutral-200 dark:bg-neutral-950 dark:border-neutral-800"
-            }`}
-          >
+          <Nota tom={r.lucro < 0 ? "perigo" : "neutro"} className="mt-6">
+            <div className="w-full">
             <p className="font-medium mb-1">
               Cobrando {formatMoeda(n(valorPretendido))}
             </p>
@@ -425,7 +426,8 @@ export function SimuladorProjeto({
             {r.lucro < 0 && (
               <p className="text-xs mt-1">Esse valor não cobre os custos do projeto.</p>
             )}
-          </div>
+            </div>
+          </Nota>
         )}
       </Card>
     </div>

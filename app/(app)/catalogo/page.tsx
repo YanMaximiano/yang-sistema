@@ -25,7 +25,7 @@ export default async function CatalogoPage() {
   return (
     <div>
       <PageHeader
-        title="Catálogo de Serviços"
+        eyebrow="Catálogo" title="Catálogo de *serviços*"
         description="Pilares, serviços, planos e adicionais — editável livremente, sem depender de deploy."
       />
 

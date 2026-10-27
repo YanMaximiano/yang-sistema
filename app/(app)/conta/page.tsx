@@ -7,7 +7,7 @@ export default async function ContaPage() {
 
   return (
     <div>
-      <PageHeader title="Minha conta" description={session?.user.email ?? undefined} />
+      <PageHeader eyebrow="Conta" title="Minha *conta*" description={session?.user.email ?? undefined} />
       <Card className="p-5">
         <h2 className="font-medium mb-4">Alterar senha</h2>
         <AlterarSenhaForm />

@@ -23,7 +23,7 @@ export function AlterarSenhaForm() {
         <Input id="confirmar" name="confirmar" type="password" required minLength={8} autoComplete="new-password" />
       </div>
       {estado?.erro && <p className="text-sm text-red-600 dark:text-red-400">{estado.erro}</p>}
-      {estado?.ok && <p className="text-sm text-green-700 dark:text-green-400">Senha alterada com sucesso.</p>}
+      {estado?.ok && <p className="text-sm text-neutral-900 dark:text-neutral-100">Senha alterada com sucesso.</p>}
       <Button type="submit" disabled={pending}>
         {pending ? "Salvando..." : "Alterar senha"}
       </Button>

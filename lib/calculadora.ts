@@ -90,6 +90,75 @@ export const ESCOPOS = [
 
 export const CATEGORIA_RESERVA = "Reserva de caixa";
 
+/**
+ * Listas e faixas que o usuário ajusta na tela (ficam na mesma linha de configuração do banco).
+ * Nada disso muda a conta do custo/hora: são as categorias dos custos, as comparações das
+ * tabelas, os nomes das faixas de margem e dos escopos, e quantos meses a projeção mostra.
+ */
+export type PersonalizacaoCalculadora = {
+  categoriasCusto: string[];
+  margensComparacao: number[]; // margens mostradas na tabela "valor da hora por margem"
+  rateiosComparacao: number[]; // fatias da YANG comparadas na tabela de sensibilidade
+  taxasDepreciacaoComparacao: number[]; // taxas de depreciação comparadas (quando rateada na hora)
+  faixasMargemNomes: string[]; // 4 nomes, do pior ao melhor
+  faixasMargemLimites: number[]; // 3 limites (%): até o 1º é a faixa 1, até o 2º a 2, até o 3º a 3, acima a 4
+  mesesNaProjecao: number; // quantos meses aparecem no seletor e na tabela mês a mês
+  rotulosEscopo: string[]; // nomes dos 3 escopos de custo, na ordem de ESCOPOS
+};
+
+export const PERSONALIZACAO_PADRAO: PersonalizacaoCalculadora = {
+  categoriasCusto: [...CATEGORIAS_CUSTO_FIXO],
+  margensComparacao: [10, 20, 30, 40, 50],
+  rateiosComparacao: [50, 75, 100],
+  taxasDepreciacaoComparacao: [1, 1.6, 2, 2.8],
+  faixasMargemNomes: ["Apertado", "Baixo", "Saudável", "Ótimo"],
+  faixasMargemLimites: [10, 20, 30],
+  mesesNaProjecao: 6,
+  rotulosEscopo: ESCOPOS.map((e) => e.rotulo),
+};
+
+const listaOuPadrao = <T,>(lista: T[] | null | undefined, padrao: T[], tamanho?: number) =>
+  lista && lista.length > 0 && (tamanho == null || lista.length === tamanho) ? lista : padrao;
+
+/** Junta o que está salvo com os padrões; lista vazia ou do tamanho errado volta ao padrão. */
+export function personalizacaoComPadrao(
+  salva: Partial<PersonalizacaoCalculadora> | null | undefined
+): PersonalizacaoCalculadora {
+  const s = salva ?? {};
+  const categorias = listaOuPadrao(s.categoriasCusto, PERSONALIZACAO_PADRAO.categoriasCusto);
+  return {
+    // a "Reserva de caixa" tem tratamento especial no cálculo (não é gasto): nunca some da lista
+    categoriasCusto: categorias.includes(CATEGORIA_RESERVA) ? categorias : [...categorias, CATEGORIA_RESERVA],
+    margensComparacao: listaOuPadrao(s.margensComparacao, PERSONALIZACAO_PADRAO.margensComparacao),
+    rateiosComparacao: listaOuPadrao(s.rateiosComparacao, PERSONALIZACAO_PADRAO.rateiosComparacao),
+    taxasDepreciacaoComparacao: listaOuPadrao(
+      s.taxasDepreciacaoComparacao,
+      PERSONALIZACAO_PADRAO.taxasDepreciacaoComparacao
+    ),
+    faixasMargemNomes: listaOuPadrao(s.faixasMargemNomes, PERSONALIZACAO_PADRAO.faixasMargemNomes, 4),
+    faixasMargemLimites: listaOuPadrao(s.faixasMargemLimites, PERSONALIZACAO_PADRAO.faixasMargemLimites, 3),
+    mesesNaProjecao:
+      s.mesesNaProjecao && s.mesesNaProjecao >= 1 && s.mesesNaProjecao <= 12
+        ? s.mesesNaProjecao
+        : PERSONALIZACAO_PADRAO.mesesNaProjecao,
+    rotulosEscopo: listaOuPadrao(s.rotulosEscopo, PERSONALIZACAO_PADRAO.rotulosEscopo, 3),
+  };
+}
+
+export const VARIANTES_FAIXA = ["danger", "warning", "info", "success"] as const;
+
+/** Em qual faixa de avaliação cai uma margem (%), segundo os limites escolhidos. */
+export function classificarMargem(margem: number, p: PersonalizacaoCalculadora) {
+  const achada = p.faixasMargemLimites.findIndex((limite) => margem <= limite);
+  const indice = achada === -1 ? p.faixasMargemLimites.length : achada;
+  return { nome: p.faixasMargemNomes[indice], variante: VARIANTES_FAIXA[indice], indice };
+}
+
+/** Os escopos de custo com os nomes escolhidos pelo usuário. */
+export function escoposComRotulos(p: PersonalizacaoCalculadora) {
+  return ESCOPOS.map((e, i) => ({ valor: e.valor, rotulo: p.rotulosEscopo[i] || e.rotulo }));
+}
+
 export type CustoFixoParaCalculo = {
   categoria: string;
   valorMensal: number;

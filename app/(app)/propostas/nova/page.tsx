@@ -37,7 +37,7 @@ export default async function NovaPropostaPage({
 
   return (
     <div>
-      <PageHeader title="Nova proposta" description="Cliente → serviço → plano → adicionais" />
+      <PageHeader eyebrow="Comercial" title="Nova *proposta*" description="Cliente → serviço → plano → adicionais" />
       <NovaPropostaForm clientes={clientes} servicos={servicos} clienteIdInicial={clienteId} />
     </div>
   );

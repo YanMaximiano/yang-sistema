@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { PageHeader, Card } from "@/components/ui";
+import { PageHeader, Card, Nota } from "@/components/ui";
 import Link from "next/link";
 import {
   startOfMonth,
@@ -56,7 +56,7 @@ export default async function CalendarioPage({
   return (
     <div>
       <PageHeader
-        title="Calendário"
+        eyebrow="Produção" title="Calendário de *prazos*"
         description="Prazos de projetos ativos"
         actions={
           <div className="flex gap-2 text-sm">
@@ -72,14 +72,14 @@ export default async function CalendarioPage({
       />
 
       {atrasados.length > 0 && (
-        <Card className="p-4 mb-6 border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-950">
-          <p className="text-sm font-medium text-red-800 dark:text-red-300 mb-2">Projetos atrasados</p>
+        <Nota tom="perigo" className="mb-8">
+          <p className="mb-2 text-sm font-bold text-neutral-900 dark:text-neutral-100">Projetos atrasados</p>
           <div className="space-y-1">
             {atrasados.map((p) => (
               <Link
                 key={p.id}
                 href={`/projetos/${p.id}`}
-                className="flex justify-between text-sm text-red-700 dark:text-red-400 hover:underline"
+                className="flex justify-between gap-4 text-sm text-neutral-700 hover:underline dark:text-neutral-300"
               >
                 <span>
                   {p.nome} — {p.cliente.nome}
@@ -88,7 +88,7 @@ export default async function CalendarioPage({
               </Link>
             ))}
           </div>
-        </Card>
+        </Nota>
       )}
 
       <div className="grid grid-cols-7 gap-2 text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1">
@@ -108,7 +108,7 @@ export default async function CalendarioPage({
           return (
             <Card
               key={dia.toISOString()}
-              className={`p-2 min-h-[90px] ${foraDoMes ? "opacity-40" : ""} ${ehHoje ? "border-neutral-900 dark:border-neutral-100 border-2" : ""}`}
+              className={`p-2 min-h-[90px] rounded-lg ${foraDoMes ? "opacity-40" : ""} ${ehHoje ? "border-neutral-900 dark:border-neutral-100 border-2" : ""}`}
             >
               <p className="text-xs text-neutral-400 dark:text-neutral-500 mb-1">{format(dia, "d")}</p>
               <div className="space-y-1">

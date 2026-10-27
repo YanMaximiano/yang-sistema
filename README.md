@@ -9,7 +9,8 @@ propostas, clientes (CRM), projetos com pipeline customizável, prazos/calendár
 - Next.js 16 (App Router, TypeScript, Server Actions)
 - Prisma 7 + PostgreSQL (via driver adapter `@prisma/adapter-pg`)
 - Auth.js (NextAuth v5) — login por e-mail/senha, perfis ADMIN/EQUIPE/FREELANCER/CLIENTE
-- Tailwind CSS (com modo escuro)
+- Tailwind CSS v4 (modo claro e escuro) com Manrope + Instrument Serif via `next/font/google`
+  (o **build precisa de internet** para baixar as fontes; em produção elas ficam embutidas no app)
 
 Requisitos: **Node.js 20.19+** e **PostgreSQL 14+**.
 
@@ -129,6 +130,25 @@ usuários é só do Admin** (senão alguém poderia dar poder de admin a si mesm
   `requireModulo("área")` (ações e rotas de API), de `lib/acesso.ts`. Novas áreas entram na lista de `lib/permissoes.ts`.
 - O custo de aluguel de cada equipamento (a depreciação por diária) aparece em `/equipamentos` para quem tem a área
   Calculadora, pois deriva do valor pago.
+
+## Identidade visual
+
+O sistema inteiro segue a identidade da Yang (`identidade-visual/tokens.json`), em modo claro e escuro (botão no menu lateral).
+Em vez de pintar cada tela, a escala `neutral` do Tailwind foi redefinida em `app/globals.css` com os cinzas quentes da marca:
+todo `bg-neutral-*`, `text-neutral-*` e `border-neutral-*` já usa esses tons nos dois modos. O âmbar é a única cor de destaque
+(`texto-destaque`, `borda-destaque`, `fundo-destaque`, `.destaque` para a palavra em itálico serifado).
+Os componentes compartilhados (botões, campos, cartões, selos, `PageHeader`, `MetricasEmLinha`, `Nota`) ficam em `components/ui.tsx`;
+telas novas devem usá-los em vez de cores soltas do Tailwind.
+
+## Calculadora: personalizável e com assistente
+
+- **Tudo customizável** em `/calculadora` → seção "Parâmetros" → "Personalizar": categorias de custo, margens, rateios e taxas de
+  depreciação comparadas, nomes e limites das faixas de margem, meses na projeção e rótulos dos escopos. Ficam na mesma linha
+  única `ConfigCalculadora`; valores vazios ou inválidos voltam ao padrão (`personalizacaoComPadrao` em `lib/calculadora.ts`).
+- **Assistente guiado** (sem IA, roteiro fixo em `app/(app)/calculadora/passos.ts`): abre sozinho na primeira visita de cada
+  usuário (o "já vi" fica em `User.tutoriaisVistos`) e pode ser chamado de novo pelo botão "Assistente" ou pelo "?" de cada seção.
+  Para explicar outra tela, crie os passos e registre a chave em `lib/tutoriais.ts`.
+- A migração `20261028000000_calculadora_personalizavel_e_tutoriais` acrescenta essas colunas; em produção use `prisma migrate deploy`.
 
 ## Escopo desta versão
 

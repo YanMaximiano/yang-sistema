@@ -1,18 +1,20 @@
 import { prisma } from "@/lib/prisma";
-import { PageHeader, Card, Input, Select, Button, Badge, Label } from "@/components/ui";
+import { PageHeader, Card, Input, Select, Button, Badge, Label, MetricasEmLinha, Nota, type ItemDeMetrica } from "@/components/ui";
 import { formatMoeda } from "@/lib/utils";
 import Link from "next/link";
 import { format } from "date-fns";
 import {
-  CATEGORIAS_CUSTO_FIXO,
+  CATEGORIA_RESERVA,
   configComPadrao,
+  personalizacaoComPadrao,
+  classificarMargem,
+  escoposComRotulos,
   calcularCustoHora,
   depreciacaoMensalDe,
   depreciacaoPorDiaria,
   precoComMargem,
   resumoAporte,
   pontoDeEquilibrio,
-  ESCOPOS,
   mesesAPartirDe,
   rotuloMes,
   valorDoMes,
@@ -33,39 +35,15 @@ import {
   criarKit,
   excluirKit,
   salvarSalarios,
+  salvarPersonalizacao,
 } from "./actions";
 import { SimuladorProjeto } from "./SimuladorProjeto";
+import { SecaoCalc } from "./SecaoCalc";
+import { Assistente } from "./Assistente";
+import { AbrirSecaoDoHash } from "./AbrirSecaoDoHash";
+import { ListaDeTags } from "./ListaDeTags";
+import { PASSOS_CALCULADORA } from "./passos";
 import { exigirModulo } from "@/lib/acesso";
-
-function classificar(margem: number) {
-  if (margem <= 10) return { label: "Apertado", variant: "danger" as const };
-  if (margem <= 20) return { label: "Baixo", variant: "warning" as const };
-  if (margem <= 30) return { label: "Saudável", variant: "info" as const };
-  return { label: "Ótimo", variant: "success" as const };
-}
-
-function Secao({
-  titulo,
-  descricao,
-  id,
-  children,
-}: {
-  titulo: string;
-  descricao?: string;
-  id?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section id={id} className="mb-10 scroll-mt-4">
-      <h2 className="text-lg font-semibold">{titulo}</h2>
-      {descricao && (
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1 mb-3 max-w-3xl">{descricao}</p>
-      )}
-      {!descricao && <div className="mb-3" />}
-      {children}
-    </section>
-  );
-}
 
 function CampoConfig({
   label,
@@ -94,7 +72,7 @@ export default async function CalculadoraPage({
 }: {
   searchParams: Promise<{ mes?: string; deprec?: string }>;
 }) {
-  await exigirModulo("calculadora");
+  const acesso = await exigirModulo("calculadora");
   const { mes: mesParam, deprec } = await searchParams;
   // padrão: a depreciação NÃO entra na hora; cada projeto paga só os equipamentos que usa
   const comDepreciacao = deprec === "1";
@@ -108,12 +86,10 @@ export default async function CalculadoraPage({
     const qs = q.toString();
     return qs ? `/calculadora?${qs}` : "/calculadora";
   };
-  const meses = mesesAPartirDe(mesAtual, 6);
-  if (!meses.includes(mes)) meses.push(mes);
-  meses.sort();
 
-  const [configSalva, equipamentos, fixos, custosFixos, pessoasHoras, kits] = await Promise.all([
+  const [configSalva, usuarioAtual, equipamentos, fixos, custosFixos, pessoasHoras, kits] = await Promise.all([
     prisma.configCalculadora.findUnique({ where: { id: "singleton" } }),
+    prisma.user.findUnique({ where: { id: acesso.userId }, select: { tutoriaisVistos: true } }),
     prisma.equipamento.findMany({
       where: { ativo: true },
       select: { id: true, nome: true, categoria: true, status: true, valorCompra: true, vidaUtilMeses: true },
@@ -136,6 +112,14 @@ export default async function CalculadoraPage({
   ]);
 
   const config: ConfigCalculadora = configComPadrao(configSalva);
+  const personalizacao = personalizacaoComPadrao(configSalva);
+  const escopos = escoposComRotulos(personalizacao);
+  const jaViuAssistente = usuarioAtual?.tutoriaisVistos.includes("calculadora") ?? false;
+
+  // os meses a partir do atual; se o escolhido estiver fora da lista, ele entra nela
+  const meses = mesesAPartirDe(mesAtual, personalizacao.mesesNaProjecao);
+  if (!meses.includes(mes)) meses.push(mes);
+  meses.sort();
 
   // equipamento estragado fica fora da depreciação, do simulador e dos kits: só aparece em aviso
   const estragados = equipamentos.filter((e) => e.status === "ESTRAGADO");
@@ -172,10 +156,10 @@ export default async function CalculadoraPage({
       { incluirDepreciacao: comDepreciacao, pessoas: pessoasCalc }
     );
   // quanto a hora mínima muda com a fatia da YANG e com a taxa de depreciação
-  const RATEIOS = [50, 75, 100];
+  const RATEIOS = personalizacao.rateiosComparacao;
   // a taxa só mexe na hora base quando a depreciação é rateada nela
   const TAXAS = comDepreciacao
-    ? Array.from(new Set([1, 1.6, 2, 2.8, config.depreciacaoPct])).sort((a, b) => a - b)
+    ? Array.from(new Set([...personalizacao.taxasDepreciacaoComparacao, config.depreciacaoPct])).sort((a, b) => a - b)
     : [config.depreciacaoPct];
   const sensibilidade = RATEIOS.map((rateio) => ({
     rateio,
@@ -202,214 +186,206 @@ export default async function CalculadoraPage({
   const horaSugerida = precoComMargem(resultado.custoHora, config.impostoPct, config.margemPct);
   const semValor = emUso.filter((e) => !e.valorCompra).length;
   const semSalario = fixos.filter((p) => !p.salarioMensal).length;
-  const margens = [10, 20, 30, 40, 50];
+  const margens = personalizacao.margensComparacao;
+
+  const metricas: ItemDeMetrica[] = [
+    {
+      rotulo: "Custo mensal",
+      valor: formatMoeda(resultado.custoMensalTotal),
+      apoio: comDepreciacao ? "equipe, equipamentos e custos fixos" : "equipe e custos fixos, sem depreciação",
+    },
+    {
+      rotulo: "Horas cobráveis",
+      valor: `${resultado.horasFaturaveis.toFixed(1).replace(".", ",")} h`,
+      apoio: resultado.capacidade.length
+        ? resultado.capacidade.map((l) => `${l.nome} ${l.horasYang.toFixed(1).replace(".", ",")} h`).join(" · ")
+        : "por mês",
+    },
+    {
+      rotulo: "Hora mínima",
+      valor: horaMinima == null ? "—" : formatMoeda(horaMinima),
+      apoio: `lucro zero, com ${config.impostoPct}% de imposto`,
+    },
+    {
+      rotulo: "Hora sugerida",
+      valor: horaSugerida == null ? "—" : formatMoeda(horaSugerida),
+      apoio: `com ${config.margemPct}% de margem`,
+      destaque: true,
+    },
+  ];
+  const pilula = (ativa: boolean) =>
+    `inline-flex h-10 items-center rounded-full border px-4 text-[13px] font-semibold transition-colors ${
+      ativa
+        ? "border-neutral-900 bg-neutral-900 text-neutral-50 dark:border-neutral-100 dark:bg-neutral-100 dark:text-neutral-950"
+        : "border-neutral-200 text-neutral-600 hover:border-neutral-400 hover:text-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-600 dark:hover:text-neutral-100"
+    }`;
 
   return (
     <div>
-      <PageHeader
-        title="Calculadora de custo/hora"
-        description="Quanto a Yang precisa cobrar por hora para cobrir todos os custos e ainda ter lucro"
-      />
-
-      <nav className="flex flex-wrap items-center gap-2 mb-4" aria-label="Mês de referência">
-        <span className="text-sm text-neutral-500 dark:text-neutral-400">Mês de referência:</span>
-        {meses.map((m) => (
-          <Link
-            key={m}
-            href={hrefCom(m, comDepreciacao)}
-            aria-current={m === mes ? "page" : undefined}
-            className={`rounded-full px-3 py-1 text-sm border ${
-              m === mes
-                ? "bg-neutral-900 text-white border-neutral-900 dark:bg-neutral-100 dark:text-neutral-900 dark:border-neutral-100"
-                : "border-neutral-300 text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
-            }`}
-          >
-            {rotuloMes(m)}
-          </Link>
-        ))}
-      </nav>
-
-      <div className="flex flex-wrap items-center gap-2 mb-4">
-        <span className="text-sm text-neutral-500 dark:text-neutral-400">Depreciação dos equipamentos:</span>
-        {[
-          { rotulo: "Cobrada por projeto (só o que usa)", valor: false },
-          { rotulo: "Rateada na hora", valor: true },
-        ].map((o) => (
-          <Link
-            key={o.rotulo}
-            href={hrefCom(mes, o.valor)}
-            aria-current={o.valor === comDepreciacao ? "page" : undefined}
-            className={`rounded-full px-3 py-1 text-sm border ${
-              o.valor === comDepreciacao
-                ? "bg-neutral-900 text-white border-neutral-900 dark:bg-neutral-100 dark:text-neutral-900 dark:border-neutral-100"
-                : "border-neutral-300 text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
-            }`}
-          >
-            {o.rotulo}
-          </Link>
-        ))}
-        <span className="text-xs text-neutral-500 dark:text-neutral-400">
-          {comDepreciacao
-            ? `Os ${formatMoeda(resultado.depreciacaoMensal)}/mês dos equipamentos em uso entram na hora, usados ou não em cada projeto.`
-            : "A hora não leva depreciação: o simulador cobra só os equipamentos escolhidos em cada projeto."}
-        </span>
+      <div id="topo" className="scroll-mt-6">
+        <PageHeader
+          eyebrow="Financeiro · Calculadora"
+          title="Quanto a Yang precisa cobrar *por hora*"
+          description="O mínimo para não pagar para trabalhar e o valor sugerido para ter lucro, calculados a partir dos seus custos e das horas que você realmente vende."
+          actions={<Assistente passos={PASSOS_CALCULADORA} jaViu={jaViuAssistente} chave="calculadora" />}
+        />
       </div>
+      <AbrirSecaoDoHash />
 
-      {/* ---------- resultado ---------- */}
-      {resultado.horasFaturaveis <= 0 && (
-        <div className="mb-4 rounded-md border border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950 p-3 text-sm text-amber-800 dark:text-amber-300">
-          Nenhuma hora cobrável para a YANG: a hora mínima e a sugerida aparecem zeradas. Confira em Capacidade
-          (horas e ocupação de cada pessoa) e o rateio da YANG em Parâmetros.
+      <div id="controles" className="mb-10 space-y-5">
+        <nav className="flex flex-wrap items-center gap-2" aria-label="Mês de referência">
+          <span className="mr-2 text-[11px] font-bold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400">
+            Mês
+          </span>
+          {meses.map((m) => (
+            <Link key={m} href={hrefCom(m, comDepreciacao)} aria-current={m === mes ? "page" : undefined} className={pilula(m === mes)}>
+              {rotuloMes(m)}
+            </Link>
+          ))}
+        </nav>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="mr-2 text-[11px] font-bold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400">
+            Depreciação
+          </span>
+          {[
+            { rotulo: "Cobrada por projeto", valor: false },
+            { rotulo: "Rateada na hora", valor: true },
+          ].map((o) => (
+            <Link
+              key={o.rotulo}
+              href={hrefCom(mes, o.valor)}
+              aria-current={o.valor === comDepreciacao ? "page" : undefined}
+              className={pilula(o.valor === comDepreciacao)}
+            >
+              {o.rotulo}
+            </Link>
+          ))}
         </div>
-      )}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-        <Card className="p-4">
-          <p className="text-xs text-neutral-500 dark:text-neutral-400">Custo mensal da agência</p>
-          <p className="text-xl font-semibold">{formatMoeda(resultado.custoMensalTotal)}</p>
-          <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-            {comDepreciacao ? "equipe + equipamentos + custos fixos" : "equipe + custos fixos (sem depreciação)"}
-          </p>
-        </Card>
-        <Card className="p-4">
-          <p className="text-xs text-neutral-500 dark:text-neutral-400">Horas cobráveis por mês</p>
-          <p className="text-xl font-semibold">{resultado.horasFaturaveis.toFixed(1).replace(".", ",")}h</p>
-          <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-            {resultado.capacidade
-              .map((l) => `${l.nome}: ${l.horasYang.toFixed(1).replace(".", ",")}h`)
-              .join(" · ")}
-            {" — "}
-            <a href="#capacidade" className="underline">
-              ver capacidade
-            </a>
-          </p>
-        </Card>
-        <Card className="p-4">
-          <p className="text-xs text-neutral-500 dark:text-neutral-400">Hora mínima (lucro zero)</p>
-          <p className="text-xl font-semibold text-amber-700 dark:text-amber-400">
-            {horaMinima == null ? "—" : formatMoeda(horaMinima)}
-          </p>
-          <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-            custo {formatMoeda(resultado.custoHora)} + {config.impostoPct}% de imposto
-          </p>
-        </Card>
-        <Card className="p-4 border-green-300 dark:border-green-800">
-          <p className="text-xs text-neutral-500 dark:text-neutral-400">
-            Hora sugerida ({config.margemPct}% de margem)
-          </p>
-          <p className="text-xl font-semibold text-green-700 dark:text-green-400">
-            {horaSugerida == null ? "—" : formatMoeda(horaSugerida)}
-          </p>
-          <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-            abaixo da mínima você paga para trabalhar
-          </p>
-        </Card>
+        <p className="max-w-3xl text-[13px] leading-relaxed text-neutral-500 dark:text-neutral-400">
+          {comDepreciacao
+            ? `Os ${formatMoeda(resultado.depreciacaoMensal)} por mês dos equipamentos em uso entram na hora, usados ou não em cada projeto.`
+            : "A hora não leva depreciação: o simulador cobra só os equipamentos escolhidos em cada projeto."}
+        </p>
       </div>
 
+      {resultado.horasFaturaveis <= 0 && (
+        <Nota tom="atencao" className="mb-4">
+          Nenhuma hora cobrável para a YANG: a hora mínima e a sugerida aparecem zeradas. Confira em Capacidade (horas e
+          ocupação de cada pessoa) e o rateio da YANG em Parâmetros.
+        </Nota>
+      )}
       {estragados.length > 0 && (
-        <Card className="p-3 mb-4 border-red-300 bg-red-50 dark:border-red-900 dark:bg-red-950">
-          <p className="text-sm text-red-900 dark:text-red-200">
-            <strong>{estragados.length} equipamento(s) estragado(s) fora do cálculo</strong> (sem depreciação e
-            fora dos kits): {estragados.map((e) => e.nome).join(", ")}. Quando voltarem a funcionar, marque como
-            disponível em Equipamentos.
-          </p>
-        </Card>
+        <Nota tom="perigo" className="mb-4">
+          <strong>{estragados.length} equipamento(s) estragado(s) fora do cálculo</strong> (sem depreciação e fora dos
+          kits): {estragados.map((e) => e.nome).join(", ")}. Quando voltarem a funcionar, marque como disponível em
+          Equipamentos.
+        </Nota>
       )}
-
       {(semValor > 0 || semSalario > 0 || custosFixos.length === 0) && (
-        <Card className="p-3 mb-4 border-amber-300 bg-amber-50 dark:border-amber-900 dark:bg-amber-950">
-          <p className="text-sm text-amber-900 dark:text-amber-200">
-            O cálculo ainda está incompleto:
-            {semValor > 0 && ` ${semValor} equipamento(s) sem valor de compra;`}
-            {semSalario > 0 && ` ${semSalario} profissional(is) fixo(s) sem salário;`}
-            {custosFixos.length === 0 && " nenhum custo fixo cadastrado (energia, água, internet...);"} preencha
-            nas seções abaixo.
-          </p>
-        </Card>
+        <Nota tom="atencao" className="mb-4">
+          O cálculo ainda está incompleto:
+          {semValor > 0 && ` ${semValor} equipamento(s) sem valor de compra;`}
+          {semSalario > 0 && ` ${semSalario} profissional(is) fixo(s) sem salário;`}
+          {custosFixos.length === 0 && " nenhum custo fixo cadastrado (energia, água, internet...);"} preencha nas seções
+          abaixo.
+        </Nota>
       )}
 
-      <div className="grid lg:grid-cols-2 gap-4 mb-10">
-        <Card className="p-4">
-          <p className="text-sm font-medium">De onde vem o custo mensal ({rotuloMes(mes)})</p>
-          <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-3">
-            Só o que a YANG absorve: custos compartilhados entram com {config.rateioYangPct}% do valor.
-          </p>
-          {comDepreciacao && resultado.depreciacaoMensal > 0 && (
-            <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-3 rounded-md bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 p-2">
-              Depreciação: patrimônio de {formatMoeda(resultado.patrimonioTotal)} dividido em{" "}
-              <strong>{String(config.depreciacaoPct).replace(".", ",")}% ao mês</strong>
-              {config.depreciacaoPct > 0 &&
-                ` (cerca de ${(100 / config.depreciacaoPct).toFixed(1).replace(".", ",")} meses)`}
-              , salvo itens com prazo próprio.{" "}
-              <a href="#parametros" className="underline">
-                Ajustar a taxa
-              </a>
-            </p>
-          )}
-          {resultado.composicao.length === 0 && (
-            <p className="text-sm text-neutral-500 dark:text-neutral-400">Nada cadastrado ainda.</p>
-          )}
-          <div className="space-y-2.5">
-            {resultado.composicao.map((l) => {
-              const pct = resultado.custoMensalTotal > 0 ? (l.valor / resultado.custoMensalTotal) * 100 : 0;
-              return (
-                <div key={l.nome}>
-                  <div className="flex justify-between text-sm">
-                    <span>{l.nome}</span>
-                    <span className="tabular-nums text-neutral-600 dark:text-neutral-400">
-                      {formatMoeda(l.valor)} · {pct.toFixed(0)}%
-                    </span>
-                  </div>
-                  <div className="h-1.5 rounded-full bg-neutral-100 dark:bg-neutral-800 mt-1">
-                    <div
-                      className="h-1.5 rounded-full bg-neutral-900 dark:bg-neutral-100"
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </Card>
+      <div id="resumo" className="mb-16 mt-6 scroll-mt-6">
+        <MetricasEmLinha itens={metricas} />
+      </div>
 
-        <Card className="p-4 overflow-x-auto">
-          <p className="text-sm font-medium">Valor da hora por margem de lucro</p>
-          <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-3">
-            Já com {config.impostoPct}% de imposto. A margem é sobre o preço cobrado.
-          </p>
-          <table className="w-full text-sm">
+      <SecaoCalc
+        id="pesa"
+        numero="01"
+        titulo="De onde vem o custo"
+        resumo={`${resultado.composicao.length} itens em ${rotuloMes(mes)}`}
+        descricao={`Só o que a YANG absorve: custos compartilhados entram com ${config.rateioYangPct}% do valor.`}
+        ajuda="pesa"
+        aberta
+      >
+        {comDepreciacao && resultado.depreciacaoMensal > 0 && (
+          <Nota className="mb-6">
+            Depreciação: patrimônio de {formatMoeda(resultado.patrimonioTotal)} dividido em{" "}
+            <strong>{String(config.depreciacaoPct).replace(".", ",")}% ao mês</strong>
+            {config.depreciacaoPct > 0 &&
+              ` (cerca de ${(100 / config.depreciacaoPct).toFixed(1).replace(".", ",")} meses)`}
+            , salvo itens com prazo próprio.{" "}
+            <a href="#parametros" className="underline">
+              Ajustar a taxa
+            </a>
+          </Nota>
+        )}
+        {resultado.composicao.length === 0 && (
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">Nada cadastrado ainda.</p>
+        )}
+        <div className="max-w-3xl space-y-5">
+          {[...resultado.composicao].sort((a, b) => b.valor - a.valor).map((l, i) => {
+            const pct = resultado.custoMensalTotal > 0 ? (l.valor / resultado.custoMensalTotal) * 100 : 0;
+            return (
+              <div key={l.nome} className="grid grid-cols-[minmax(0,11rem)_minmax(0,1fr)_auto] items-center gap-4 text-sm">
+                <span className="truncate font-semibold">{l.nome}</span>
+                <span className="relative block h-0.5 bg-neutral-200 dark:bg-neutral-800">
+                  <span
+                    className={`absolute inset-y-0 left-0 ${i === 0 ? "fundo-destaque" : "bg-neutral-900 dark:bg-neutral-100"}`}
+                    style={{ width: `${pct}%` }}
+                  />
+                </span>
+                <span className="text-right tabular-nums text-neutral-500 dark:text-neutral-400">
+                  {formatMoeda(l.valor)} · {pct.toFixed(0)}%
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </SecaoCalc>
+
+      <SecaoCalc
+        id="margens"
+        numero="02"
+        titulo="Valor da hora por margem"
+        resumo={`${margens.length} margens`}
+        descricao={`Já com ${config.impostoPct}% de imposto. A margem é sobre o preço cobrado.`}
+        ajuda="margens"
+        aberta
+      >
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[420px] max-w-3xl text-sm">
             <thead>
-              <tr className="text-left text-neutral-500 dark:text-neutral-400 border-b border-neutral-200 dark:border-neutral-800">
-                <th className="py-2 pr-4 font-medium">Margem</th>
-                <th className="py-2 pr-4 font-medium">Valor/hora</th>
-                <th className="py-2 pr-4 font-medium">Lucro/hora</th>
-                <th className="py-2 font-medium">Avaliação</th>
+              <tr className="border-b border-neutral-200 text-left text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
+                <th className="py-3 pr-4 font-semibold">Margem</th>
+                <th className="py-3 pr-4 font-semibold">Valor/hora</th>
+                <th className="py-3 pr-4 font-semibold">Lucro/hora</th>
+                <th className="py-3 font-semibold">Avaliação</th>
               </tr>
             </thead>
             <tbody>
               {margens.map((m) => {
                 const preco = precoComMargem(resultado.custoHora, config.impostoPct, m);
-                const c = classificar(m);
+                const c = classificarMargem(m, personalizacao);
                 return (
-                  <tr key={m} className="border-b border-neutral-100 dark:border-neutral-800 last:border-0">
-                    <td className="py-2 pr-4">{m}%</td>
-                    <td className="py-2 pr-4 tabular-nums">{preco == null ? "—" : formatMoeda(preco)}</td>
-                    <td className="py-2 pr-4 tabular-nums">
-                      {preco == null ? "—" : formatMoeda(preco * (m / 100))}
-                    </td>
-                    <td className="py-2">
-                      <Badge variant={c.variant}>{c.label}</Badge>
+                  <tr key={m} className="border-b border-neutral-100 last:border-0 dark:border-neutral-800">
+                    <td className="py-3 pr-4 font-semibold">{String(m).replace(".", ",")}%</td>
+                    <td className="py-3 pr-4 tabular-nums">{preco == null ? "—" : formatMoeda(preco)}</td>
+                    <td className="py-3 pr-4 tabular-nums">{preco == null ? "—" : formatMoeda(preco * (m / 100))}</td>
+                    <td className="py-3">
+                      <Badge variant={c.variante}>{c.nome}</Badge>
                     </td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
-        </Card>
-      </div>
+        </div>
+      </SecaoCalc>
 
-      <Secao
-        titulo="O que mais pesa na hora mínima"
+      <SecaoCalc
+        id="sensibilidade"
+        numero="03"
+        titulo="Fatia da YANG na hora mínima"
+        resumo={`${RATEIOS.length} cenários`}
         descricao={`Hora mínima (lucro zero, com ${config.impostoPct}% de imposto) em ${rotuloMes(mes)} conforme a fatia da YANG nos custos e nas horas compartilhadas${comDepreciacao ? " e a taxa de depreciação dos equipamentos" : ""}. A célula em destaque é o cenário atual.`}
+        ajuda="sensibilidade"
       >
         <Card className="p-4 overflow-x-auto">
           <table className="w-full text-sm min-w-[480px]">
@@ -449,12 +425,16 @@ export default async function CalculadoraPage({
             (custos só dela{comDepreciacao ? " e equipamentos" : ""}), e a hora cai. A fatia vale igual para custos e horas.
           </p>
         </Card>
-      </Secao>
+      </SecaoCalc>
 
       {/* ---------- orçamento do lançamento ---------- */}
-      <Secao
-        titulo={`Orçamento do lançamento (aporte de ${formatMoeda(aporte.aporteTotal)})`}
+      <SecaoCalc
+        id="aporte"
+        numero="04"
+        titulo="Orçamento do lançamento"
+        resumo={`aporte de ${formatMoeda(aporte.aporteTotal)}`}
         descricao="O que o plano prevê gastar com o dinheiro do investidor, mês a mês. Marque 'Sai do aporte' nos custos que o aporte paga (em Custos fixos mensais) e os valores de cada mês entram aqui."
+        ajuda="aporte"
       >
         <Card className="p-4 overflow-x-auto">
           <table className="w-full text-sm min-w-[520px]">
@@ -499,13 +479,7 @@ export default async function CalculadoraPage({
               </tr>
             </tbody>
           </table>
-          <div
-            className={`mt-4 rounded-md border p-3 text-sm ${
-              aporte.saldo < 0
-                ? "bg-red-50 border-red-200 text-red-900 dark:bg-red-950 dark:border-red-900 dark:text-red-200"
-                : "bg-green-50 border-green-200 text-green-900 dark:bg-green-950 dark:border-green-900 dark:text-green-200"
-            }`}
-          >
+          <Nota tom={aporte.saldo < 0 ? "perigo" : "ok"} className="mt-4">
             {aporte.saldo < 0 ? (
               <>
                 O plano gasta <strong>{formatMoeda(aporte.planejado)}</strong> e o aporte é de{" "}
@@ -520,13 +494,17 @@ export default async function CalculadoraPage({
                 <strong>{formatMoeda(aporte.saldo)}</strong> do aporte.
               </>
             )}
-          </div>
+          </Nota>
         </Card>
-      </Secao>
+      </SecaoCalc>
 
-      <Secao
-        titulo={`Ponto de equilíbrio (${rotuloMes(mes)})`}
+      <SecaoCalc
+        id="equilibrio"
+        numero="05"
+        titulo="Ponto de equilíbrio"
+        resumo={rotuloMes(mes)}
         descricao="Quanto é preciso faturar no mês só para empatar, já descontando o imposto. Não inclui lucro nem comissão."
+        ajuda="equilibrio"
       >
         <div className="grid sm:grid-cols-3 gap-4">
           <Card className="p-4">
@@ -559,11 +537,15 @@ export default async function CalculadoraPage({
             </p>
           </Card>
         </div>
-      </Secao>
+      </SecaoCalc>
 
-      <Secao
+      <SecaoCalc
+        id="mensal"
+        numero="06"
         titulo="Custo/hora mês a mês"
+        resumo={`${previsao.length} meses`}
         descricao="Salários e pró-labore mudam de um mês para o outro; aqui você vê o efeito disso na hora. Edite os valores de cada mês em Custos fixos mensais."
+        ajuda="mensal"
       >
         <Card className="p-4 overflow-x-auto">
           <table className="w-full text-sm min-w-[520px]">
@@ -594,12 +576,16 @@ export default async function CalculadoraPage({
             </tbody>
           </table>
         </Card>
-      </Secao>
+      </SecaoCalc>
 
       {/* ---------- simulador ---------- */}
-      <Secao
+      <SecaoCalc
+        id="simulador"
+        numero="07"
         titulo="Simulador de projeto"
         descricao="Some as horas e os custos diretos (gasolina, hospedagem, alimentação, terceiros, tráfego e os equipamentos que o projeto usa) para saber o menor valor que vale a pena cobrar. Equipamento que não for convocado não entra na conta."
+        ajuda="simulador"
+        aberta
       >
         <SimuladorProjeto
           config={config}
@@ -626,13 +612,15 @@ export default async function CalculadoraPage({
               porDiaria: depreciacaoPorDiaria(e, config),
             }))}
         />
-      </Secao>
+      </SecaoCalc>
 
       {/* ---------- dados de base ---------- */}
-      <Secao
+      <SecaoCalc
         id="parametros"
+        numero="08"
         titulo="Parâmetros"
         descricao="Estes números alimentam tudo acima. Os valores iniciais são estimativas — troque pelos da Yang."
+        ajuda="parametros"
       >
         <Card className="p-4">
           <form action={salvarConfig} className="space-y-5">
@@ -739,11 +727,125 @@ export default async function CalculadoraPage({
             <Button type="submit">Salvar parâmetros</Button>
           </form>
         </Card>
-      </Secao>
+        <div id="personalizar" className="mt-12 scroll-mt-6 border-t border-neutral-200 pt-10 dark:border-neutral-800">
+          <h3 className="mb-1 text-lg font-bold tracking-tight">Personalizar listas e faixas</h3>
+          <p className="mb-8 max-w-2xl text-sm leading-relaxed text-neutral-500 dark:text-neutral-400">
+            Tudo o que aparece nas tabelas e nos formulários desta página é seu para ajustar. Adicione ou remova com o
+            teclado ou o mouse e salve ao final.
+          </p>
+          <form action={salvarPersonalizacao} className="space-y-10">
+            <ListaDeTags
+              nome="categoria"
+              valores={personalizacao.categoriasCusto}
+              rotulo="Categorias de custo"
+              placeholder="Nova categoria"
+              fixas={[CATEGORIA_RESERVA]}
+            />
+            <div className="grid gap-10 md:grid-cols-3">
+              <ListaDeTags
+                nome="margem"
+                valores={personalizacao.margensComparacao}
+                rotulo="Margens comparadas"
+                placeholder="Ex.: 35"
+                sufixo="%"
+                numerica
+              />
+              <ListaDeTags
+                nome="rateio"
+                valores={personalizacao.rateiosComparacao}
+                rotulo="Fatias da YANG comparadas"
+                placeholder="Ex.: 60"
+                sufixo="%"
+                numerica
+              />
+              <ListaDeTags
+                nome="taxa"
+                valores={personalizacao.taxasDepreciacaoComparacao}
+                rotulo="Taxas de depreciação comparadas (ao mês)"
+                placeholder="Ex.: 2,2"
+                sufixo="%"
+                numerica
+              />
+            </div>
 
-      <Secao
+            <div>
+              <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.1em] text-neutral-500 dark:text-neutral-400">
+                Faixas de avaliação da margem
+              </p>
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                {personalizacao.faixasMargemNomes.map((nome, i) => (
+                  <div key={i}>
+                    <Label>Faixa {i + 1}</Label>
+                    <Input name="faixaNome" defaultValue={nome} maxLength={24} required />
+                    {i < personalizacao.faixasMargemLimites.length ? (
+                      <div className="mt-2 flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400">
+                        até
+                        <Input
+                          name="faixaLimite"
+                          type="number"
+                          min="1"
+                          max="99"
+                          step="any"
+                          defaultValue={personalizacao.faixasMargemLimites[i]}
+                          className="w-24 py-1.5"
+                          required
+                        />
+                        % de margem
+                      </div>
+                    ) : (
+                      <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">acima do último limite</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid gap-10 md:grid-cols-2">
+              <div>
+                <Label>Meses mostrados</Label>
+                <Input
+                  name="mesesNaProjecao"
+                  type="number"
+                  min="1"
+                  max="12"
+                  step="1"
+                  defaultValue={personalizacao.mesesNaProjecao}
+                  className="max-w-[8rem]"
+                  required
+                />
+                <p className="mt-1.5 text-xs text-neutral-500 dark:text-neutral-400">
+                  No seletor de mês e na tabela de custo/hora mês a mês (de 1 a 12).
+                </p>
+              </div>
+              <div className="space-y-3">
+                <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-neutral-500 dark:text-neutral-400">
+                  Nomes dos escopos de custo
+                </p>
+                {[
+                  "O custo inteiro entra na hora da produtora",
+                  "Entra só com a fatia (rateio) da produtora",
+                  "Não entra na hora da produtora",
+                ].map((explicacao, i) => (
+                  <div key={i}>
+                    <Input name="rotuloEscopo" defaultValue={personalizacao.rotulosEscopo[i]} maxLength={48} required />
+                    <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">{explicacao}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <Button type="submit">Salvar personalização</Button>
+          </form>
+        </div>
+      </SecaoCalc>
+
+      <SecaoCalc
+        id="custos"
+        numero="09"
         titulo="Custos fixos mensais"
+        resumo={`${custosFixos.length} itens`}
         descricao="Tudo o que a agência paga todo mês, mesmo sem projeto: energia, água, internet, aluguel, softwares, tráfego pago, contador. Se a conta varia, use a média dos últimos meses."
+        ajuda="custos"
       >
         <Card className="p-4 mb-3">
           <form action={criarCustoFixo} className="grid md:grid-cols-4 gap-3 items-end">
@@ -754,7 +856,7 @@ export default async function CalculadoraPage({
             <div>
               <Label>Categoria</Label>
               <Select name="categoria" defaultValue="Outros">
-                {CATEGORIAS_CUSTO_FIXO.map((c) => (
+                {personalizacao.categoriasCusto.map((c) => (
                   <option key={c} value={c}>
                     {c}
                   </option>
@@ -768,7 +870,7 @@ export default async function CalculadoraPage({
             <div>
               <Label>Pertence a</Label>
               <Select name="escopo" defaultValue="YANG">
-                {ESCOPOS.map((e) => (
+                {escopos.map((e) => (
                   <option key={e.valor} value={e.valor}>
                     {e.rotulo}
                   </option>
@@ -790,7 +892,7 @@ export default async function CalculadoraPage({
                     {c.nome} {!c.ativo && <span className="text-neutral-400 dark:text-neutral-500">(desativado)</span>}
                   </p>
                   <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                    {c.categoria} · {ESCOPOS.find((e) => e.valor === c.escopo)?.rotulo ?? c.escopo}
+                    {c.categoria} · {escopos.find((e) => e.valor === c.escopo)?.rotulo ?? c.escopo}
                     {c.doAporte && " · sai do aporte"}
                   </p>
                 </div>
@@ -826,7 +928,7 @@ export default async function CalculadoraPage({
                   <div>
                     <Label>Categoria</Label>
                     <Select name="categoria" defaultValue={c.categoria}>
-                      {[...new Set<string>([...CATEGORIAS_CUSTO_FIXO, c.categoria])].map((cat) => (
+                      {[...new Set<string>([...personalizacao.categoriasCusto, c.categoria])].map((cat) => (
                         <option key={cat} value={cat}>
                           {cat}
                         </option>
@@ -840,7 +942,7 @@ export default async function CalculadoraPage({
                   <div>
                     <Label>Pertence a</Label>
                     <Select name="escopo" defaultValue={c.escopo}>
-                      {ESCOPOS.map((e) => (
+                      {escopos.map((e) => (
                         <option key={e.valor} value={e.valor}>
                           {e.rotulo}
                         </option>
@@ -886,12 +988,15 @@ export default async function CalculadoraPage({
             <p className="text-sm text-neutral-500 dark:text-neutral-400">Nenhum custo fixo cadastrado ainda.</p>
           )}
         </div>
-      </Secao>
+      </SecaoCalc>
 
-      <Secao
+      <SecaoCalc
         id="capacidade"
+        numero="10"
         titulo="Capacidade de horas"
+        resumo={`${pessoasHoras.length} pessoa(s)`}
         descricao="Quem trabalha de fato e quantas horas cobráveis cada um entrega por mês. Os custos de pessoas (salário, pró-labore, editor) só fazem sentido se as horas delas entrarem aqui. Quem é 'compartilhado' com o perfil dá à YANG só a fatia do rateio, igual aos custos."
+        ajuda="capacidade"
       >
         <Card className="p-4 mb-3">
           <form action={criarPessoaHoras} className="grid md:grid-cols-5 gap-3 items-end">
@@ -910,7 +1015,7 @@ export default async function CalculadoraPage({
             <div>
               <Label>Pertence a</Label>
               <Select name="escopo" defaultValue="COMPARTILHADO">
-                {ESCOPOS.filter((e) => e.valor !== "PESSOAL").map((e) => (
+                {escopos.filter((e) => e.valor !== "PESSOAL").map((e) => (
                   <option key={e.valor} value={e.valor}>
                     {e.rotulo}
                   </option>
@@ -950,7 +1055,7 @@ export default async function CalculadoraPage({
                         </td>
                         <td className="py-1.5 pr-4">
                           <Select name={`escopo_${p.id}`} defaultValue={p.escopo} aria-label={`Escopo de ${p.nome}`}>
-                            {ESCOPOS.filter((e) => e.valor !== "PESSOAL").map((e) => (
+                            {escopos.filter((e) => e.valor !== "PESSOAL").map((e) => (
                               <option key={e.valor} value={e.valor}>
                                 {e.rotulo}
                               </option>
@@ -1005,11 +1110,15 @@ export default async function CalculadoraPage({
             mesma pessoa duas vezes.
           </p>
         </Card>
-      </Secao>
+      </SecaoCalc>
 
-      <Secao
+      <SecaoCalc
+        id="equipe"
+        numero="11"
         titulo="Equipe fixa"
+        resumo={`${fixos.length} pessoa(s)`}
         descricao="Salário mensal de quem trabalha fixo na Yang (cadastre pessoas em Equipe com o tipo Fixo). Freelancers não entram aqui: o cachê deles vira custo do projeto, no simulador."
+        ajuda="equipe"
       >
         <Card className="p-4">
           {fixos.length === 0 ? (
@@ -1041,11 +1150,15 @@ export default async function CalculadoraPage({
             </form>
           )}
         </Card>
-      </Secao>
+      </SecaoCalc>
 
-      <Secao
+      <SecaoCalc
+        id="equipamentos"
+        numero="12"
         titulo="Equipamentos e depreciação"
+        resumo={`${equipamentos.length} itens`}
         descricao={`Informe quanto custou cada item. Sem prazo próprio, vale a taxa padrão (${String(config.depreciacaoPct).replace(".", ",")}% do valor por mês). Com prazo próprio, é valor ÷ meses. Dividida por ${config.diasUsoMes} diárias de uso por mês, vira o custo por diária que o projeto paga quando convoca o equipamento.`}
+        ajuda="equipamentos"
       >
         <Card className="p-4">
           <div className="flex gap-6 text-sm mb-4 flex-wrap">
@@ -1122,11 +1235,15 @@ export default async function CalculadoraPage({
             </form>
           )}
         </Card>
-      </Secao>
+      </SecaoCalc>
 
-      <Secao
+      <SecaoCalc
+        id="kits"
+        numero="13"
         titulo="Kits de equipamento"
+        resumo={`${kits.length} kits`}
         descricao="Conjuntos que saem juntos (ex.: kit leve para conteúdo simples). No simulador, um clique marca todos os itens do kit. O custo por diária é a soma dos itens."
+        ajuda="kits"
       >
         <Card className="p-4 mb-3">
           <form action={criarKit} className="space-y-3">
@@ -1179,7 +1296,7 @@ export default async function CalculadoraPage({
           })}
           {kits.length === 0 && <p className="text-sm text-neutral-500 dark:text-neutral-400">Nenhum kit criado ainda.</p>}
         </div>
-      </Secao>
+      </SecaoCalc>
     </div>
   );
 }

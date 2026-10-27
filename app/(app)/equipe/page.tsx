@@ -12,7 +12,7 @@ export default async function EquipePage() {
 
   return (
     <div>
-      <PageHeader title="Equipe" description="Profissionais fixos e freelancers" />
+      <PageHeader eyebrow="Pessoas" title="A *equipe*" description="Profissionais fixos e freelancers" />
 
       <Card className="p-4 mb-8">
         <p className="text-sm font-medium mb-2">Novo profissional</p>

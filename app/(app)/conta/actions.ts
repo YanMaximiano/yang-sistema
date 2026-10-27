@@ -3,6 +3,18 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { acessoAtual } from "@/lib/acesso";
+import { ehTutorial } from "@/lib/tutoriais";
+
+// o assistente guiado de uma tela só abre sozinho na primeira visita de cada pessoa; fica gravado
+// no usuário (e não no navegador), então vale em qualquer aparelho
+export async function marcarTutorialVisto(chave: string) {
+  const acesso = await acessoAtual();
+  if (!acesso || !ehTutorial(chave)) return;
+  const usuario = await prisma.user.findUnique({ where: { id: acesso.userId }, select: { tutoriaisVistos: true } });
+  if (!usuario || usuario.tutoriaisVistos.includes(chave)) return;
+  await prisma.user.update({ where: { id: acesso.userId }, data: { tutoriaisVistos: { push: chave } } });
+}
 
 export type EstadoSenha = { erro?: string; ok?: boolean } | undefined;
 

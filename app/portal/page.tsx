@@ -26,7 +26,7 @@ export default async function PortalHomePage() {
 
   return (
     <div>
-      <PageHeader title="Meus projetos" description="Acompanhe suas propostas e projetos com a Yang" />
+      <PageHeader eyebrow="Portal" title="Meus *projetos*" description="Acompanhe suas propostas e projetos com a Yang" />
 
       {propostasPendentes.length > 0 && (
         <section className="mb-8">

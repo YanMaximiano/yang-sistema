@@ -14,7 +14,7 @@ export default async function ClientesPage() {
 
   return (
     <div>
-      <PageHeader title="Clientes" description="CRM — cadastro e relacionamento" />
+      <PageHeader eyebrow="CRM" title="Seus *clientes*" description="CRM — cadastro e relacionamento" />
 
       <Card className="p-4 mb-8">
         <p className="text-sm font-medium mb-2">Novo cliente</p>

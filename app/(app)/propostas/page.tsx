@@ -33,7 +33,7 @@ export default async function PropostasPage() {
   return (
     <div>
       <PageHeader
-        title="Propostas"
+        eyebrow="Comercial" title="Funil de *propostas*"
         description={`Funil comercial · taxa de conversão geral: ${taxaConversao}%`}
         actions={<LinkButton href="/propostas/nova">Nova proposta</LinkButton>}
       />

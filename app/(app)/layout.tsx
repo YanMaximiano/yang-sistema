@@ -4,6 +4,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { SidebarNav } from "@/components/SidebarNav";
 import { ROTAS_APP } from "@/lib/rotas";
 import { listarAvisos, avisosVisiveis } from "@/lib/avisos";
 
@@ -12,81 +13,67 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const acesso = await acessoAtual();
   if (!session?.user || !acesso) redirect("/login");
 
-  const nav = ROTAS_APP.filter((item) => (item.modulo ? acesso.tem(item.modulo) : acesso.admin));
   const totalAvisos = acesso.tem("avisos") ? avisosVisiveis(await listarAvisos(), acesso.tem).length : 0;
+  const itens = ROTAS_APP.filter((item) => (item.modulo ? acesso.tem(item.modulo) : acesso.admin)).map((item) => ({
+    href: item.href,
+    label: item.label,
+    badge: item.href === "/avisos" ? totalAvisos : 0,
+  }));
+
+  const sair = async () => {
+    "use server";
+    await signOut({ redirectTo: "/login" });
+  };
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen flex-1">
-      <aside className="w-full md:w-56 md:shrink-0 border-b md:border-b-0 md:border-r border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900 flex flex-col">
-        <div className="flex items-center justify-between px-4 py-3 md:py-5 md:border-b border-neutral-200 dark:border-neutral-800">
-          <div>
-            <p className="font-semibold text-neutral-900 dark:text-neutral-100">Yang</p>
-            <p className="text-xs text-neutral-500 dark:text-neutral-400 hidden md:block">
-              Sistema de Gestão
-            </p>
-          </div>
+    <div className="flex min-h-screen flex-1 flex-col md:flex-row">
+      <aside className="flex flex-col border-b border-neutral-200 dark:border-neutral-800 md:sticky md:top-0 md:h-screen md:w-60 md:shrink-0 md:overflow-y-auto md:border-b-0 md:border-r">
+        <div className="flex items-center justify-between px-6 pb-2 pt-5 md:pb-6 md:pt-8">
+          <Link href="/" className="block">
+            <span className="block text-[15px] font-extrabold tracking-[0.32em] text-neutral-900 dark:text-neutral-100">
+              YANG
+            </span>
+            <span className="mt-1 hidden text-[10px] font-bold uppercase tracking-[0.16em] text-neutral-500 dark:text-neutral-400 md:block">
+              Sistema de gestão
+            </span>
+          </Link>
           <div className="flex items-center gap-2">
             <Link
               href="/conta"
               title="Alterar minha senha"
-              className="text-xs text-neutral-500 dark:text-neutral-400 truncate md:hidden underline"
+              className="max-w-[9rem] truncate text-xs text-neutral-500 underline-offset-2 hover:underline dark:text-neutral-400 md:hidden"
             >
               {session.user.email}
             </Link>
             <ThemeToggle />
           </div>
         </div>
-        <nav className="flex md:flex-1 overflow-x-auto md:overflow-visible px-2 py-2 md:py-4 gap-1 md:gap-0 md:space-y-1 md:flex-col border-t md:border-t-0 border-neutral-100 dark:border-neutral-800">
-          {nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="shrink-0 rounded-md px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800 whitespace-nowrap inline-flex items-center gap-2"
-            >
-              {item.label}
-              {item.href === "/avisos" && totalAvisos > 0 && (
-                <span className="inline-flex items-center justify-center min-w-[1.25rem] h-5 rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300 text-xs font-medium px-1">
-                  {totalAvisos}
-                </span>
-              )}
-            </Link>
-          ))}
-        </nav>
-        <div className="hidden md:block px-4 py-4 border-t border-neutral-200 dark:border-neutral-800">
-          <p className="text-xs text-neutral-500 dark:text-neutral-400 truncate">
-            {session.user.email}
-          </p>
+
+        <SidebarNav itens={itens} />
+
+        <div className="hidden border-t border-neutral-200 px-6 py-5 dark:border-neutral-800 md:block">
+          <p className="truncate text-xs text-neutral-500 dark:text-neutral-400">{session.user.email}</p>
           <Link
             href="/conta"
-            className="block text-xs underline text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 mb-2"
+            className="mt-1 block text-xs font-semibold text-neutral-600 underline-offset-2 hover:underline dark:text-neutral-300"
           >
             Alterar minha senha
           </Link>
-          <form
-            action={async () => {
-              "use server";
-              await signOut({ redirectTo: "/login" });
-            }}
-          >
+          <form action={sair} className="mt-4">
             <Button type="submit" variant="secondary" className="w-full text-xs">
               Sair
             </Button>
           </form>
         </div>
-        <form
-          action={async () => {
-            "use server";
-            await signOut({ redirectTo: "/login" });
-          }}
-          className="md:hidden px-4 py-2 border-t border-neutral-100 dark:border-neutral-800"
-        >
+        <form action={sair} className="border-t border-neutral-200 px-4 py-2 dark:border-neutral-800 md:hidden">
           <Button type="submit" variant="ghost" className="w-full text-xs">
             Sair
           </Button>
         </form>
       </aside>
-      <main className="flex-1 px-4 md:px-6 py-6 md:py-8 max-w-6xl w-full overflow-x-hidden">
-        {children}
+
+      <main className="min-w-0 flex-1 px-5 py-8 md:px-12 md:py-12">
+        <div className="mx-auto w-full max-w-6xl">{children}</div>
       </main>
     </div>
   );

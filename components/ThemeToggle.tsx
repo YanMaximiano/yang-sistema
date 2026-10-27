@@ -32,11 +32,11 @@ export function ThemeToggle({ className }: { className?: string }) {
       aria-label={escuro ? "Mudar para modo claro" : "Mudar para modo escuro"}
       title={escuro ? "Mudar para modo claro" : "Mudar para modo escuro"}
       className={cn(
-        "inline-flex items-center justify-center w-8 h-8 rounded-md text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 transition-colors",
+        "inline-flex size-9 items-center justify-center rounded-full border border-neutral-200 text-neutral-500 transition-colors hover:border-neutral-300 hover:text-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-neutral-100",
         className
       )}
     >
-      {escuro ? <Sun size={16} /> : <Moon size={16} />}
+      {escuro ? <Sun size={15} /> : <Moon size={15} />}
     </button>
   );
 }

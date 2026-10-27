@@ -29,7 +29,7 @@ export default async function EquipamentosPage() {
 
   return (
     <div>
-      <PageHeader title="Equipamentos" description="Inventário e disponibilidade" />
+      <PageHeader eyebrow="Inventário" title="Seus *equipamentos*" description="Inventário e disponibilidade" />
 
       <Card className="p-4 mb-8">
         <p className="text-sm font-medium mb-2">Novo equipamento</p>
@@ -83,7 +83,7 @@ export default async function EquipamentosPage() {
                   )}
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <Badge
                   variant={eq.status === "DISPONIVEL" ? "success" : eq.status === "ESTRAGADO" ? "danger" : "warning"}
                 >

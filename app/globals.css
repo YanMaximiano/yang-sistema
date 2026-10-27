@@ -1,7 +1,126 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
-@theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/*
+ * Identidade visual da Yang (identidade-visual/tokens.json): cinzas quentes, texto off-white,
+ * âmbar como única cor de destaque, Manrope + Instrument Serif itálico para ênfase.
+ * Em vez de repintar cada tela, a escala "neutral" do Tailwind é redefinida aqui: todo
+ * bg-neutral-*, text-neutral-* e border-neutral-* do sistema já usa estes tons, nos dois modos.
+ *   claro:  fundo neutral-50, texto neutral-900, bordas neutral-200
+ *   escuro: fundo neutral-950, superfícies neutral-900, linhas neutral-800, texto neutral-100
+ */
+@theme {
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-destaque: var(--font-instrument), Georgia, serif;
+
+  --color-white: #fffefa;
+  --color-neutral-50: #faf8f3;
+  --color-neutral-100: #f2ede2;
+  --color-neutral-200: #e5dfd1;
+  --color-neutral-300: #cfc8b7;
+  --color-neutral-400: #a19e93;
+  --color-neutral-500: #6f6d63;
+  --color-neutral-600: #55534b;
+  --color-neutral-700: #3b3a35;
+  --color-neutral-800: #2a2926;
+  --color-neutral-900: #141412;
+  --color-neutral-950: #0a0a09;
+
+  --radius-md: 0.625rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.125rem;
+  --radius-2xl: 1.5rem;
+}
+
+/* âmbar: o claro usa um tom mais fechado para manter o contraste sobre fundo claro */
+:root {
+  --destaque: #a8661a;
+  --destaque-suave: rgba(168, 102, 26, 0.14);
+}
+.dark {
+  --destaque: #f19b37;
+  --destaque-suave: rgba(241, 155, 55, 0.18);
+}
+
+@utility texto-destaque {
+  color: var(--destaque);
+}
+@utility borda-destaque {
+  border-color: var(--destaque);
+}
+@utility fundo-destaque {
+  background-color: var(--destaque);
+}
+@utility fundo-destaque-suave {
+  background-color: var(--destaque-suave);
+}
+@utility anel-destaque {
+  box-shadow: 0 0 0 4px var(--destaque-suave);
+  border-color: var(--destaque);
+}
+
+/* uma a três palavras de ênfase: serifada itálica em âmbar, um pouco maior para compensar o olho */
+.destaque {
+  font-family: var(--font-destaque);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.14em;
+  letter-spacing: -0.01em;
+  color: var(--destaque);
+}
+
+@layer base {
+  html {
+    font-feature-settings: "cv11", "ss01";
+  }
+  body {
+    font-family: var(--font-sans);
+  }
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.02em;
+  }
+  table {
+    font-variant-numeric: tabular-nums;
+  }
+  :focus-visible {
+    outline: 2px solid var(--destaque);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--destaque-suave);
+  }
+  input[type="checkbox"],
+  input[type="radio"] {
+    accent-color: var(--destaque);
+  }
+  summary {
+    cursor: pointer;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* assistente guiado: a parte explicada fica em destaque e o resto da tela escurece */
+[data-assistente-alvo] {
+  position: relative;
+  z-index: 60;
+  border-radius: var(--radius-2xl);
+  box-shadow:
+    0 0 0 3px var(--destaque),
+    0 0 0 9999px rgba(10, 10, 9, 0.5);
+  transition: box-shadow 0.25s ease;
+}
+.dark [data-assistente-alvo] {
+  box-shadow:
+    0 0 0 3px var(--destaque),
+    0 0 0 9999px rgba(0, 0, 0, 0.62);
 }

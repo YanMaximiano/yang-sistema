@@ -24,7 +24,7 @@ export default async function NovoProjetoPage() {
   return (
     <div className="max-w-xl">
       <PageHeader
-        title="Novo projeto avulso"
+        eyebrow="Projetos" title="Novo projeto *avulso*"
         description="Para casos fora do fluxo padrão de proposta (o pipeline de etapas é copiado do serviço escolhido)"
       />
       <NovoProjetoForm clientes={clientes} servicos={servicos} />

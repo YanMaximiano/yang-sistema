@@ -34,6 +34,9 @@ model User {
   // permissoesPersonalizadas é true — senão a pessoa usa o padrão do cargo
   permissoes               String[] @default([])
   permissoesPersonalizadas Boolean  @default(false)
+
+  // assistentes guiados que a pessoa já viu (ex.: "calculadora"): abrem sozinhos só na primeira vez
+  tutoriaisVistos String[] @default([])
 }
 
 // ---------- Catálogo ----------
@@ -520,6 +523,16 @@ model ConfigCalculadora {
   alimentacaoDia    Float    @default(60)
   diariaHospedagem  Float    @default(200)
   atualizadoEm      DateTime @updatedAt
+
+  // listas e faixas que o usuário ajusta na tela (valores padrão em lib/calculadora.ts)
+  categoriasCusto            String[] @default(["Salários", "Pró-labore", "Aluguel", "Energia", "Água", "Internet e telefone", "Software e assinaturas", "Tráfego pago", "Terceirizados recorrentes", "Contabilidade", "Identidade visual", "Reserva de caixa", "Marketing", "Veículo (seguro, IPVA)", "Outros"])
+  margensComparacao          Float[]  @default([10, 20, 30, 40, 50])
+  rateiosComparacao          Float[]  @default([50, 75, 100])
+  taxasDepreciacaoComparacao Float[]  @default([1, 1.6, 2, 2.8])
+  faixasMargemNomes          String[] @default(["Apertado", "Baixo", "Saudável", "Ótimo"])
+  faixasMargemLimites        Float[]  @default([10, 20, 30])
+  mesesNaProjecao            Int      @default(6)
+  rotulosEscopo              String[] @default(["YANG (produtora)", "Compartilhado (YANG + perfil Yan)", "Só perfil / infoprodutos"])
 }
 
 // quem gera horas cobráveis para a YANG. Cada pessoa entra com horas/mês, ocupação e

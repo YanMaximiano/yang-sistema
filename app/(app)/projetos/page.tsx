@@ -19,7 +19,7 @@ export default async function ProjetosPage() {
   return (
     <div>
       <PageHeader
-        title="Projetos"
+        eyebrow="Produção" title="Pipeline de *projetos*"
         description="Pipeline de produção"
         actions={<LinkButton href="/projetos/novo">Novo projeto avulso</LinkButton>}
       />
@@ -41,7 +41,7 @@ export default async function ProjetosPage() {
                       {projeto.cliente.nome} · {projeto.servico.nome}
                     </p>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                     <span className="text-xs text-neutral-400 dark:text-neutral-500">
                       {concluidas}/{projeto.etapas.length} etapas · prazo {formatData(projeto.prazoData)}
                     </span>

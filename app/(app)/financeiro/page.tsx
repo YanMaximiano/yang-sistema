@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { PageHeader, Card, Badge } from "@/components/ui";
+import { PageHeader, Card, Badge, MetricasEmLinha } from "@/components/ui";
 import { formatMoeda, formatData } from "@/lib/utils";
 import { startOfMonth, addMonths, eachMonthOfInterval, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -93,24 +93,16 @@ export default async function FinanceiroPage() {
 
   return (
     <div>
-      <PageHeader title="Financeiro" description="Margem por projeto, pilar e recebimentos" />
+      <PageHeader eyebrow="Financeiro" title="Margens e *recebimentos*" description="Margem por projeto, pilar e recebimentos" />
 
-      <div className="grid grid-cols-3 gap-4 mb-8">
-        <Card className="p-4">
-          <p className="text-xs text-neutral-500 dark:text-neutral-400">Receita recebida (total)</p>
-          <p className="text-xl font-semibold">{formatMoeda(receitaTotal)}</p>
-        </Card>
-        <Card className="p-4">
-          <p className="text-xs text-neutral-500 dark:text-neutral-400">Custos (total)</p>
-          <p className="text-xl font-semibold">{formatMoeda(custoTotal)}</p>
-        </Card>
-        <Card className="p-4">
-          <p className="text-xs text-neutral-500 dark:text-neutral-400">Margem</p>
-          <p className={`text-xl font-semibold ${margemTotal < 0 ? "text-red-600 dark:text-red-400" : "text-green-700 dark:text-green-400"}`}>
-            {formatMoeda(margemTotal)}
-          </p>
-        </Card>
-      </div>
+      <MetricasEmLinha
+        className="mb-14"
+        itens={[
+          { rotulo: "Receita recebida", valor: formatMoeda(receitaTotal), apoio: "total" },
+          { rotulo: "Custos", valor: formatMoeda(custoTotal), apoio: "total" },
+          { rotulo: "Margem", valor: formatMoeda(margemTotal), apoio: "recebido menos custos", destaque: margemTotal >= 0, negativo: margemTotal < 0 },
+        ]}
+      />
 
       <section className="mb-8">
         <h2 className="text-lg font-semibold mb-3">Fluxo de caixa projetado</h2>
@@ -135,10 +127,10 @@ export default async function FinanceiroPage() {
                   <td className="py-2 pr-4 capitalize">{format(linha.mes, "MMMM yyyy", { locale: ptBR })}</td>
                   <td className="py-2 pr-4">{formatMoeda(linha.aReceber)}</td>
                   <td className="py-2 pr-4">{formatMoeda(linha.aPagar)}</td>
-                  <td className={`py-2 pr-4 ${linha.saldoMes < 0 ? "text-red-600 dark:text-red-400" : "text-green-700 dark:text-green-400"}`}>
+                  <td className={`py-2 pr-4 ${linha.saldoMes < 0 ? "text-red-600 dark:text-red-400" : "text-neutral-900 dark:text-neutral-100"}`}>
                     {formatMoeda(linha.saldoMes)}
                   </td>
-                  <td className={linha.saldoAcumulado < 0 ? "text-red-600 dark:text-red-400" : "text-green-700 dark:text-green-400"}>
+                  <td className={linha.saldoAcumulado < 0 ? "text-red-600 dark:text-red-400" : "text-neutral-900 dark:text-neutral-100"}>
                     {formatMoeda(linha.saldoAcumulado)}
                   </td>
                 </tr>
@@ -162,7 +154,7 @@ export default async function FinanceiroPage() {
               <span className="text-sm font-medium">{v.nome}</span>
               <span className="text-sm text-neutral-500 dark:text-neutral-400">
                 {formatMoeda(v.receita)} − {formatMoeda(v.custo)} ={" "}
-                <span className={v.receita - v.custo < 0 ? "text-red-600 dark:text-red-400" : "text-green-700 dark:text-green-400"}>
+                <span className={v.receita - v.custo < 0 ? "text-red-600 dark:text-red-400" : "text-neutral-900 dark:text-neutral-100"}>
                   {formatMoeda(v.receita - v.custo)}
                 </span>
               </span>
@@ -180,7 +172,7 @@ export default async function FinanceiroPage() {
               <span className="text-sm font-medium">{v.nome}</span>
               <span className="text-sm text-neutral-500 dark:text-neutral-400">
                 {formatMoeda(v.receita)} − {formatMoeda(v.custo)} ={" "}
-                <span className={v.receita - v.custo < 0 ? "text-red-600 dark:text-red-400" : "text-green-700 dark:text-green-400"}>
+                <span className={v.receita - v.custo < 0 ? "text-red-600 dark:text-red-400" : "text-neutral-900 dark:text-neutral-100"}>
                   {formatMoeda(v.receita - v.custo)}
                 </span>
               </span>
@@ -230,7 +222,7 @@ export default async function FinanceiroPage() {
                   <span className="text-sm font-medium">
                     {projeto.nome} — {projeto.cliente.nome}
                   </span>
-                  <span className={`text-sm ${margem < 0 ? "text-red-600 dark:text-red-400" : "text-green-700 dark:text-green-400"}`}>
+                  <span className={`text-sm ${margem < 0 ? "text-red-600 dark:text-red-400" : "text-neutral-900 dark:text-neutral-100"}`}>
                     {formatMoeda(margem)}
                   </span>
                 </Card>

@@ -4,7 +4,14 @@ import { prisma } from "@/lib/prisma";
 import { requireModulo } from "@/lib/acesso";
 import { revalidatePath } from "next/cache";
 import { str, num, int } from "@/lib/form";
-import { CONFIG_PADRAO, ESCOPOS, MES_VALIDO, type ConfigCalculadora } from "@/lib/calculadora";
+import {
+  CONFIG_PADRAO,
+  ESCOPOS,
+  MES_VALIDO,
+  CATEGORIA_RESERVA,
+  personalizacaoComPadrao,
+  type ConfigCalculadora,
+} from "@/lib/calculadora";
 
 // valor negativo não faz sentido em nenhum campo da calculadora
 function naoNegativo(n: number | null) {
@@ -268,5 +275,68 @@ export async function excluirKit(formData: FormData) {
   const id = str(formData, "id");
   if (!id) return;
   await prisma.kitEquipamento.deleteMany({ where: { id } });
+  revalidatePath("/calculadora");
+}
+
+// ---------- listas e faixas personalizáveis ----------
+
+function textosDe(formData: FormData, campo: string, maxItens: number, maxLetras: number) {
+  const vistos = new Set<string>();
+  for (const bruto of formData.getAll(campo)) {
+    const t = String(bruto).trim().slice(0, maxLetras);
+    if (t) vistos.add(t);
+    if (vistos.size >= maxItens) break;
+  }
+  return [...vistos];
+}
+
+function numerosDe(formData: FormData, campo: string, minimo: number, maximo: number, maxItens: number) {
+  const valores = formData
+    .getAll(campo)
+    .map((v) => (String(v).trim() === "" ? NaN : Number(String(v).replace(",", "."))))
+    .filter((n) => Number.isFinite(n) && n >= minimo && n <= maximo);
+  return [...new Set(valores)].sort((a, b) => a - b).slice(0, maxItens);
+}
+
+// campo vazio ou fora do limite mantém o que já estava salvo (nunca apaga uma lista inteira)
+export async function salvarPersonalizacao(formData: FormData) {
+  await requireModulo("calculadora");
+  const guardado = await prisma.configCalculadora.findUnique({ where: { id: "singleton" } });
+  const base = personalizacaoComPadrao(guardado);
+
+  const categorias = textosDe(formData, "categoria", 40, 40);
+  const margens = numerosDe(formData, "margem", 0, 99, 10);
+  const rateios = numerosDe(formData, "rateio", 0, 100, 8);
+  const taxas = numerosDe(formData, "taxa", 0, 100, 8);
+
+  const nomes = formData.getAll("faixaNome").map((v) => String(v).trim().slice(0, 24));
+  const limites = formData.getAll("faixaLimite").map((v) => Number(String(v).replace(",", ".")));
+  const limitesValidos =
+    limites.length === 3 &&
+    limites.every((n) => Number.isFinite(n) && n > 0 && n < 100) &&
+    limites[0] < limites[1] &&
+    limites[1] < limites[2];
+
+  const rotulos = formData.getAll("rotuloEscopo").map((v) => String(v).trim().slice(0, 48));
+  const meses = int(formData, "mesesNaProjecao");
+
+  const dados = {
+    categoriasCusto: categorias.length > 0 ? categorias : base.categoriasCusto,
+    margensComparacao: margens.length > 0 ? margens : base.margensComparacao,
+    rateiosComparacao: rateios.length > 0 ? rateios : base.rateiosComparacao,
+    taxasDepreciacaoComparacao: taxas.length > 0 ? taxas : base.taxasDepreciacaoComparacao,
+    faixasMargemNomes: nomes.length === 4 && nomes.every(Boolean) ? nomes : base.faixasMargemNomes,
+    faixasMargemLimites: limitesValidos ? limites : base.faixasMargemLimites,
+    mesesNaProjecao: meses != null && meses >= 1 && meses <= 12 ? meses : base.mesesNaProjecao,
+    rotulosEscopo: rotulos.length === 3 && rotulos.every(Boolean) ? rotulos : base.rotulosEscopo,
+  };
+  // a "Reserva de caixa" é tratada à parte no cálculo e não pode sair da lista
+  if (!dados.categoriasCusto.includes(CATEGORIA_RESERVA)) dados.categoriasCusto.push(CATEGORIA_RESERVA);
+
+  await prisma.configCalculadora.upsert({
+    where: { id: "singleton" },
+    create: { id: "singleton", ...dados },
+    update: dados,
+  });
   revalidatePath("/calculadora");
 }

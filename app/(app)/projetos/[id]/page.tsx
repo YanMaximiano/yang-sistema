@@ -160,7 +160,7 @@ export default async function ProjetoDetalhePage({
                       <span
                         className={`shrink-0 w-4 h-4 rounded border flex items-center justify-center text-[10px] ${
                           item.concluido
-                            ? "bg-green-600 dark:bg-green-700 border-green-600 dark:border-green-700 text-white"
+                            ? "fundo-destaque borda-destaque text-neutral-950"
                             : "border-neutral-300 dark:border-neutral-700"
                         }`}
                       >
@@ -577,7 +577,7 @@ export default async function ProjetoDetalhePage({
             </Card>
             <Card className="p-3">
               <p className="text-xs text-neutral-500 dark:text-neutral-400">Margem</p>
-              <p className={`font-semibold ${margem < 0 ? "text-red-600 dark:text-red-400" : "text-green-700 dark:text-green-400"}`}>
+              <p className={`font-semibold ${margem < 0 ? "text-red-600 dark:text-red-400" : "text-neutral-900 dark:text-neutral-100"}`}>
                 {formatMoeda(margem)}
               </p>
             </Card>

@@ -10,7 +10,7 @@ export default async function AvisosPage() {
   return (
     <div>
       <PageHeader
-        title="Central de avisos"
+        eyebrow="Atenção" title="Central de *avisos*"
         description="Prazos, pagamentos e pendências que precisam de atenção."
       />
       <div className="space-y-3">

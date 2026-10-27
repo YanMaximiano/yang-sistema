@@ -24,7 +24,7 @@ export default async function UsuariosPage() {
   return (
     <div>
       <PageHeader
-        title="Usuários"
+        eyebrow="Acesso" title="*Usuários* e acessos"
         description="Login da equipe interna e freelancers (clientes têm acesso próprio via a ficha do cliente)"
       />
 
