@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import { PageHeader, Card, Badge, Button, Textarea, Label, Input } from "@/components/ui";
+import { AssistenteDaTela } from "@/components/AssistenteDaTela";
 import { formatMoeda, formatData } from "@/lib/utils";
 import { avaliarEntrega, assinarDocumento } from "../../actions";
 import {
@@ -44,9 +45,10 @@ export default async function PortalProjetoPage({
       <PageHeader
         title={projeto.nome}
         description={`${projeto.servico.nome} · prazo ${formatData(projeto.prazoData)}`}
+        actions={<AssistenteDaTela chave="portal-projeto" />}
       />
 
-      <section className="mb-8">
+      <section id="portal-andamento" className="mb-8">
         <h2 className="text-lg font-semibold mb-3">Andamento</h2>
         <div className="flex gap-3 overflow-x-auto pb-2">
           {projeto.etapas.map((etapa) => (
@@ -64,7 +66,7 @@ export default async function PortalProjetoPage({
         </div>
       </section>
 
-      <section className="mb-8">
+      <section id="portal-entregas" className="mb-8">
         <h2 className="text-lg font-semibold mb-3">Entregas para aprovação</h2>
         <div className="space-y-3">
           {projeto.entregas.map((entrega) => (
@@ -119,7 +121,7 @@ export default async function PortalProjetoPage({
         </div>
       </section>
 
-      <section className="mb-8">
+      <section id="portal-documentos" className="mb-8">
         <h2 className="text-lg font-semibold mb-3">Documentos</h2>
         <div className="space-y-3">
           {projeto.documentos.map((doc) => (
@@ -173,7 +175,7 @@ export default async function PortalProjetoPage({
         </div>
       </section>
 
-      <section>
+      <section id="portal-financeiro">
         <h2 className="text-lg font-semibold mb-3">Financeiro</h2>
         <div className="space-y-2">
           {projeto.recebimentos.map((r) => (

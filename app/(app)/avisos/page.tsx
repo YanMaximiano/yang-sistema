@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PageHeader, Card, Badge } from "@/components/ui";
+import { AssistenteDaTela } from "@/components/AssistenteDaTela";
 import { listarAvisos, avisosVisiveis } from "@/lib/avisos";
 import { exigirModulo } from "@/lib/acesso";
 
@@ -12,8 +13,9 @@ export default async function AvisosPage() {
       <PageHeader
         eyebrow="Atenção" title="Central de *avisos*"
         description="Prazos, pagamentos e pendências que precisam de atenção."
+        actions={<AssistenteDaTela chave="avisos" />}
       />
-      <div className="space-y-3">
+      <div id="lista-avisos" className="space-y-3">
         {avisos.map((aviso, i) => (
           <Link key={i} href={aviso.href}>
             <Card className="p-4 hover:border-neutral-300 dark:hover:border-neutral-600 transition-colors">

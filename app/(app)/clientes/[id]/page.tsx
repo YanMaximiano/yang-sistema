@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { PageHeader, Card, Input, Select, Textarea, Button, Badge, Label, LinkButton } from "@/components/ui";
+import { AssistenteDaTela } from "@/components/AssistenteDaTela";
 import { updateCliente, addNota, criarAcessoPortal } from "../actions";
 import { formatMoeda, formatData } from "@/lib/utils";
 import Link from "next/link";
@@ -37,10 +38,15 @@ export default async function ClienteDetalhePage({
       <PageHeader
         title={cliente.nome}
         description={cliente.empresa ?? undefined}
-        actions={<LinkButton href={`/propostas/nova?clienteId=${cliente.id}`}>Nova proposta</LinkButton>}
+        actions={
+          <>
+            <AssistenteDaTela chave="cliente" />
+            <LinkButton href={`/propostas/nova?clienteId=${cliente.id}`}>Nova proposta</LinkButton>
+          </>
+        }
       />
 
-      <Card className="p-5 mb-8">
+      <Card id="cliente-dados" className="p-5 mb-8">
         <form action={updateCliente} className="space-y-4">
           <input type="hidden" name="id" value={cliente.id} />
           <div className="grid md:grid-cols-3 gap-4">
@@ -78,7 +84,7 @@ export default async function ClienteDetalhePage({
         </form>
       </Card>
 
-      <div className="grid md:grid-cols-2 gap-6 mb-8">
+      <div id="cliente-historico" className="grid md:grid-cols-2 gap-6 mb-8">
         <section>
           <h2 className="text-lg font-semibold mb-3">Propostas</h2>
           <div className="space-y-2">
@@ -124,7 +130,7 @@ export default async function ClienteDetalhePage({
         </section>
       </div>
 
-      <section className="mb-8">
+      <section id="cliente-portal" className="mb-8">
         <h2 className="text-lg font-semibold mb-3">Acesso ao portal</h2>
         <Card className="p-4">
           {cliente.usuarios.length > 0 ? (
@@ -168,7 +174,7 @@ export default async function ClienteDetalhePage({
         </Card>
       </section>
 
-      <section>
+      <section id="cliente-notas">
         <h2 className="text-lg font-semibold mb-3">Notas internas</h2>
         <Card className="p-4">
           <pre className="whitespace-pre-wrap text-sm text-neutral-700 dark:text-neutral-300 font-sans mb-4">

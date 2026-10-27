@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { exigirModulo } from "@/lib/acesso";
 import { PageHeader, Badge, MetricasEmLinha, SectionTitle, type ItemDeMetrica } from "@/components/ui";
+import { AssistenteDaTela } from "@/components/AssistenteDaTela";
 import { formatMoeda } from "@/lib/utils";
 import Link from "next/link";
 
@@ -50,7 +51,7 @@ export default async function PainelPage() {
 
   return (
     <div>
-      <PageHeader eyebrow="Painel" title="Visão geral da *produtora*" />
+      <PageHeader eyebrow="Painel" title="Visão geral da *produtora*" actions={<AssistenteDaTela chave="painel" />} />
 
       {metricas.length === 0 && (
         <p className="text-sm text-neutral-500 dark:text-neutral-400">
@@ -58,11 +59,11 @@ export default async function PainelPage() {
         </p>
       )}
 
-      {metricas.length > 0 && <MetricasEmLinha itens={metricas} className="mb-14" />}
+      {metricas.length > 0 && <MetricasEmLinha id="metricas" itens={metricas} className="mb-14" />}
 
       <div className="grid gap-x-12 gap-y-12 md:grid-cols-2">
         {verFinanceiro && (
-          <section>
+          <section id="painel-financeiro">
             <SectionTitle aside={<Link href="/financeiro" className="underline-offset-2 hover:underline">Ver tudo →</Link>}>
               Financeiro
             </SectionTitle>
@@ -82,7 +83,7 @@ export default async function PainelPage() {
         )}
 
         {verProjetos && (
-          <section>
+          <section id="painel-projetos">
             <SectionTitle aside={<Link href="/projetos" className="underline-offset-2 hover:underline">Ver todos →</Link>}>
               Projetos ativos recentes
             </SectionTitle>

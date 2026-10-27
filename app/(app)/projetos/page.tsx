@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { PageHeader, Card, Badge, LinkButton } from "@/components/ui";
+import { AssistenteDaTela } from "@/components/AssistenteDaTela";
 import { formatData } from "@/lib/utils";
 import Link from "next/link";
 import { PROJETO_STATUS_VARIANT } from "@/lib/status";
@@ -21,10 +22,15 @@ export default async function ProjetosPage() {
       <PageHeader
         eyebrow="Produção" title="Pipeline de *projetos*"
         description="Pipeline de produção"
-        actions={<LinkButton href="/projetos/novo">Novo projeto avulso</LinkButton>}
+        actions={
+          <>
+            <AssistenteDaTela chave="projetos" />
+            <LinkButton href="/projetos/novo">Novo projeto avulso</LinkButton>
+          </>
+        }
       />
 
-      <div className="space-y-2">
+      <div id="lista-projetos" className="space-y-2">
         {projetos.map((projeto) => {
           const etapaAtual =
             projeto.etapas.find((e) => e.status === "EM_ANDAMENTO") ??

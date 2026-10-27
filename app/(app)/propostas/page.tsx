@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { PageHeader, Card, LinkButton } from "@/components/ui";
+import { AssistenteDaTela } from "@/components/AssistenteDaTela";
 import { formatMoeda } from "@/lib/utils";
 import Link from "next/link";
 import { exigirModulo } from "@/lib/acesso";
@@ -35,10 +36,15 @@ export default async function PropostasPage() {
       <PageHeader
         eyebrow="Comercial" title="Funil de *propostas*"
         description={`Funil comercial · taxa de conversão geral: ${taxaConversao}%`}
-        actions={<LinkButton href="/propostas/nova">Nova proposta</LinkButton>}
+        actions={
+          <>
+            <AssistenteDaTela chave="propostas" />
+            <LinkButton href="/propostas/nova">Nova proposta</LinkButton>
+          </>
+        }
       />
 
-      <div className="grid md:grid-cols-4 gap-4">
+      <div id="funil" className="grid md:grid-cols-4 gap-4">
         {COLUNAS.map((coluna) => (
           <div key={coluna.status}>
             <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400 mb-2">

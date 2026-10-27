@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/ui";
+import { AssistenteDaTela } from "@/components/AssistenteDaTela";
 import { NovoProjetoForm } from "./NovoProjetoForm";
 import { exigirModulo } from "@/lib/acesso";
 
@@ -26,8 +27,11 @@ export default async function NovoProjetoPage() {
       <PageHeader
         eyebrow="Projetos" title="Novo projeto *avulso*"
         description="Para casos fora do fluxo padrão de proposta (o pipeline de etapas é copiado do serviço escolhido)"
+        actions={<AssistenteDaTela chave="projeto-novo" />}
       />
-      <NovoProjetoForm clientes={clientes} servicos={servicos} />
+      <div id="form-projeto">
+        <NovoProjetoForm clientes={clientes} servicos={servicos} />
+      </div>
     </div>
   );
 }

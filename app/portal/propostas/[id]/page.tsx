@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import { PageHeader, Card, Badge, Button } from "@/components/ui";
+import { AssistenteDaTela } from "@/components/AssistenteDaTela";
 import { formatMoeda, formatData } from "@/lib/utils";
 import { responderProposta } from "../../actions";
 import { PROPOSTA_STATUS_VARIANT } from "@/lib/status";
@@ -31,10 +32,15 @@ export default async function PortalPropostaPage({
     <div className="max-w-2xl">
       <PageHeader
         title={`${proposta.servico.nome} — ${proposta.plano.nome}`}
-        actions={<Badge variant={PROPOSTA_STATUS_VARIANT[proposta.status]}>{proposta.status}</Badge>}
+        actions={
+          <>
+            <AssistenteDaTela chave="portal-proposta" />
+            <Badge variant={PROPOSTA_STATUS_VARIANT[proposta.status]}>{proposta.status}</Badge>
+          </>
+        }
       />
 
-      <Card className="p-5 mb-6 space-y-3 text-sm">
+      <Card id="proposta-resumo" className="p-5 mb-6 space-y-3 text-sm">
         <div className="flex justify-between">
           <span className="text-neutral-500 dark:text-neutral-400">Valor proposto</span>
           <span className="font-medium">{formatMoeda(proposta.valorProposto)}</span>
@@ -68,7 +74,7 @@ export default async function PortalPropostaPage({
       </Card>
 
       {(proposta.status === "ENVIADA" || proposta.status === "NEGOCIACAO") && (
-        <Card className="p-5">
+        <Card id="proposta-decisao" className="p-5">
           <p className="text-sm font-medium mb-3">O que você decide?</p>
           <div className="flex gap-2">
             <form action={responderProposta}>

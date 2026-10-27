@@ -39,7 +39,7 @@ import {
 } from "./actions";
 import { SimuladorProjeto } from "./SimuladorProjeto";
 import { SecaoCalc } from "./SecaoCalc";
-import { Assistente } from "./Assistente";
+import { Assistente } from "@/components/Assistente";
 import { AbrirSecaoDoHash } from "./AbrirSecaoDoHash";
 import { ListaDeTags } from "./ListaDeTags";
 import { PASSOS_CALCULADORA } from "./passos";
@@ -227,7 +227,7 @@ export default async function CalculadoraPage({
           eyebrow="Financeiro · Calculadora"
           title="Quanto a Yang precisa cobrar *por hora*"
           description="O mínimo para não pagar para trabalhar e o valor sugerido para ter lucro, calculados a partir dos seus custos e das horas que você realmente vende."
-          actions={<Assistente passos={PASSOS_CALCULADORA} jaViu={jaViuAssistente} chave="calculadora" />}
+          actions={<Assistente passos={PASSOS_CALCULADORA} jaViu={jaViuAssistente} chave="calculadora" rotulo="calculadora" />}
         />
       </div>
       <AbrirSecaoDoHash />

@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight, Sparkles, X } from "lucide-react";
 import { Button, comDestaque } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { marcarTutorialVisto } from "@/app/(app)/conta/actions";
-import type { Passo } from "./passos";
+import type { Passo } from "@/lib/tutoriais";
 
 const EVENTO_ABRIR = "assistente:abrir";
 
@@ -20,20 +20,28 @@ function abrirSecoesAte(el: Element) {
   }
 }
 
+// só entram no roteiro os passos cuja parte da tela existe (some o que a pessoa não tem permissão de ver)
+function passosPresentes(passos: Passo[]) {
+  return passos.filter((p) => !p.alvo || document.querySelector(p.alvo));
+}
+
 /**
- * Assistente guiado: destaca uma parte da tela por vez e explica o que ela é e como é calculada.
+ * Assistente guiado: destaca uma parte da tela por vez e explica o que ela é e como funciona.
  * Abre sozinho na primeira visita de cada pessoa (o "já viu" fica gravado no usuário) e pode ser
  * chamado de novo a qualquer momento pelo botão, ou pelo "?" de cada seção.
  */
 export function Assistente({
-  passos,
+  passos: todosOsPassos,
   jaViu,
   chave,
+  rotulo = "Assistente",
 }: {
   passos: Passo[];
   jaViu: boolean;
   chave: string;
+  rotulo?: string;
 }) {
+  const [passos, setPassos] = useState(todosOsPassos);
   const [aberto, setAberto] = useState(false);
   const [indice, setIndice] = useState(0);
   const painel = useRef<HTMLDivElement>(null);
@@ -57,21 +65,27 @@ export function Assistente({
   // primeira visita: abre sozinho, com uma pausa para a página terminar de aparecer
   useEffect(() => {
     if (jaViu) return;
-    const t = setTimeout(() => setAberto(true), 700);
+    const t = setTimeout(() => {
+      setPassos(passosPresentes(todosOsPassos));
+      setIndice(0);
+      setAberto(true);
+    }, 700);
     return () => clearTimeout(t);
-  }, [jaViu]);
+  }, [jaViu, todosOsPassos]);
 
   // pedidos de abertura de outros pontos da tela (botão "?" de cada seção)
   useEffect(() => {
     const aoPedir = (e: Event) => {
       const id = (e as CustomEvent<{ passo?: string }>).detail?.passo;
-      const posicao = id ? passos.findIndex((p) => p.id === id) : 0;
+      const presentes = passosPresentes(todosOsPassos);
+      const posicao = id ? presentes.findIndex((p) => p.id === id) : 0;
+      setPassos(presentes);
       setIndice(posicao >= 0 ? posicao : 0);
       setAberto(true);
     };
     window.addEventListener(EVENTO_ABRIR, aoPedir);
     return () => window.removeEventListener(EVENTO_ABRIR, aoPedir);
-  }, [passos]);
+  }, [todosOsPassos]);
 
   // destaca a parte da tela do passo atual (abrindo a seção, se estiver fechada)
   useEffect(() => {
@@ -117,7 +131,7 @@ export function Assistente({
           tabIndex={-1}
           role="dialog"
           aria-modal="false"
-          aria-label="Assistente da calculadora"
+          aria-label={`Assistente: ${rotulo}`}
           className="fixed inset-x-3 bottom-3 z-[70] max-h-[78vh] overflow-y-auto rounded-3xl border border-neutral-200 bg-white p-6 shadow-2xl outline-none dark:border-neutral-800 dark:bg-neutral-900 md:inset-x-auto md:bottom-6 md:right-6 md:w-[26rem] md:p-7"
         >
           <div className="mb-4 flex items-center justify-between">

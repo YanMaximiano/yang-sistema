@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { PageHeader, Card, Input, Select, Button, Badge, Label } from "@/components/ui";
+import { AssistenteDaTela } from "@/components/AssistenteDaTela";
 import { createProfissional, alternarAtivoProfissional } from "./actions";
 import { formatMoeda } from "@/lib/utils";
 import { exigirModulo } from "@/lib/acesso";
@@ -12,9 +13,9 @@ export default async function EquipePage() {
 
   return (
     <div>
-      <PageHeader eyebrow="Pessoas" title="A *equipe*" description="Profissionais fixos e freelancers" />
+      <PageHeader eyebrow="Pessoas" title="A *equipe*" description="Profissionais fixos e freelancers" actions={<AssistenteDaTela chave="equipe" />} />
 
-      <Card className="p-4 mb-8">
+      <Card id="novo-profissional" className="p-4 mb-8">
         <p className="text-sm font-medium mb-2">Novo profissional</p>
         <form action={createProfissional} className="grid md:grid-cols-3 gap-3 items-end">
           <div>
@@ -48,7 +49,7 @@ export default async function EquipePage() {
         </form>
       </Card>
 
-      <div className="space-y-2">
+      <div id="lista-equipe" className="space-y-2">
         {profissionais.map((p) => (
           <Card key={p.id} className="p-4 flex items-center justify-between gap-3 flex-wrap">
             <div>

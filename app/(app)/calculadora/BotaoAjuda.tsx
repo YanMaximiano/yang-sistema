@@ -1,7 +1,7 @@
 "use client";
 
 import { CircleHelp } from "lucide-react";
-import { abrirAssistente } from "./Assistente";
+import { abrirAssistente } from "@/components/Assistente";
 
 // "?" ao lado do título de cada seção: abre o assistente já no passo daquela seção
 export function BotaoAjuda({ passo, titulo }: { passo: string; titulo: string }) {

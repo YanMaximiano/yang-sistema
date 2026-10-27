@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/ui";
+import { AssistenteDaTela } from "@/components/AssistenteDaTela";
 import { NovaPropostaForm } from "./NovaPropostaForm";
 import { exigirModulo } from "@/lib/acesso";
 
@@ -37,8 +38,15 @@ export default async function NovaPropostaPage({
 
   return (
     <div>
-      <PageHeader eyebrow="Comercial" title="Nova *proposta*" description="Cliente → serviço → plano → adicionais" />
-      <NovaPropostaForm clientes={clientes} servicos={servicos} clienteIdInicial={clienteId} />
+      <PageHeader
+        eyebrow="Comercial"
+        title="Nova *proposta*"
+        description="Cliente → serviço → plano → adicionais"
+        actions={<AssistenteDaTela chave="proposta-nova" />}
+      />
+      <div id="form-proposta">
+        <NovaPropostaForm clientes={clientes} servicos={servicos} clienteIdInicial={clienteId} />
+      </div>
     </div>
   );
 }

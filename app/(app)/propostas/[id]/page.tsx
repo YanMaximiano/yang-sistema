@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { PageHeader, Card, Badge, Button, LinkButton } from "@/components/ui";
+import { AssistenteDaTela } from "@/components/AssistenteDaTela";
 import { formatMoeda, formatData } from "@/lib/utils";
 import { atualizarStatusProposta } from "../actions";
 import { PROPOSTA_STATUS_VARIANT } from "@/lib/status";
@@ -32,10 +33,15 @@ export default async function PropostaDetalhePage({
       <PageHeader
         title={`Proposta — ${proposta.cliente.nome}`}
         description={`${proposta.servico.nome} — ${proposta.plano.nome}`}
-        actions={<Badge variant={PROPOSTA_STATUS_VARIANT[proposta.status]}>{proposta.status}</Badge>}
+        actions={
+          <>
+            <AssistenteDaTela chave="proposta" />
+            <Badge variant={PROPOSTA_STATUS_VARIANT[proposta.status]}>{proposta.status}</Badge>
+          </>
+        }
       />
 
-      <Card className="p-5 mb-6 space-y-3 text-sm">
+      <Card id="proposta-resumo" className="p-5 mb-6 space-y-3 text-sm">
         <div className="flex justify-between">
           <span className="text-neutral-500 dark:text-neutral-400">Valor proposto</span>
           <span className="font-medium">{formatMoeda(proposta.valorProposto)}</span>
@@ -61,7 +67,7 @@ export default async function PropostaDetalhePage({
       </Card>
 
       {proposta.status !== "APROVADA" && proposta.status !== "RECUSADA" && (
-        <Card className="p-5 mb-6">
+        <Card id="proposta-status" className="p-5 mb-6">
           <p className="text-sm font-medium mb-3">Atualizar status</p>
           <div className="flex flex-wrap gap-2">
             {proposta.status === "ENVIADA" && (

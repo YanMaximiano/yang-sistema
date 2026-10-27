@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { exigirModulo } from "@/lib/acesso";
 import { PageHeader, Card, Input, Button, Badge, Label } from "@/components/ui";
+import { AssistenteDaTela } from "@/components/AssistenteDaTela";
 import { formatMoeda } from "@/lib/utils";
 import { configComPadrao, depreciacaoMensalDe, depreciacaoPorDiaria } from "@/lib/calculadora";
 import {
@@ -29,9 +30,9 @@ export default async function EquipamentosPage() {
 
   return (
     <div>
-      <PageHeader eyebrow="Inventário" title="Seus *equipamentos*" description="Inventário e disponibilidade" />
+      <PageHeader eyebrow="Inventário" title="Seus *equipamentos*" description="Inventário e disponibilidade" actions={<AssistenteDaTela chave="equipamentos" />} />
 
-      <Card className="p-4 mb-8">
+      <Card id="novo-equipamento" className="p-4 mb-8">
         <p className="text-sm font-medium mb-2">Novo equipamento</p>
         <form action={createEquipamento} className="grid md:grid-cols-4 gap-3 items-end">
           <div>
@@ -56,7 +57,7 @@ export default async function EquipamentosPage() {
         </form>
       </Card>
 
-      <div className="space-y-2">
+      <div id="lista-equipamentos" className="space-y-2">
         {equipamentos.map((eq) => (
           <Card key={eq.id} className="p-4">
             <div className="flex items-center justify-between gap-3 flex-wrap">

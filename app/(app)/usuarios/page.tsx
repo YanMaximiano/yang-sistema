@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { PageHeader, Card, Input, Select, Button, Badge, Label } from "@/components/ui";
+import { AssistenteDaTela } from "@/components/AssistenteDaTela";
 import { createUsuario, updateUsuario, alternarAtivoUsuario } from "./actions";
 import { exigirAdmin } from "@/lib/acesso";
 import { MODULOS, modulosDoUsuario } from "@/lib/permissoes";
@@ -26,9 +27,10 @@ export default async function UsuariosPage() {
       <PageHeader
         eyebrow="Acesso" title="*Usuários* e acessos"
         description="Login da equipe interna e freelancers (clientes têm acesso próprio via a ficha do cliente)"
+        actions={<AssistenteDaTela chave="usuarios" />}
       />
 
-      <Card className="p-4 mb-8">
+      <Card id="novo-usuario" className="p-4 mb-8">
         <p className="text-sm font-medium mb-2">Novo usuário</p>
         <form action={createUsuario} className="grid md:grid-cols-4 gap-3 items-end">
           <div>
@@ -61,7 +63,7 @@ export default async function UsuariosPage() {
         </form>
       </Card>
 
-      <div className="space-y-2">
+      <div id="lista-usuarios" className="space-y-2">
         {usuarios.map((u) => {
           const souEu = u.id === meuId;
           const liberadas = modulosDoUsuario(u);

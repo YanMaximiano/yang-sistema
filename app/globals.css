@@ -115,12 +115,14 @@
   z-index: 60;
   border-radius: var(--radius-2xl);
   box-shadow:
-    0 0 0 3px var(--destaque),
+    0 0 0 8px var(--color-neutral-50),
+    0 0 0 11px var(--destaque),
     0 0 0 9999px rgba(10, 10, 9, 0.5);
   transition: box-shadow 0.25s ease;
 }
 .dark [data-assistente-alvo] {
   box-shadow:
-    0 0 0 3px var(--destaque),
+    0 0 0 8px var(--color-neutral-950),
+    0 0 0 11px var(--destaque),
     0 0 0 9999px rgba(0, 0, 0, 0.62);
 }

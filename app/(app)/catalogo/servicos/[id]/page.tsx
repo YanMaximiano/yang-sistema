@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { PageHeader, Card, Input, Textarea, Select, Button, Label } from "@/components/ui";
+import { AssistenteDaTela } from "@/components/AssistenteDaTela";
 import { formatFaixaValor } from "@/lib/utils";
 import {
   updateServico,
@@ -65,9 +66,9 @@ export default async function ServicoDetalhePage({
 
   return (
     <div className="pb-16">
-      <PageHeader title={servico.nome} description="Edição completa do serviço no catálogo" />
+      <PageHeader title={servico.nome} description="Edição completa do serviço no catálogo" actions={<AssistenteDaTela chave="servico" />} />
 
-      <Card className="p-5 mb-6">
+      <Card id="servico-dados" className="p-5 mb-6">
         <form action={updateServico} className="space-y-4">
           <input type="hidden" name="id" value={servico.id} />
           <div className="grid md:grid-cols-2 gap-4">
@@ -110,7 +111,7 @@ export default async function ServicoDetalhePage({
         </form>
       </Card>
 
-      <section className="mb-8">
+      <section id="servico-planos" className="mb-8">
         <h2 className="text-lg font-semibold mb-3">Planos</h2>
         <div className="space-y-3">
           {servico.planos.map((plano) => (
@@ -273,7 +274,7 @@ export default async function ServicoDetalhePage({
         </Card>
       </section>
 
-      <section className="mb-8">
+      <section id="servico-adicionais" className="mb-8">
         <h2 className="text-lg font-semibold mb-3">Adicionais</h2>
         <div className="space-y-2">
           {servico.adicionais.map((adicional) => (
@@ -328,7 +329,7 @@ export default async function ServicoDetalhePage({
         </Card>
       </section>
 
-      <section>
+      <section id="servico-pipeline">
         <h2 className="text-lg font-semibold mb-3">Pipeline de etapas (template)</h2>
         <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-3">
           Ao criar um projeto a partir deste serviço, essas etapas serão copiadas para o Kanban do
@@ -384,7 +385,7 @@ export default async function ServicoDetalhePage({
         </Card>
       </section>
 
-      <section className="mt-8">
+      <section id="servico-modelos" className="mt-8">
         <h2 className="text-lg font-semibold mb-3">Modelos de documento</h2>
         <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-3">
           Contrato, termo de uso de imagem, briefing etc. Use placeholders como{" "}

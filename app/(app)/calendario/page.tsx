@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { PageHeader, Card, Nota } from "@/components/ui";
+import { AssistenteDaTela } from "@/components/AssistenteDaTela";
 import Link from "next/link";
 import {
   startOfMonth,
@@ -59,7 +60,8 @@ export default async function CalendarioPage({
         eyebrow="Produção" title="Calendário de *prazos*"
         description="Prazos de projetos ativos"
         actions={
-          <div className="flex gap-2 text-sm">
+          <div className="flex flex-wrap items-center gap-2 text-sm">
+            <AssistenteDaTela chave="calendario" />
             <Link href={`/calendario?mes=${mesAnterior}`} className="underline">
               ← mês anterior
             </Link>
@@ -72,7 +74,7 @@ export default async function CalendarioPage({
       />
 
       {atrasados.length > 0 && (
-        <Nota tom="perigo" className="mb-8">
+        <Nota id="calendario-atrasados" tom="perigo" className="mb-8">
           <p className="mb-2 text-sm font-bold text-neutral-900 dark:text-neutral-100">Projetos atrasados</p>
           <div className="space-y-1">
             {atrasados.map((p) => (
@@ -91,6 +93,7 @@ export default async function CalendarioPage({
         </Nota>
       )}
 
+      <div id="grade-calendario">
       <div className="grid grid-cols-7 gap-2 text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1">
         {["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"].map((d) => (
           <div key={d} className="text-center">
@@ -126,6 +129,7 @@ export default async function CalendarioPage({
             </Card>
           );
         })}
+      </div>
       </div>
     </div>
   );

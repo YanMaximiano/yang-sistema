@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { PageHeader, Card, Badge } from "@/components/ui";
+import { AssistenteDaTela } from "@/components/AssistenteDaTela";
 import { formatMoeda, formatData } from "@/lib/utils";
 import Link from "next/link";
 import { PROJETO_STATUS_VARIANT } from "@/lib/status";
@@ -26,10 +27,15 @@ export default async function PortalHomePage() {
 
   return (
     <div>
-      <PageHeader eyebrow="Portal" title="Meus *projetos*" description="Acompanhe suas propostas e projetos com a Yang" />
+      <PageHeader
+        eyebrow="Portal"
+        title="Meus *projetos*"
+        description="Acompanhe suas propostas e projetos com a Yang"
+        actions={<AssistenteDaTela chave="portal" />}
+      />
 
       {propostasPendentes.length > 0 && (
-        <section className="mb-8">
+        <section id="portal-propostas" className="mb-8">
           <h2 className="text-lg font-semibold mb-3">Propostas aguardando resposta</h2>
           <div className="space-y-2">
             {propostasPendentes.map((p) => (
@@ -49,7 +55,7 @@ export default async function PortalHomePage() {
         </section>
       )}
 
-      <section>
+      <section id="portal-projetos">
         <h2 className="text-lg font-semibold mb-3">Projetos</h2>
         <div className="space-y-2">
           {projetos.map((proj) => (

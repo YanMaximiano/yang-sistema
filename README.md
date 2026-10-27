@@ -140,14 +140,18 @@ todo `bg-neutral-*`, `text-neutral-*` e `border-neutral-*` já usa esses tons no
 Os componentes compartilhados (botões, campos, cartões, selos, `PageHeader`, `MetricasEmLinha`, `Nota`) ficam em `components/ui.tsx`;
 telas novas devem usá-los em vez de cores soltas do Tailwind.
 
-## Calculadora: personalizável e com assistente
+## Assistentes guiados e calculadora personalizável
 
 - **Tudo customizável** em `/calculadora` → seção "Parâmetros" → "Personalizar": categorias de custo, margens, rateios e taxas de
   depreciação comparadas, nomes e limites das faixas de margem, meses na projeção e rótulos dos escopos. Ficam na mesma linha
   única `ConfigCalculadora`; valores vazios ou inválidos voltam ao padrão (`personalizacaoComPadrao` em `lib/calculadora.ts`).
 - **Assistente guiado** (sem IA, roteiro fixo em `app/(app)/calculadora/passos.ts`): abre sozinho na primeira visita de cada
   usuário (o "já vi" fica em `User.tutoriaisVistos`) e pode ser chamado de novo pelo botão "Assistente" ou pelo "?" de cada seção.
-  Para explicar outra tela, crie os passos e registre a chave em `lib/tutoriais.ts`.
+- **Um assistente por tela**: todas as telas (inclusive o portal do cliente) têm o botão "Assistente" no cabeçalho, que abre sozinho
+  na primeira visita de cada pessoa àquela tela. Os roteiros ficam em `lib/passos-assistente.ts`; cada passo aponta para um `id`
+  colocado na própria página, e passos cujo alvo não aparece (por permissão ou por não haver dados) são omitidos na hora.
+  Para uma tela nova: adicione a chave em `lib/tutoriais.ts`, o roteiro em `lib/passos-assistente.ts`, os `id`s na página e
+  `actions={<AssistenteDaTela chave="..." />}` no `PageHeader`.
 - A migração `20261028000000_calculadora_personalizavel_e_tutoriais` acrescenta essas colunas; em produção use `prisma migrate deploy`.
 
 ## Escopo desta versão

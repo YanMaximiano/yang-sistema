@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { PageHeader, Card, Badge, MetricasEmLinha } from "@/components/ui";
+import { AssistenteDaTela } from "@/components/AssistenteDaTela";
 import { formatMoeda, formatData } from "@/lib/utils";
 import { startOfMonth, addMonths, eachMonthOfInterval, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -93,9 +94,15 @@ export default async function FinanceiroPage() {
 
   return (
     <div>
-      <PageHeader eyebrow="Financeiro" title="Margens e *recebimentos*" description="Margem por projeto, pilar e recebimentos" />
+      <PageHeader
+        eyebrow="Financeiro"
+        title="Margens e *recebimentos*"
+        description="Margem por projeto, pilar e recebimentos"
+        actions={<AssistenteDaTela chave="financeiro" />}
+      />
 
       <MetricasEmLinha
+        id="metricas"
         className="mb-14"
         itens={[
           { rotulo: "Receita recebida", valor: formatMoeda(receitaTotal), apoio: "total" },
@@ -104,7 +111,7 @@ export default async function FinanceiroPage() {
         ]}
       />
 
-      <section className="mb-8">
+      <section id="financeiro-fluxo" className="mb-8">
         <h2 className="text-lg font-semibold mb-3">Fluxo de caixa projetado</h2>
         <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-3">
           Previsto a receber e a pagar nos próximos 6 meses — recebimentos ainda não pagos e
@@ -146,7 +153,7 @@ export default async function FinanceiroPage() {
         )}
       </section>
 
-      <section className="mb-8">
+      <section id="financeiro-pilar" className="mb-8">
         <h2 className="text-lg font-semibold mb-3">Margem por pilar</h2>
         <div className="space-y-2">
           {Array.from(porPilar.entries()).map(([id, v]) => (
@@ -164,7 +171,7 @@ export default async function FinanceiroPage() {
         </div>
       </section>
 
-      <section className="mb-8">
+      <section id="financeiro-servico" className="mb-8">
         <h2 className="text-lg font-semibold mb-3">Margem por serviço</h2>
         <div className="space-y-2">
           {Array.from(porServico.entries()).map(([id, v]) => (
@@ -182,7 +189,7 @@ export default async function FinanceiroPage() {
         </div>
       </section>
 
-      <section className="mb-8">
+      <section id="financeiro-recebimentos" className="mb-8">
         <h2 className="text-lg font-semibold mb-3">Recebimentos pendentes / atrasados</h2>
         <div className="space-y-2">
           {recebimentosPendentes.map((r) => (
@@ -207,7 +214,7 @@ export default async function FinanceiroPage() {
         </div>
       </section>
 
-      <section>
+      <section id="financeiro-projeto">
         <h2 className="text-lg font-semibold mb-3">Margem por projeto</h2>
         <div className="space-y-2">
           {projetos.map((projeto) => {

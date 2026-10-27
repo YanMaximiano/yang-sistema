@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { PageHeader, Card, Badge, Input, Button, Select, LinkButton } from "@/components/ui";
+import { AssistenteDaTela } from "@/components/AssistenteDaTela";
 import { createPilar, createServico, togglePilarAtivo } from "./actions";
 import { formatFaixaValor } from "@/lib/utils";
 import { exigirModulo } from "@/lib/acesso";
@@ -27,9 +28,10 @@ export default async function CatalogoPage() {
       <PageHeader
         eyebrow="Catálogo" title="Catálogo de *serviços*"
         description="Pilares, serviços, planos e adicionais — editável livremente, sem depender de deploy."
+        actions={<AssistenteDaTela chave="catalogo" />}
       />
 
-      <Card className="p-4 mb-8">
+      <Card id="novo-pilar" className="p-4 mb-8">
         <form action={createPilar} className="flex items-end gap-2">
           <div className="flex-1">
             <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Novo pilar</label>
@@ -39,7 +41,7 @@ export default async function CatalogoPage() {
         </form>
       </Card>
 
-      <div className="space-y-8">
+      <div id="lista-pilares" className="space-y-8">
         {pilares.map((pilar) => (
           <div key={pilar.id}>
             <div className="flex items-center gap-3 mb-3">

@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { exigirModulo } from "@/lib/acesso";
 import { notFound } from "next/navigation";
 import { PageHeader, Card, Badge, Button, Input, Select, Label } from "@/components/ui";
+import { AssistenteDaTela } from "@/components/AssistenteDaTela";
 import { formatMoeda, formatData } from "@/lib/utils";
 import {
   avancarEtapa,
@@ -134,11 +135,16 @@ export default async function ProjetoDetalhePage({
       <PageHeader
         title={projeto.nome}
         description={`${projeto.cliente.nome} · ${projeto.servico.nome}${verFinanceiro ? ` · ${formatMoeda(projeto.valor)}` : ""} · prazo ${formatData(projeto.prazoData)}`}
-        actions={<StatusGeralSelect projetoId={projeto.id} statusAtual={projeto.statusGeral} />}
+        actions={
+          <>
+            <AssistenteDaTela chave="projeto" />
+            <StatusGeralSelect projetoId={projeto.id} statusAtual={projeto.statusGeral} />
+          </>
+        }
       />
 
       {projeto.checklistItens.length > 0 && (
-        <section className="mb-8">
+        <section id="projeto-checklist" className="mb-8">
           <h2 className="text-lg font-semibold mb-3">
             Checklist de pré-produção{" "}
             <span className="text-sm font-normal text-neutral-500 dark:text-neutral-400">
@@ -178,7 +184,7 @@ export default async function ProjetoDetalhePage({
         </section>
       )}
 
-      <section className="mb-8">
+      <section id="projeto-pipeline" className="mb-8">
         <h2 className="text-lg font-semibold mb-3">Pipeline</h2>
         <div className="flex gap-3 overflow-x-auto pb-2">
           {projeto.etapas.map((etapa) => (
@@ -234,7 +240,7 @@ export default async function ProjetoDetalhePage({
         </div>
       </section>
 
-      <section className="mb-8">
+      <section id="projeto-entregas" className="mb-8">
         <h2 className="text-lg font-semibold mb-3">Entregas / versões</h2>
         <div className="space-y-2 mb-3">
           {projeto.entregas.map((entrega) => (
@@ -291,7 +297,7 @@ export default async function ProjetoDetalhePage({
         </form>
       </section>
 
-      <section className="mb-8">
+      <section id="projeto-documentos" className="mb-8">
         <h2 className="text-lg font-semibold mb-3">Documentos</h2>
         <div className="space-y-2 mb-3">
           {projeto.documentos.map((doc) => (
@@ -404,7 +410,7 @@ export default async function ProjetoDetalhePage({
         </details>
       </section>
 
-      <section className="mb-8">
+      <section id="projeto-equipamento" className="mb-8">
         <h2 className="text-lg font-semibold mb-3">Equipamento</h2>
         {projeto.plano && projeto.plano.templatesEquipamento.length > 0 && (
           <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-3">
@@ -488,7 +494,7 @@ export default async function ProjetoDetalhePage({
         </form>
       </section>
 
-      <section className="mb-8">
+      <section id="projeto-equipe" className="mb-8">
         <h2 className="text-lg font-semibold mb-3">Equipe</h2>
         {projeto.plano && projeto.plano.templatesEquipe.length > 0 && (
           <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-3">
@@ -564,7 +570,7 @@ export default async function ProjetoDetalhePage({
       </section>
 
       {verFinanceiro && (
-        <section className="mb-8">
+        <section id="projeto-financeiro" className="mb-8">
           <h2 className="text-lg font-semibold mb-3">Financeiro do projeto</h2>
           <div className="grid grid-cols-3 gap-3 mb-4">
             <Card className="p-3">

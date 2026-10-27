@@ -161,7 +161,7 @@ export function PageHeader({
   actions?: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-wrap items-end justify-between gap-6 mb-10">
+    <div id="cabecalho-pagina" className="flex flex-wrap items-end justify-between gap-6 mb-10">
       <div className="min-w-0">
         {eyebrow && (
           <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400">
@@ -196,15 +196,18 @@ export function SectionTitle({ children, aside }: { children: React.ReactNode; a
 export function Nota({
   tom = "neutro",
   className,
+  id,
   children,
 }: {
   tom?: "neutro" | "atencao" | "perigo" | "ok";
   className?: string;
+  id?: string;
   children: React.ReactNode;
 }) {
   const ponto = { neutro: "bg-neutral-400", atencao: "bg-amber-500", perigo: "bg-red-500", ok: "bg-emerald-500" }[tom];
   return (
     <div
+      id={id}
       className={cn(
         "flex gap-3 rounded-2xl border border-neutral-200 px-4 py-3 text-sm leading-relaxed text-neutral-700 dark:border-neutral-800 dark:text-neutral-300",
         className
@@ -226,9 +229,10 @@ export type ItemDeMetrica = {
 };
 
 // números principais em linha, separados por fios finos (sem caixas)
-export function MetricasEmLinha({ itens, className }: { itens: ItemDeMetrica[]; className?: string }) {
+export function MetricasEmLinha({ itens, className, id }: { itens: ItemDeMetrica[]; className?: string; id?: string }) {
   return (
     <div
+      id={id}
       className={cn(
         "grid grid-cols-2 border-y border-neutral-200 dark:border-neutral-800 lg:[grid-template-columns:repeat(var(--colunas),minmax(0,1fr))]",
         className

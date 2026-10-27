@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { PageHeader, Card, Input, Select, Button, Badge, Label } from "@/components/ui";
+import { AssistenteDaTela } from "@/components/AssistenteDaTela";
 import { createCliente } from "./actions";
 import Link from "next/link";
 import { CLIENTE_STATUS_LABEL, CLIENTE_STATUS_VARIANT } from "@/lib/status";
@@ -14,9 +15,9 @@ export default async function ClientesPage() {
 
   return (
     <div>
-      <PageHeader eyebrow="CRM" title="Seus *clientes*" description="CRM — cadastro e relacionamento" />
+      <PageHeader eyebrow="CRM" title="Seus *clientes*" description="CRM — cadastro e relacionamento" actions={<AssistenteDaTela chave="clientes" />} />
 
-      <Card className="p-4 mb-8">
+      <Card id="novo-cliente" className="p-4 mb-8">
         <p className="text-sm font-medium mb-2">Novo cliente</p>
         <form action={createCliente} className="grid md:grid-cols-3 gap-3 items-end">
           <div>
@@ -53,7 +54,7 @@ export default async function ClientesPage() {
         </form>
       </Card>
 
-      <div className="space-y-2">
+      <div id="lista-clientes" className="space-y-2">
         {clientes.map((cliente) => (
           <Link key={cliente.id} href={`/clientes/${cliente.id}`}>
             <Card className="p-4 flex items-center justify-between hover:border-neutral-400 dark:hover:border-neutral-600 transition-colors">

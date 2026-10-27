@@ -1,16 +1,5 @@
-// Roteiro do assistente da calculadora (texto pré-programado, sem IA).
-// `alvo` é o seletor da parte da tela que fica em destaque; seções fechadas são abertas sozinhas.
-// Em `titulo`, *palavra* vira a ênfase serifada em âmbar (uma por passo).
-
-export type Passo = {
-  id: string;
-  alvo?: string;
-  titulo: string;
-  texto: string[];
-  formula?: string;
-  exemplo?: string;
-  dica?: string;
-};
+// Roteiro do assistente da calculadora (ver `Passo` em lib/tutoriais.ts).
+import type { Passo } from "@/lib/tutoriais";
 
 export const PASSOS_CALCULADORA: Passo[] = [
   {
