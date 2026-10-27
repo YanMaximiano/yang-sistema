@@ -314,7 +314,7 @@ export default async function ProjetoDetalhePage({
                   {doc.link}
                 </a>
               )}
-              {doc.conteudo && (
+              {doc.conteudo && verFinanceiro && (
                 <details className="mt-1">
                   <summary className="cursor-pointer text-xs text-neutral-500 dark:text-neutral-400">Ver conteúdo</summary>
                   <pre className="whitespace-pre-wrap text-xs text-neutral-700 dark:text-neutral-300 font-sans mt-1 bg-neutral-50 dark:bg-neutral-900 p-2 rounded">
@@ -354,7 +354,7 @@ export default async function ProjetoDetalhePage({
           )}
         </div>
 
-        {modelosDocumento.length > 0 && (
+        {modelosDocumento.length > 0 && verFinanceiro && (
           <form action={gerarDocumento} className="flex items-end gap-2 mb-3">
             <input type="hidden" name="projetoId" value={projeto.id} />
             <div className="flex-1">
@@ -515,13 +515,15 @@ export default async function ProjetoDetalhePage({
                     ⚠ também escalado em &quot;{conflito.projeto.nome}&quot; nesse dia
                   </p>
                 )}
-                <form action={removerEscala} className="mt-1">
-                  <input type="hidden" name="id" value={escala.id} />
-                  <input type="hidden" name="projetoId" value={projeto.id} />
-                  <Button type="submit" variant="ghost" className="text-xs px-2 py-1 text-red-600 dark:text-red-400">
-                    Remover
-                  </Button>
-                </form>
+                {(verFinanceiro || !escala.custoId) && (
+                  <form action={removerEscala} className="mt-1">
+                    <input type="hidden" name="id" value={escala.id} />
+                    <input type="hidden" name="projetoId" value={projeto.id} />
+                    <Button type="submit" variant="ghost" className="text-xs px-2 py-1 text-red-600 dark:text-red-400">
+                      Remover
+                    </Button>
+                  </form>
+                )}
               </Card>
             );
           })}

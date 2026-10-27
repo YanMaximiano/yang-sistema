@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { Button } from "@/components/ui";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ROTAS_APP } from "@/lib/rotas";
-import { listarAvisos } from "@/lib/avisos";
+import { listarAvisos, avisosVisiveis } from "@/lib/avisos";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -13,7 +13,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   if (!session?.user || !acesso) redirect("/login");
 
   const nav = ROTAS_APP.filter((item) => (item.modulo ? acesso.tem(item.modulo) : acesso.admin));
-  const totalAvisos = acesso.tem("avisos") ? (await listarAvisos()).length : 0;
+  const totalAvisos = acesso.tem("avisos") ? avisosVisiveis(await listarAvisos(), acesso.tem).length : 0;
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen flex-1">

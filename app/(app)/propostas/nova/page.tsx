@@ -12,14 +12,25 @@ export default async function NovaPropostaPage({
   const { clienteId } = await searchParams;
 
   const [clientes, servicos] = await Promise.all([
-    prisma.cliente.findMany({ orderBy: { nome: "asc" } }),
+    // só os campos que o formulário usa (ver comentário em projetos/novo/page.tsx)
+    prisma.cliente.findMany({ select: { id: true, nome: true }, orderBy: { nome: "asc" } }),
     prisma.servico.findMany({
       where: { ativo: true, pilar: { ativo: true } },
       orderBy: { ordem: "asc" },
-      include: {
-        pilar: true,
-        planos: { where: { ativo: true }, orderBy: { ordem: "asc" } },
-        adicionais: { where: { ativo: true }, orderBy: { nome: "asc" } },
+      select: {
+        id: true,
+        nome: true,
+        pilar: { select: { nome: true } },
+        planos: {
+          where: { ativo: true },
+          orderBy: { ordem: "asc" },
+          select: { id: true, nome: true, valorMin: true, valorMax: true, prazoDias: true, entregas: true },
+        },
+        adicionais: {
+          where: { ativo: true },
+          orderBy: { nome: "asc" },
+          select: { id: true, nome: true, valor: true },
+        },
       },
     }),
   ]);

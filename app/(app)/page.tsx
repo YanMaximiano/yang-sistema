@@ -11,7 +11,7 @@ export default async function PainelPage() {
   const verProjetos = acesso.tem("projetos");
   const verFinanceiro = acesso.tem("financeiro");
 
-  const [propostasPorStatus, projetosAtivos, recebimentosPendentes, recebimentosAtrasados, custos, receitaPaga] =
+  const [propostasPorStatus, projetosAtivos, totalProjetosAtivos, recebimentosPendentes, recebimentosAtrasados, custos, receitaPaga] =
     await Promise.all([
       verFunil ? prisma.proposta.groupBy({ by: ["status"], _count: true }) : [],
       verProjetos
@@ -22,6 +22,7 @@ export default async function PainelPage() {
             take: 8,
           })
         : [],
+      verProjetos ? prisma.projeto.count({ where: { statusGeral: "ATIVO" } }) : 0,
       verFinanceiro ? prisma.recebimento.aggregate({ where: { status: "PENDENTE" }, _sum: { valor: true } }) : null,
       verFinanceiro ? prisma.recebimento.aggregate({ where: { status: "ATRASADO" }, _sum: { valor: true } }) : null,
       verFinanceiro ? prisma.custo.aggregate({ _sum: { valor: true } }) : null,
@@ -61,7 +62,7 @@ export default async function PainelPage() {
           {verProjetos && (
             <Card className="p-4">
               <p className="text-xs text-neutral-500 dark:text-neutral-400">Projetos ativos</p>
-              <p className="text-2xl font-semibold">{projetosAtivos.length}</p>
+              <p className="text-2xl font-semibold">{totalProjetosAtivos}</p>
             </Card>
           )}
           {verFinanceiro && (

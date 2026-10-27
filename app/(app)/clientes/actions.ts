@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { requireModulo } from "@/lib/acesso";
+import { requireRole } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
@@ -69,8 +70,10 @@ export async function addNota(formData: FormData) {
   revalidatePath(`/clientes/${id}`);
 }
 
+// só admin: quem define a senha do portal consegue entrar como o cliente e ver valores,
+// documentos e aprovações dele — isso não cabe na área "Clientes"
 export async function criarAcessoPortal(formData: FormData) {
-  await requireModulo("clientes");
+  await requireRole("ADMIN");
   const clienteId = formData.get("clienteId") as string;
   const email = str(formData, "email")?.toLowerCase();
   const senha = str(formData, "senha");

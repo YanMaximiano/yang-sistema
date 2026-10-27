@@ -61,8 +61,13 @@ export async function updateUsuario(formData: FormData) {
   let areas: { permissoes: string[]; permissoesPersonalizadas: boolean } | undefined;
   if (formData.get("editarModulos") === "1" && novoCargo !== "ADMIN") {
     const marcados = Array.from(new Set(formData.getAll("modulos").map(String).filter(ehModulo)));
-    const igualAoPadrao = mesmoQueOPadrao(novoCargo, marcados);
-    areas = { permissoes: igualAoPadrao ? [] : marcados, permissoesPersonalizadas: !igualAoPadrao };
+    const iniciais = new Set(String(formData.get("modulosIniciais") ?? "").split(",").filter(ehModulo));
+    const mexeuNasCaixas = marcados.length !== iniciais.size || marcados.some((m) => !iniciais.has(m));
+    // trocar só o cargo, sem mexer nas caixas, não pode virar "personalizado" com a lista do cargo antigo
+    if (mexeuNasCaixas) {
+      const igualAoPadrao = mesmoQueOPadrao(novoCargo, marcados);
+      areas = { permissoes: igualAoPadrao ? [] : marcados, permissoesPersonalizadas: !igualAoPadrao };
+    }
   }
 
   await prisma.user.update({

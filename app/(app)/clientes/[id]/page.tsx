@@ -12,7 +12,7 @@ export default async function ClienteDetalhePage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await exigirModulo("clientes");
+  const acesso = await exigirModulo("clientes");
   const { id } = await params;
 
   const cliente = await prisma.cliente.findUnique({
@@ -143,8 +143,11 @@ export default async function ClienteDetalhePage({
           ) : (
             <>
               <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-3">
-                Este cliente ainda não tem login no portal. Crie um e-mail/senha e repasse para ele.
+                {acesso.admin
+                  ? "Este cliente ainda não tem login no portal. Crie um e-mail/senha e repasse para ele."
+                  : "Este cliente ainda não tem login no portal. Peça a um administrador para criar o acesso."}
               </p>
+              {acesso.admin && (
               <form action={criarAcessoPortal} className="flex flex-wrap items-end gap-2">
                 <input type="hidden" name="clienteId" value={cliente.id} />
                 <div className="flex-1 min-w-[180px]">
@@ -159,6 +162,7 @@ export default async function ClienteDetalhePage({
                   Criar acesso
                 </Button>
               </form>
+              )}
             </>
           )}
         </Card>

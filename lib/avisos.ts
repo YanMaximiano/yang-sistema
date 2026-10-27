@@ -3,13 +3,22 @@ import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 import { formatMoeda, formatData } from "@/lib/utils";
 import { startOfDay, isBefore, differenceInDays, addDays } from "date-fns";
+import type { Modulo } from "@/lib/permissoes";
 
 export type Aviso = {
   severidade: "atraso" | "atencao";
   titulo: string;
   descricao: string;
   href: string;
+  // áreas que dão direito a ver este aviso (qualquer uma serve): o aviso mostra dados e leva
+  // para páginas dessas áreas, então quem não as tem não pode vê-lo
+  modulos: Modulo[];
 };
+
+/** Só os avisos que a pessoa pode ver, dado o que ela tem liberado. */
+export function avisosVisiveis(avisos: Aviso[], tem: (modulo: Modulo) => boolean) {
+  return avisos.filter((a) => a.modulos.some(tem));
+}
 
 // cache() memoiza por requisição — o layout (contador no menu) e a página /avisos
 // (lista completa) chamam isso na mesma requisição e reaproveitam o resultado em vez
@@ -64,6 +73,7 @@ export const listarAvisos = cache(async (): Promise<Aviso[]> => {
         titulo: "Projeto atrasado",
         descricao: `${p.nome} — ${p.cliente.nome} — prazo era ${formatData(p.prazoData)}`,
         href: `/projetos/${p.id}`,
+        modulos: ["projetos"],
       });
     } else if (!isBefore(addDays(hoje, 3), prazo)) {
       avisos.push({
@@ -71,6 +81,7 @@ export const listarAvisos = cache(async (): Promise<Aviso[]> => {
         titulo: "Prazo próximo",
         descricao: `${p.nome} — ${p.cliente.nome} — prazo em ${formatData(p.prazoData)}`,
         href: `/projetos/${p.id}`,
+        modulos: ["projetos"],
       });
     }
   }
@@ -81,6 +92,7 @@ export const listarAvisos = cache(async (): Promise<Aviso[]> => {
       titulo: "Pagamento atrasado",
       descricao: `${r.projeto.cliente.nome} — ${formatMoeda(r.valor)} venceu em ${formatData(r.vencimento)}`,
       href: `/projetos/${r.projetoId}`,
+      modulos: ["projetos_financeiro", "financeiro"],
     });
   }
 
@@ -90,6 +102,7 @@ export const listarAvisos = cache(async (): Promise<Aviso[]> => {
       titulo: "Aguardando aprovação do cliente",
       descricao: `${e.projeto.nome} — versão ${e.versao} enviada em ${formatData(e.createdAt)}`,
       href: `/projetos/${e.projetoId}`,
+      modulos: ["projetos"],
     });
   }
 
@@ -99,6 +112,7 @@ export const listarAvisos = cache(async (): Promise<Aviso[]> => {
       titulo: "Equipamento não devolvido",
       descricao: `${a.equipamento.nome} — projeto ${a.projeto.nome}, retirado em ${formatData(a.data)}`,
       href: `/projetos/${a.projetoId}`,
+      modulos: ["projetos", "equipamentos"],
     });
   }
 
@@ -109,6 +123,7 @@ export const listarAvisos = cache(async (): Promise<Aviso[]> => {
       titulo: "Proposta sem resposta",
       descricao: `${p.cliente.nome} — ${p.servico.nome}, parada há ${dias} dias`,
       href: `/propostas/${p.id}`,
+      modulos: ["propostas"],
     });
   }
 

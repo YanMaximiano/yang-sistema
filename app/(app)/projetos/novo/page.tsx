@@ -6,11 +6,18 @@ import { exigirModulo } from "@/lib/acesso";
 export default async function NovoProjetoPage() {
   await exigirModulo("projetos");
   const [clientes, servicos] = await Promise.all([
-    prisma.cliente.findMany({ orderBy: { nome: "asc" } }),
+    // só os campos que o formulário usa: o resto (notas internas, contatos, roteiro de vendas)
+    // vai para o navegador e não pode chegar a quem não tem a área correspondente
+    prisma.cliente.findMany({ select: { id: true, nome: true }, orderBy: { nome: "asc" } }),
     prisma.servico.findMany({
       where: { ativo: true, pilar: { ativo: true } },
       orderBy: { ordem: "asc" },
-      include: { pilar: true, planos: { where: { ativo: true }, orderBy: { ordem: "asc" } } },
+      select: {
+        id: true,
+        nome: true,
+        pilar: { select: { nome: true } },
+        planos: { where: { ativo: true }, orderBy: { ordem: "asc" }, select: { id: true, nome: true } },
+      },
     }),
   ]);
 

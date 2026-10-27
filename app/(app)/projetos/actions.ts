@@ -365,14 +365,16 @@ export async function criarEscala(formData: FormData) {
 }
 
 export async function removerEscala(formData: FormData) {
-  await requireModulo("projetos");
+  const acesso = await requireModulo("projetos");
   const id = formData.get("id") as string;
   const projetoId = formData.get("projetoId") as string;
   if (!id) return;
 
   await prisma.$transaction(async (tx) => {
     const escala = await tx.escala.findUnique({ where: { id } });
-    if (!escala) return;
+    if (!escala || escala.projetoId !== projetoId) return;
+    // a escala com cachê tem um custo ligado (financeiro do projeto): só quem tem essa área remove
+    if (escala.custoId && !acesso.tem("projetos_financeiro")) return;
     await tx.escala.delete({ where: { id } });
     if (escala.custoId) {
       await tx.custo.delete({ where: { id: escala.custoId } });
@@ -385,8 +387,9 @@ export async function removerEscala(formData: FormData) {
 
 // ---------- Documentos ----------
 
+// o contrato embute o valor do projeto no texto, então exige também a área de valores
 export async function gerarDocumento(formData: FormData) {
-  await requireModulo("projetos");
+  await requireModulo("projetos_financeiro");
   const projetoId = formData.get("projetoId") as string;
   const modeloDocumentoId = formData.get("modeloDocumentoId") as string;
   if (!projetoId || !modeloDocumentoId) return;

@@ -113,6 +113,8 @@ export default async function UsuariosPage() {
                         {u.permissoesPersonalizadas && <Badge variant="info">Personalizado</Badge>}
                       </summary>
                       <input type="hidden" name="editarModulos" value="1" />
+                      {/* o que estava marcado ao abrir: só mexe nas áreas se o admin mudou alguma caixa */}
+                      <input type="hidden" name="modulosIniciais" value={liberadas.join(",")} />
                       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-2 mt-3">
                         {MODULOS.map((m) => (
                           <label key={m.chave} className="flex items-start gap-2 text-sm cursor-pointer">
