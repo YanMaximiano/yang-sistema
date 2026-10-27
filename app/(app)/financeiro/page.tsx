@@ -4,8 +4,10 @@ import { formatMoeda, formatData } from "@/lib/utils";
 import { startOfMonth, addMonths, eachMonthOfInterval, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import Link from "next/link";
+import { exigirModulo } from "@/lib/acesso";
 
 export default async function FinanceiroPage() {
+  await exigirModulo("financeiro");
   const inicioProjecao = startOfMonth(new Date());
   const fimProjecao = addMonths(inicioProjecao, 5);
 

@@ -5,12 +5,14 @@ import { updateCliente, addNota, criarAcessoPortal } from "../actions";
 import { formatMoeda, formatData } from "@/lib/utils";
 import Link from "next/link";
 import { PROPOSTA_STATUS_VARIANT } from "@/lib/status";
+import { exigirModulo } from "@/lib/acesso";
 
 export default async function ClienteDetalhePage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await exigirModulo("clientes");
   const { id } = await params;
 
   const cliente = await prisma.cliente.findUnique({

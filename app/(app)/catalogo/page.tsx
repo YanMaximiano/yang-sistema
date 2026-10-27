@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { PageHeader, Card, Badge, Input, Button, Select, LinkButton } from "@/components/ui";
 import { createPilar, createServico, togglePilarAtivo } from "./actions";
 import { formatFaixaValor } from "@/lib/utils";
+import { exigirModulo } from "@/lib/acesso";
 
 const TIPO_LABEL: Record<string, string> = {
   PROJETO_UNICO: "Projeto único",
@@ -10,6 +11,7 @@ const TIPO_LABEL: Record<string, string> = {
 };
 
 export default async function CatalogoPage() {
+  await exigirModulo("catalogo");
   const pilares = await prisma.pilar.findMany({
     orderBy: { ordem: "asc" },
     include: {

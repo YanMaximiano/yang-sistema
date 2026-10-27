@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
-import { rotaPermitidaParaPerfil, type Role } from "@/lib/rotas";
+import type { Role } from "@/lib/rotas";
 
 const ROTAS_PUBLICAS = ["/login"];
 
@@ -29,10 +29,8 @@ export default auth((req) => {
     return NextResponse.redirect(new URL("/portal", nextUrl));
   }
 
-  if (!rotaPermitidaParaPerfil(nextUrl.pathname, role)) {
-    return NextResponse.redirect(new URL("/", nextUrl));
-  }
-
+  // equipe e freelancers: o que cada pessoa pode abrir é liberado pelo admin e conferido no banco
+  // em cada página e ação (lib/acesso.ts) — o token daqui pode estar desatualizado.
   return NextResponse.next();
 });
 

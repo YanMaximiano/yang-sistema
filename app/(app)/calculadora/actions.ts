@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/lib/auth";
+import { requireModulo } from "@/lib/acesso";
 import { revalidatePath } from "next/cache";
 import { str, num, int } from "@/lib/form";
 import { CONFIG_PADRAO, ESCOPOS, MES_VALIDO, type ConfigCalculadora } from "@/lib/calculadora";
@@ -16,7 +16,7 @@ function porcento(n: number | null, padrao: number) {
 }
 
 export async function salvarConfig(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("calculadora");
   // valor digitado inválido mantém o que já estava salvo (e só na falta dele cai no padrão)
   const guardado = await prisma.configCalculadora.findUnique({ where: { id: "singleton" } });
   const p: ConfigCalculadora = guardado
@@ -68,7 +68,7 @@ function escopoDoFormulario(formData: FormData) {
 }
 
 export async function criarCustoFixo(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("calculadora");
   const nome = str(formData, "nome");
   const categoria = str(formData, "categoria");
   const valorMensal = naoNegativo(num(formData, "valorMensal"));
@@ -87,7 +87,7 @@ export async function criarCustoFixo(formData: FormData) {
 }
 
 export async function atualizarCustoFixo(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("calculadora");
   const id = str(formData, "id");
   const nome = str(formData, "nome");
   const categoria = str(formData, "categoria");
@@ -109,7 +109,7 @@ export async function atualizarCustoFixo(formData: FormData) {
 
 // um campo mes_<yyyy-MM> por mês; vazio apaga a exceção e volta ao valor padrão do custo
 export async function salvarValoresMensais(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("calculadora");
   const custoFixoId = str(formData, "id");
   if (!custoFixoId) return;
 
@@ -137,7 +137,7 @@ export async function salvarValoresMensais(formData: FormData) {
 }
 
 export async function alternarAtivoCustoFixo(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("calculadora");
   const id = str(formData, "id");
   if (!id) return;
   const custo = await prisma.custoFixo.findUnique({ where: { id } });
@@ -147,7 +147,7 @@ export async function alternarAtivoCustoFixo(formData: FormData) {
 }
 
 export async function excluirCustoFixo(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("calculadora");
   const id = str(formData, "id");
   if (!id) return;
   await prisma.custoFixo.deleteMany({ where: { id } });
@@ -156,7 +156,7 @@ export async function excluirCustoFixo(formData: FormData) {
 
 // o formulário de equipamentos manda um par de campos por item: valor_<id> e vida_<id>
 export async function salvarEquipamentos(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("calculadora");
   const ids = formData.getAll("ids").map(String);
   if (ids.length === 0) return;
 
@@ -179,7 +179,7 @@ export async function salvarEquipamentos(formData: FormData) {
 
 // um campo salario_<id> por profissional fixo
 export async function salvarSalarios(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("calculadora");
   const ids = formData.getAll("ids").map(String);
   if (ids.length === 0) return;
 
@@ -203,7 +203,7 @@ function ocupacaoValida(n: number | null, padrao: number) {
 }
 
 export async function criarPessoaHoras(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("calculadora");
   const nome = str(formData, "nome");
   if (!nome) return;
   await prisma.pessoaHoras.create({
@@ -220,7 +220,7 @@ export async function criarPessoaHoras(formData: FormData) {
 
 // um conjunto horas_<id>, ocup_<id>, escopo_<id> por pessoa
 export async function salvarPessoasHoras(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("calculadora");
   const ids = formData.getAll("ids").map(String);
   if (ids.length === 0) return;
 
@@ -241,7 +241,7 @@ export async function salvarPessoasHoras(formData: FormData) {
 }
 
 export async function excluirPessoaHoras(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("calculadora");
   const id = str(formData, "id");
   if (!id) return;
   await prisma.pessoaHoras.deleteMany({ where: { id } });
@@ -249,7 +249,7 @@ export async function excluirPessoaHoras(formData: FormData) {
 }
 
 export async function criarKit(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("calculadora");
   const nome = str(formData, "nome");
   const ids = Array.from(new Set(formData.getAll("equipamentoIds").map(String)));
   if (!nome || ids.length === 0) return;
@@ -264,7 +264,7 @@ export async function criarKit(formData: FormData) {
 }
 
 export async function excluirKit(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("calculadora");
   const id = str(formData, "id");
   if (!id) return;
   await prisma.kitEquipamento.deleteMany({ where: { id } });

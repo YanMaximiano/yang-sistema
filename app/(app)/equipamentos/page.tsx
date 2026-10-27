@@ -1,5 +1,8 @@
 import { prisma } from "@/lib/prisma";
+import { exigirModulo } from "@/lib/acesso";
 import { PageHeader, Card, Input, Button, Badge, Label } from "@/components/ui";
+import { formatMoeda } from "@/lib/utils";
+import { configComPadrao, depreciacaoMensalDe, depreciacaoPorDiaria } from "@/lib/calculadora";
 import {
   createEquipamento,
   updateEquipamento,
@@ -8,9 +11,21 @@ import {
 } from "./actions";
 
 export default async function EquipamentosPage() {
-  const equipamentos = await prisma.equipamento.findMany({
-    orderBy: [{ categoria: "asc" }, { nome: "asc" }],
-  });
+  // o custo de aluguel (depreciação) deriva do valor pago: só quem vê a calculadora enxerga
+  const acesso = await exigirModulo("equipamentos");
+  const verCustos = acesso.tem("calculadora");
+
+  const [equipamentos, configSalva] = await Promise.all([
+    prisma.equipamento.findMany({ orderBy: [{ categoria: "asc" }, { nome: "asc" }] }),
+    verCustos ? prisma.configCalculadora.findUnique({ where: { id: "singleton" } }) : null,
+  ]);
+  const config = configComPadrao(configSalva);
+
+  function custoDeAluguel(eq: (typeof equipamentos)[number]) {
+    if (eq.status === "ESTRAGADO") return "fora do cálculo (estragado)";
+    if (!eq.valorCompra) return "informe o valor pago em Calculadora";
+    return `${formatMoeda(depreciacaoPorDiaria(eq, config))} por diária · ${formatMoeda(depreciacaoMensalDe(eq, config.depreciacaoPct))} por mês`;
+  }
 
   return (
     <div>
@@ -61,6 +76,11 @@ export default async function EquipamentosPage() {
                   <p className="text-sm text-neutral-500 dark:text-neutral-400">
                     {eq.categoria} {eq.observacoes && `· ${eq.observacoes}`}
                   </p>
+                  {verCustos && (
+                    <p className="text-xs text-neutral-600 dark:text-neutral-300 mt-0.5">
+                      Custo de aluguel (depreciação): <strong>{custoDeAluguel(eq)}</strong>
+                    </p>
+                  )}
                 </div>
               </div>
               <div className="flex items-center gap-2">

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { format } from "date-fns";
 import {
   CATEGORIAS_CUSTO_FIXO,
-  CONFIG_PADRAO,
+  configComPadrao,
   calcularCustoHora,
   depreciacaoMensalDe,
   depreciacaoPorDiaria,
@@ -35,6 +35,7 @@ import {
   salvarSalarios,
 } from "./actions";
 import { SimuladorProjeto } from "./SimuladorProjeto";
+import { exigirModulo } from "@/lib/acesso";
 
 function classificar(margem: number) {
   if (margem <= 10) return { label: "Apertado", variant: "danger" as const };
@@ -93,6 +94,7 @@ export default async function CalculadoraPage({
 }: {
   searchParams: Promise<{ mes?: string; deprec?: string }>;
 }) {
+  await exigirModulo("calculadora");
   const { mes: mesParam, deprec } = await searchParams;
   // padrão: a depreciação NÃO entra na hora; cada projeto paga só os equipamentos que usa
   const comDepreciacao = deprec === "1";
@@ -133,12 +135,7 @@ export default async function CalculadoraPage({
     }),
   ]);
 
-  const config: ConfigCalculadora = { ...CONFIG_PADRAO };
-  if (configSalva) {
-    for (const k of Object.keys(CONFIG_PADRAO) as (keyof ConfigCalculadora)[]) {
-      Object.assign(config, { [k]: configSalva[k] });
-    }
-  }
+  const config: ConfigCalculadora = configComPadrao(configSalva);
 
   // equipamento estragado fica fora da depreciação, do simulador e dos kits: só aparece em aviso
   const estragados = equipamentos.filter((e) => e.status === "ESTRAGADO");
@@ -1071,7 +1068,7 @@ export default async function CalculadoraPage({
                       <th className="py-2 pr-4 font-medium w-36">Valor pago (R$)</th>
                       <th className="py-2 pr-4 font-medium w-28">Vida útil (meses)</th>
                       <th className="py-2 pr-4 font-medium text-right w-28">Deprec./mês</th>
-                      <th className="py-2 font-medium text-right w-28">Por diária</th>
+                      <th className="py-2 font-medium text-right w-36">Custo de aluguel / diária</th>
                     </tr>
                   </thead>
                   <tbody>

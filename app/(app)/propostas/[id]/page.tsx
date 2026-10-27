@@ -4,12 +4,14 @@ import { PageHeader, Card, Badge, Button, LinkButton } from "@/components/ui";
 import { formatMoeda, formatData } from "@/lib/utils";
 import { atualizarStatusProposta } from "../actions";
 import { PROPOSTA_STATUS_VARIANT } from "@/lib/status";
+import { exigirModulo } from "@/lib/acesso";
 
 export default async function PropostaDetalhePage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await exigirModulo("propostas");
   const { id } = await params;
 
   const proposta = await prisma.proposta.findUnique({

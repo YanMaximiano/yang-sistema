@@ -1,34 +1,30 @@
+import type { Modulo } from "@/lib/permissoes";
+
 export type Role = "ADMIN" | "EQUIPE" | "FREELANCER" | "CLIENTE";
 
 /**
- * Fonte única de verdade para acesso por perfil às rotas administrativas.
- * Usado tanto pela navegação (app/(app)/layout.tsx) quanto pela proteção
- * de rota no servidor (proxy.ts) — nunca declarar uma restrição só num
- * dos dois lugares, ou a rota fica "escondida" no menu mas continua
- * acessível por URL direta.
+ * Menu lateral. `modulo` é a área que precisa estar liberada para a pessoa; `somenteAdmin`
+ * vale para telas que nenhuma permissão libera (gerenciar usuários).
+ * Quem decide o acesso de verdade é o servidor (lib/acesso.ts), página por página e ação
+ * por ação — o menu só esconde o que a pessoa não pode abrir.
  */
-export const ROTAS_APP: { href: string; label: string; roles: Role[] }[] = [
-  { href: "/", label: "Painel", roles: ["ADMIN", "EQUIPE", "FREELANCER"] },
-  { href: "/catalogo", label: "Catálogo", roles: ["ADMIN"] },
-  { href: "/clientes", label: "Clientes", roles: ["ADMIN", "EQUIPE"] },
-  { href: "/propostas", label: "Propostas", roles: ["ADMIN", "EQUIPE"] },
-  { href: "/projetos", label: "Projetos", roles: ["ADMIN", "EQUIPE", "FREELANCER"] },
-  { href: "/calendario", label: "Calendário", roles: ["ADMIN", "EQUIPE", "FREELANCER"] },
-  { href: "/equipamentos", label: "Equipamentos", roles: ["ADMIN", "EQUIPE"] },
-  { href: "/equipe", label: "Equipe", roles: ["ADMIN", "EQUIPE"] },
-  { href: "/avisos", label: "Avisos", roles: ["ADMIN", "EQUIPE"] },
-  { href: "/financeiro", label: "Financeiro", roles: ["ADMIN"] },
-  { href: "/calculadora", label: "Calculadora", roles: ["ADMIN"] },
-  { href: "/usuarios", label: "Usuários", roles: ["ADMIN"] },
+export const ROTAS_APP: { href: string; label: string; modulo?: Modulo; somenteAdmin?: true }[] = [
+  { href: "/", label: "Painel", modulo: "painel" },
+  { href: "/catalogo", label: "Catálogo", modulo: "catalogo" },
+  { href: "/clientes", label: "Clientes", modulo: "clientes" },
+  { href: "/propostas", label: "Propostas", modulo: "propostas" },
+  { href: "/projetos", label: "Projetos", modulo: "projetos" },
+  { href: "/calendario", label: "Calendário", modulo: "calendario" },
+  { href: "/equipamentos", label: "Equipamentos", modulo: "equipamentos" },
+  { href: "/equipe", label: "Equipe", modulo: "equipe" },
+  { href: "/avisos", label: "Avisos", modulo: "avisos" },
+  { href: "/financeiro", label: "Financeiro", modulo: "financeiro" },
+  { href: "/calculadora", label: "Calculadora", modulo: "calculadora" },
+  { href: "/usuarios", label: "Usuários", somenteAdmin: true },
 ];
 
-export function rotaPermitidaParaPerfil(pathname: string, role: Role): boolean {
-  const candidatas = ROTAS_APP.filter((r) =>
-    r.href === "/" ? pathname === "/" : pathname === r.href || pathname.startsWith(`${r.href}/`)
-  ).sort((a, b) => b.href.length - a.href.length);
-
-  const rota = candidatas[0];
-  // rota não listada (ex: /portal) não é gerida por esta tabela
-  if (!rota) return true;
-  return rota.roles.includes(role);
+/** Primeira tela do menu que a pessoa pode abrir; sem nenhuma, a própria conta (sempre liberada). */
+export function primeiraRotaPermitida(modulos: Modulo[], admin: boolean) {
+  const rota = ROTAS_APP.find((r) => (r.modulo ? modulos.includes(r.modulo) : admin));
+  return rota?.href ?? "/conta";
 }

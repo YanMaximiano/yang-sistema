@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/lib/auth";
+import { requireModulo } from "@/lib/acesso";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
@@ -9,7 +9,7 @@ import { str } from "@/lib/form";
 import type { StatusRelacionamento } from "@/app/generated/prisma/client";
 
 export async function createCliente(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE");
+  await requireModulo("clientes");
   const nome = str(formData, "nome");
   if (!nome) return;
 
@@ -28,7 +28,7 @@ export async function createCliente(formData: FormData) {
 }
 
 export async function updateCliente(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE");
+  await requireModulo("clientes");
   const id = formData.get("id") as string;
   if (!id) return;
   await prisma.cliente.update({
@@ -49,7 +49,7 @@ export async function updateCliente(formData: FormData) {
 }
 
 export async function addNota(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE");
+  await requireModulo("clientes");
   const id = formData.get("id") as string;
   const nota = str(formData, "nota");
   if (!id || !nota) return;
@@ -70,7 +70,7 @@ export async function addNota(formData: FormData) {
 }
 
 export async function criarAcessoPortal(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE");
+  await requireModulo("clientes");
   const clienteId = formData.get("clienteId") as string;
   const email = str(formData, "email")?.toLowerCase();
   const senha = str(formData, "senha");

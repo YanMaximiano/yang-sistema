@@ -3,8 +3,10 @@ import { PageHeader, Card, Badge, LinkButton } from "@/components/ui";
 import { formatData } from "@/lib/utils";
 import Link from "next/link";
 import { PROJETO_STATUS_VARIANT } from "@/lib/status";
+import { exigirModulo } from "@/lib/acesso";
 
 export default async function ProjetosPage() {
+  await exigirModulo("projetos");
   const projetos = await prisma.projeto.findMany({
     orderBy: { createdAt: "desc" },
     include: {

@@ -18,12 +18,14 @@ import {
   parse,
 } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { exigirModulo } from "@/lib/acesso";
 
 export default async function CalendarioPage({
   searchParams,
 }: {
   searchParams: Promise<{ mes?: string }>;
 }) {
+  await exigirModulo("calendario");
   const { mes } = await searchParams;
   const mesParseado = mes ? parse(mes, "yyyy-MM", new Date()) : new Date();
   const referencia = isValid(mesParseado) ? mesParseado : new Date();

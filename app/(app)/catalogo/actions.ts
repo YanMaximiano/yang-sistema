@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/lib/auth";
+import { requireModulo } from "@/lib/acesso";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { str, num, int, list } from "@/lib/form";
@@ -10,7 +10,7 @@ import type { TipoCobranca, TipoDocumento } from "@/app/generated/prisma/client"
 // ---------- Pilar ----------
 
 export async function createPilar(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const nome = str(formData, "nome");
   if (!nome) return;
   const count = await prisma.pilar.count();
@@ -19,7 +19,7 @@ export async function createPilar(formData: FormData) {
 }
 
 export async function updatePilar(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const id = formData.get("id") as string;
   const nome = str(formData, "nome");
   if (!id || !nome) return;
@@ -28,7 +28,7 @@ export async function updatePilar(formData: FormData) {
 }
 
 export async function togglePilarAtivo(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const id = formData.get("id") as string;
   const pilar = await prisma.pilar.findUnique({ where: { id } });
   if (!pilar) return;
@@ -39,7 +39,7 @@ export async function togglePilarAtivo(formData: FormData) {
 // ---------- Serviço ----------
 
 export async function createServico(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const nome = str(formData, "nome");
   const pilarId = formData.get("pilarId") as string;
   const tipoCobranca = formData.get("tipoCobranca") as TipoCobranca;
@@ -57,7 +57,7 @@ export async function createServico(formData: FormData) {
 }
 
 export async function updateServico(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const id = formData.get("id") as string;
   if (!id) return;
   const nome = str(formData, "nome");
@@ -80,7 +80,7 @@ export async function updateServico(formData: FormData) {
 }
 
 export async function toggleServicoAtivo(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const id = formData.get("id") as string;
   const servico = await prisma.servico.findUnique({ where: { id } });
   if (!servico) return;
@@ -91,7 +91,7 @@ export async function toggleServicoAtivo(formData: FormData) {
 // ---------- Plano ----------
 
 export async function createPlano(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const servicoId = formData.get("servicoId") as string;
   const nome = str(formData, "nome");
   if (!servicoId || !nome) return;
@@ -112,7 +112,7 @@ export async function createPlano(formData: FormData) {
 }
 
 export async function updatePlano(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const id = formData.get("id") as string;
   const servicoId = formData.get("servicoId") as string;
   if (!id) return;
@@ -131,7 +131,7 @@ export async function updatePlano(formData: FormData) {
 }
 
 export async function deletePlano(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const id = formData.get("id") as string;
   const servicoId = formData.get("servicoId") as string;
 
@@ -150,7 +150,7 @@ export async function deletePlano(formData: FormData) {
 // ---------- Adicional ----------
 
 export async function createAdicional(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const servicoId = formData.get("servicoId") as string;
   const nome = str(formData, "nome");
   if (!servicoId || !nome) return;
@@ -166,7 +166,7 @@ export async function createAdicional(formData: FormData) {
 }
 
 export async function updateAdicional(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const id = formData.get("id") as string;
   const servicoId = formData.get("servicoId") as string;
   if (!id) return;
@@ -182,7 +182,7 @@ export async function updateAdicional(formData: FormData) {
 }
 
 export async function deleteAdicional(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const id = formData.get("id") as string;
   const servicoId = formData.get("servicoId") as string;
 
@@ -198,7 +198,7 @@ export async function deleteAdicional(formData: FormData) {
 // ---------- Etapas do pipeline ----------
 
 export async function createEtapaTemplate(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const servicoId = formData.get("servicoId") as string;
   const nome = str(formData, "nome");
   if (!servicoId || !nome) return;
@@ -213,7 +213,7 @@ export async function createEtapaTemplate(formData: FormData) {
 }
 
 export async function deleteEtapaTemplate(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const id = formData.get("id") as string;
   const servicoId = formData.get("servicoId") as string;
   await prisma.pipelineEtapaTemplate.delete({ where: { id } });
@@ -221,7 +221,7 @@ export async function deleteEtapaTemplate(formData: FormData) {
 }
 
 export async function moverEtapaTemplate(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const id = formData.get("id") as string;
   const servicoId = formData.get("servicoId") as string;
   const direcao = formData.get("direcao") as "cima" | "baixo";
@@ -246,7 +246,7 @@ export async function moverEtapaTemplate(formData: FormData) {
 // ---------- Templates de equipe e equipamento (por plano) ----------
 
 export async function createTemplateEquipe(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const planoId = formData.get("planoId") as string;
   const servicoId = formData.get("servicoId") as string;
   const funcao = str(formData, "funcao");
@@ -258,7 +258,7 @@ export async function createTemplateEquipe(formData: FormData) {
 }
 
 export async function deleteTemplateEquipe(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const id = formData.get("id") as string;
   const servicoId = formData.get("servicoId") as string;
   await prisma.templateEquipe.delete({ where: { id } });
@@ -266,7 +266,7 @@ export async function deleteTemplateEquipe(formData: FormData) {
 }
 
 export async function createTemplateEquipamento(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const planoId = formData.get("planoId") as string;
   const servicoId = formData.get("servicoId") as string;
   const equipamentoId = formData.get("equipamentoId") as string;
@@ -283,7 +283,7 @@ export async function createTemplateEquipamento(formData: FormData) {
 }
 
 export async function deleteTemplateEquipamento(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const id = formData.get("id") as string;
   const servicoId = formData.get("servicoId") as string;
   await prisma.templateEquipamento.delete({ where: { id } });
@@ -293,7 +293,7 @@ export async function deleteTemplateEquipamento(formData: FormData) {
 // ---------- Modelos de documento ----------
 
 export async function createModeloDocumento(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const servicoId = formData.get("servicoId") as string;
   const tipo = formData.get("tipo") as TipoDocumento;
   const nome = str(formData, "nome");
@@ -305,7 +305,7 @@ export async function createModeloDocumento(formData: FormData) {
 }
 
 export async function updateModeloDocumento(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const id = formData.get("id") as string;
   const servicoId = formData.get("servicoId") as string;
   if (!id) return;
@@ -322,7 +322,7 @@ export async function updateModeloDocumento(formData: FormData) {
 }
 
 export async function deleteModeloDocumento(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const id = formData.get("id") as string;
   const servicoId = formData.get("servicoId") as string;
 
@@ -338,7 +338,7 @@ export async function deleteModeloDocumento(formData: FormData) {
 // ---------- Checklist de pré-produção ----------
 
 export async function createChecklistTemplateItem(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const servicoId = formData.get("servicoId") as string;
   const nome = str(formData, "nome");
   if (!servicoId || !nome) return;
@@ -353,7 +353,7 @@ export async function createChecklistTemplateItem(formData: FormData) {
 }
 
 export async function deleteChecklistTemplateItem(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const id = formData.get("id") as string;
   const servicoId = formData.get("servicoId") as string;
   await prisma.checklistPreProducaoTemplate.delete({ where: { id } });
@@ -361,7 +361,7 @@ export async function deleteChecklistTemplateItem(formData: FormData) {
 }
 
 export async function moverChecklistTemplateItem(formData: FormData) {
-  await requireRole("ADMIN");
+  await requireModulo("catalogo");
   const id = formData.get("id") as string;
   const servicoId = formData.get("servicoId") as string;
   const direcao = formData.get("direcao") as "cima" | "baixo";

@@ -25,12 +25,14 @@ import {
   moverChecklistTemplateItem,
 } from "../../actions";
 import { DOCUMENTO_TIPO_LABEL } from "@/lib/status";
+import { exigirModulo } from "@/lib/acesso";
 
 export default async function ServicoDetalhePage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await exigirModulo("catalogo");
   const { id } = await params;
 
   const [servico, pilares, equipamentos] = await Promise.all([

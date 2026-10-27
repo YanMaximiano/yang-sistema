@@ -1,12 +1,14 @@
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/ui";
 import { NovaPropostaForm } from "./NovaPropostaForm";
+import { exigirModulo } from "@/lib/acesso";
 
 export default async function NovaPropostaPage({
   searchParams,
 }: {
   searchParams: Promise<{ clienteId?: string }>;
 }) {
+  await exigirModulo("propostas");
   const { clienteId } = await searchParams;
 
   const [clientes, servicos] = await Promise.all([

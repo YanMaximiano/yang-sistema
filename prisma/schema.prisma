@@ -29,6 +29,11 @@ model User {
   clienteId    String?
   cliente      Cliente? @relation(fields: [clienteId], references: [id])
   createdAt    DateTime @default(now())
+
+  // áreas liberadas pelo admin (chaves de lib/permissoes.ts); só vale quando
+  // permissoesPersonalizadas é true — senão a pessoa usa o padrão do cargo
+  permissoes               String[] @default([])
+  permissoesPersonalizadas Boolean  @default(false)
 }
 
 // ---------- Catálogo ----------

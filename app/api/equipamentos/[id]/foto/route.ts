@@ -1,10 +1,10 @@
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/lib/auth";
+import { requireModulo } from "@/lib/acesso";
 
 // /api não passa pelo proxy.ts (ver matcher), então a checagem de login é aqui.
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+    await requireModulo("equipamentos");
   } catch {
     return new Response("Não autorizado", { status: 401 });
   }

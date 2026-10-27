@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/lib/auth";
+import { requireModulo } from "@/lib/acesso";
 import { revalidatePath } from "next/cache";
 import { str } from "@/lib/form";
 
@@ -39,7 +39,7 @@ async function gravarFoto(equipamentoId: string, foto: { tipo: string; dados: Ui
 }
 
 export async function createEquipamento(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE");
+  await requireModulo("equipamentos");
   const nome = str(formData, "nome");
   const categoria = str(formData, "categoria");
   if (!nome || !categoria) return;
@@ -53,7 +53,7 @@ export async function createEquipamento(formData: FormData) {
 }
 
 export async function updateEquipamento(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE");
+  await requireModulo("equipamentos");
   const id = formData.get("id") as string;
   if (!id) return;
 
@@ -73,7 +73,7 @@ export async function updateEquipamento(formData: FormData) {
 const STATUS_VALIDOS = ["DISPONIVEL", "MANUTENCAO", "ESTRAGADO"] as const;
 
 export async function definirStatusEquipamento(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE");
+  await requireModulo("equipamentos");
   const id = formData.get("id") as string;
   const status = formData.get("status") as string;
   if (!id || !STATUS_VALIDOS.some((s) => s === status)) return;
@@ -86,7 +86,7 @@ export async function definirStatusEquipamento(formData: FormData) {
 }
 
 export async function alternarAtivoEquipamento(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE");
+  await requireModulo("equipamentos");
   const id = formData.get("id") as string;
   const equipamento = await prisma.equipamento.findUnique({ where: { id } });
   if (!equipamento) return;

@@ -1,18 +1,19 @@
-import { auth, signOut, sessaoAindaValida } from "@/lib/auth";
+import { auth, signOut } from "@/lib/auth";
+import { acessoAtual } from "@/lib/acesso";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { ROTAS_APP, type Role } from "@/lib/rotas";
+import { ROTAS_APP } from "@/lib/rotas";
 import { listarAvisos } from "@/lib/avisos";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
-  if (!session?.user || !(await sessaoAindaValida(session))) redirect("/login");
+  const acesso = await acessoAtual();
+  if (!session?.user || !acesso) redirect("/login");
 
-  const role = session.user.role as Role;
-  const nav = ROTAS_APP.filter((item) => item.roles.includes(role));
-  const totalAvisos = role === "ADMIN" || role === "EQUIPE" ? (await listarAvisos()).length : 0;
+  const nav = ROTAS_APP.filter((item) => (item.modulo ? acesso.tem(item.modulo) : acesso.admin));
+  const totalAvisos = acesso.tem("avisos") ? (await listarAvisos()).length : 0;
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen flex-1">

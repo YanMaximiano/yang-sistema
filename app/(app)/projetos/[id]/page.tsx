@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { exigirModulo } from "@/lib/acesso";
 import { notFound } from "next/navigation";
 import { PageHeader, Card, Badge, Button, Input, Select, Label } from "@/components/ui";
 import { formatMoeda, formatData } from "@/lib/utils";
@@ -41,9 +41,9 @@ export default async function ProjetoDetalhePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  // freelancer acompanha a produção, mas não vê valores nem margem da empresa
-  const session = await auth();
-  const verFinanceiro = session?.user.role !== "FREELANCER";
+  const acesso = await exigirModulo("projetos");
+  // valor, recebimentos, custos, margem e cachês só para quem tem essa área liberada
+  const verFinanceiro = acesso.tem("projetos_financeiro");
 
   // equipamentosDisponiveis/profissionaisDisponiveis não dependem do projeto — rodam em
   // paralelo com a busca pesada do projeto em vez de esperar ela terminar primeiro.

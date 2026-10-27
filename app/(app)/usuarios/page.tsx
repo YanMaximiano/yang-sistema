@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { PageHeader, Card, Input, Select, Button, Badge, Label } from "@/components/ui";
 import { createUsuario, updateUsuario, alternarAtivoUsuario } from "./actions";
+import { exigirAdmin } from "@/lib/acesso";
+import { MODULOS, modulosDoUsuario } from "@/lib/permissoes";
 
 const ROLE_LABEL: Record<string, string> = {
   ADMIN: "Admin",
@@ -10,6 +12,7 @@ const ROLE_LABEL: Record<string, string> = {
 };
 
 export default async function UsuariosPage() {
+  await exigirAdmin();
   const session = await auth();
   const meuId = session?.user.id;
 
@@ -51,12 +54,17 @@ export default async function UsuariosPage() {
           <Button type="submit" className="md:col-span-4">
             Criar usuário
           </Button>
+          <p className="md:col-span-4 text-xs text-neutral-500 dark:text-neutral-400">
+            As áreas liberadas começam pelo padrão do perfil. Depois de criar, abra &quot;Áreas liberadas&quot; do usuário
+            para marcar ou desmarcar cada parte do sistema.
+          </p>
         </form>
       </Card>
 
       <div className="space-y-2">
         {usuarios.map((u) => {
           const souEu = u.id === meuId;
+          const liberadas = modulosDoUsuario(u);
           return (
             <Card key={u.id} className="p-4">
               {souEu ? (
@@ -92,6 +100,43 @@ export default async function UsuariosPage() {
                     <Label>Nova senha (opcional)</Label>
                     <Input name="senha" type="text" minLength={8} placeholder="deixe em branco p/ manter" />
                   </div>
+
+                  {u.role === "ADMIN" ? (
+                    <p className="w-full text-xs text-neutral-500 dark:text-neutral-400">
+                      Admin acessa todas as áreas do sistema. Para limitar o acesso, troque o perfil para Equipe ou Freelancer
+                      e marque as áreas.
+                    </p>
+                  ) : (
+                    <details className="w-full" open={u.permissoesPersonalizadas}>
+                      <summary className="text-sm cursor-pointer w-fit">
+                        Áreas liberadas ({liberadas.length} de {MODULOS.length}){" "}
+                        {u.permissoesPersonalizadas && <Badge variant="info">Personalizado</Badge>}
+                      </summary>
+                      <input type="hidden" name="editarModulos" value="1" />
+                      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-2 mt-3">
+                        {MODULOS.map((m) => (
+                          <label key={m.chave} className="flex items-start gap-2 text-sm cursor-pointer">
+                            <input
+                              type="checkbox"
+                              name="modulos"
+                              value={m.chave}
+                              defaultChecked={liberadas.includes(m.chave)}
+                              className="mt-1"
+                            />
+                            <span>
+                              <span className="font-medium">{m.rotulo}</span>
+                              <span className="block text-xs text-neutral-500 dark:text-neutral-400">{m.descricao}</span>
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                      <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-2">
+                        Clique em Salvar para aplicar. Vale na próxima página que a pessoa abrir. Voltar às marcações padrão
+                        do perfil remove a personalização.
+                      </p>
+                    </details>
+                  )}
+
                   <Button type="submit" variant="secondary">
                     Salvar
                   </Button>

@@ -1,8 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/ui";
 import { NovoProjetoForm } from "./NovoProjetoForm";
+import { exigirModulo } from "@/lib/acesso";
 
 export default async function NovoProjetoPage() {
+  await exigirModulo("projetos");
   const [clientes, servicos] = await Promise.all([
     prisma.cliente.findMany({ orderBy: { nome: "asc" } }),
     prisma.servico.findMany({

@@ -2,8 +2,10 @@ import { prisma } from "@/lib/prisma";
 import { PageHeader, Card, Input, Select, Button, Badge, Label } from "@/components/ui";
 import { createProfissional, alternarAtivoProfissional } from "./actions";
 import { formatMoeda } from "@/lib/utils";
+import { exigirModulo } from "@/lib/acesso";
 
 export default async function EquipePage() {
+  await exigirModulo("equipe");
   const profissionais = await prisma.profissional.findMany({
     orderBy: [{ nome: "asc" }],
   });

@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { requireRole } from "@/lib/auth";
+import { requireModulo } from "@/lib/acesso";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { str, num, dataOrNull, linkHttp } from "@/lib/form";
@@ -16,7 +16,7 @@ import type {
 // ---------- Projeto ----------
 
 export async function criarProjetoAvulso(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+  await requireModulo("projetos");
   const clienteId = formData.get("clienteId") as string;
   const servicoId = formData.get("servicoId") as string;
   const planoId = str(formData, "planoId");
@@ -57,7 +57,7 @@ export async function criarProjetoAvulso(formData: FormData) {
 }
 
 export async function atualizarStatusGeralProjeto(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+  await requireModulo("projetos");
   const id = formData.get("id") as string;
   const statusGeral = formData.get("statusGeral") as StatusGeralProjeto;
   if (!id || !statusGeral) return;
@@ -69,7 +69,7 @@ export async function atualizarStatusGeralProjeto(formData: FormData) {
 // ---------- Etapas ----------
 
 export async function avancarEtapa(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+  await requireModulo("projetos");
   const projetoId = formData.get("projetoId") as string;
   const etapaId = formData.get("etapaId") as string;
 
@@ -98,7 +98,7 @@ export async function avancarEtapa(formData: FormData) {
 }
 
 export async function voltarEtapa(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+  await requireModulo("projetos");
   const projetoId = formData.get("projetoId") as string;
   const etapaId = formData.get("etapaId") as string;
 
@@ -129,7 +129,7 @@ export async function voltarEtapa(formData: FormData) {
 // Reabre uma etapa CONCLUIDA (mexe só nela — ao contrário de voltarEtapa,
 // não reativa a etapa anterior, que continua concluída)
 export async function reabrirEtapa(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+  await requireModulo("projetos");
   const projetoId = formData.get("projetoId") as string;
   const etapaId = formData.get("etapaId") as string;
 
@@ -146,7 +146,7 @@ export async function reabrirEtapa(formData: FormData) {
 }
 
 export async function iniciarEtapa(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+  await requireModulo("projetos");
   const projetoId = formData.get("projetoId") as string;
   const etapaId = formData.get("etapaId") as string;
 
@@ -163,7 +163,7 @@ export async function iniciarEtapa(formData: FormData) {
 // ---------- Entregas ----------
 
 export async function criarEntrega(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+  await requireModulo("projetos");
   const projetoId = formData.get("projetoId") as string;
   const link = linkHttp(formData, "link");
   if (!projetoId || (str(formData, "link") && !link)) return; // link preenchido mas inválido: não cria
@@ -174,7 +174,7 @@ export async function criarEntrega(formData: FormData) {
 }
 
 export async function atualizarStatusEntrega(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+  await requireModulo("projetos");
   const id = formData.get("id") as string;
   const projetoId = formData.get("projetoId") as string;
   const status = formData.get("status") as StatusEntrega;
@@ -198,7 +198,7 @@ export async function atualizarStatusEntrega(formData: FormData) {
 // ---------- Financeiro do projeto ----------
 
 export async function criarRecebimento(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE");
+  await requireModulo("projetos_financeiro");
   const projetoId = formData.get("projetoId") as string;
   const valor = num(formData, "valor");
   const vencimento = dataOrNull(formData, "vencimento");
@@ -217,7 +217,7 @@ export async function criarRecebimento(formData: FormData) {
 }
 
 export async function atualizarRecebimento(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE");
+  await requireModulo("projetos_financeiro");
   const id = formData.get("id") as string;
   const projetoId = formData.get("projetoId") as string;
   const status = formData.get("status") as StatusRecebimento;
@@ -235,7 +235,7 @@ export async function atualizarRecebimento(formData: FormData) {
 }
 
 export async function criarCusto(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE");
+  await requireModulo("projetos_financeiro");
   const projetoId = formData.get("projetoId") as string;
   const tipo = str(formData, "tipo");
   const valor = num(formData, "valor");
@@ -255,7 +255,7 @@ export async function criarCusto(formData: FormData) {
 }
 
 export async function deletarCusto(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE");
+  await requireModulo("projetos_financeiro");
   const id = formData.get("id") as string;
   const projetoId = formData.get("projetoId") as string;
   if (!id || !projetoId) return;
@@ -277,7 +277,7 @@ export async function deletarCusto(formData: FormData) {
 // ---------- Equipamento do projeto ----------
 
 export async function alocarEquipamento(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+  await requireModulo("projetos");
   const projetoId = formData.get("projetoId") as string;
   const equipamentoId = formData.get("equipamentoId") as string;
   const data = dataOrNull(formData, "data");
@@ -294,7 +294,7 @@ export async function alocarEquipamento(formData: FormData) {
 }
 
 export async function alternarChecklistEquipamento(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+  await requireModulo("projetos");
   const id = formData.get("id") as string;
   const projetoId = formData.get("projetoId") as string;
   const campo = formData.get("campo") as string;
@@ -311,7 +311,7 @@ export async function alternarChecklistEquipamento(formData: FormData) {
 }
 
 export async function alternarItemChecklist(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+  await requireModulo("projetos");
   const id = formData.get("id") as string;
   const projetoId = formData.get("projetoId") as string;
   if (!id) return;
@@ -327,7 +327,7 @@ export async function alternarItemChecklist(formData: FormData) {
 }
 
 export async function removerAlocacaoEquipamento(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+  await requireModulo("projetos");
   const id = formData.get("id") as string;
   const projetoId = formData.get("projetoId") as string;
   if (!id || !projetoId) return;
@@ -338,13 +338,13 @@ export async function removerAlocacaoEquipamento(formData: FormData) {
 // ---------- Escala do projeto ----------
 
 export async function criarEscala(formData: FormData) {
-  const session = await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+  const acesso = await requireModulo("projetos");
   const projetoId = formData.get("projetoId") as string;
   const profissionalId = formData.get("profissionalId") as string;
   const funcao = str(formData, "funcao");
   const data = dataOrNull(formData, "data");
-  // cachê vira custo do projeto: freelancer escala, mas não lança valores
-  const cache = session.user.role === "FREELANCER" ? null : num(formData, "cache");
+  // cachê vira custo do projeto: só quem tem a área de valores dos projetos lança
+  const cache = acesso.tem("projetos_financeiro") ? num(formData, "cache") : null;
   if (!projetoId || !profissionalId || !funcao || !data) return;
 
   await prisma.$transaction(async (tx) => {
@@ -365,7 +365,7 @@ export async function criarEscala(formData: FormData) {
 }
 
 export async function removerEscala(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+  await requireModulo("projetos");
   const id = formData.get("id") as string;
   const projetoId = formData.get("projetoId") as string;
   if (!id) return;
@@ -386,7 +386,7 @@ export async function removerEscala(formData: FormData) {
 // ---------- Documentos ----------
 
 export async function gerarDocumento(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+  await requireModulo("projetos");
   const projetoId = formData.get("projetoId") as string;
   const modeloDocumentoId = formData.get("modeloDocumentoId") as string;
   if (!projetoId || !modeloDocumentoId) return;
@@ -417,7 +417,7 @@ export async function gerarDocumento(formData: FormData) {
 }
 
 export async function criarDocumentoLink(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+  await requireModulo("projetos");
   const projetoId = formData.get("projetoId") as string;
   const tipo = formData.get("tipo") as TipoDocumento;
   const nome = str(formData, "nome");
@@ -429,7 +429,7 @@ export async function criarDocumentoLink(formData: FormData) {
 }
 
 export async function enviarParaAssinatura(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+  await requireModulo("projetos");
   const id = formData.get("id") as string;
   const projetoId = formData.get("projetoId") as string;
   if (!id || !projetoId) return;
@@ -443,7 +443,7 @@ export async function enviarParaAssinatura(formData: FormData) {
 }
 
 export async function deletarDocumento(formData: FormData) {
-  await requireRole("ADMIN", "EQUIPE", "FREELANCER");
+  await requireModulo("projetos");
   const id = formData.get("id") as string;
   const projetoId = formData.get("projetoId") as string;
   if (!id || !projetoId) return;

@@ -115,6 +115,21 @@ rodando), iniciam o servidor na porta `3002` e abrem o navegador.
 
 ---
 
+## Acesso por usuário
+
+Em **/usuarios**, cada pessoa da equipe tem o botão **"Áreas liberadas"**: o admin marca ou desmarca Painel, Catálogo,
+Clientes, Propostas, Projetos, Valores dentro dos projetos, Calendário, Equipamentos, Equipe, Avisos, Financeiro e
+Calculadora. O perfil (Equipe ou Freelancer) só define o ponto de partida; **Admin sempre acessa tudo** e **gerenciar
+usuários é só do Admin** (senão alguém poderia dar poder de admin a si mesmo).
+
+- A regra vale em cada página e em cada ação do servidor, conferida no banco a cada requisição: liberar, bloquear,
+  desativar ou trocar o perfil de alguém vale na hora. O menu lateral só esconde o que a pessoa não pode abrir.
+- Quem abre uma área bloqueada por endereço direto é levado para a primeira área liberada (ou para "Minha conta").
+- Ao criar **uma página ou ação nova** em área restrita, chame `exigirModulo("área")` (páginas) ou
+  `requireModulo("área")` (ações e rotas de API), de `lib/acesso.ts`. Novas áreas entram na lista de `lib/permissoes.ts`.
+- O custo de aluguel de cada equipamento (a depreciação por diária) aparece em `/equipamentos` para quem tem a área
+  Calculadora, pois deriva do valor pago.
+
 ## Escopo desta versão
 
 - Catálogo de serviços (pilares, serviços, planos, adicionais, pipeline de etapas, checklist de
@@ -130,6 +145,7 @@ rodando), iniciam o servidor na porta `3002` e abrem o navegador.
 - Equipamentos (inventário com foto, alocação por projeto, alerta de conflito de agenda) e
   equipe/escala de profissionais (mesma lógica de conflito)
 - Portal do cliente: aprovação de proposta, avaliação de entregas, assinatura de documentos
+- Acesso por usuário: o admin escolhe, em `/usuarios`, quais áreas cada pessoa vê e acessa (ver abaixo)
 - Central de avisos internos (prazos, pagamentos, propostas paradas) e modo escuro
 
 Fora de escopo por enquanto: notificações automáticas por e-mail/WhatsApp (sem conta de envio

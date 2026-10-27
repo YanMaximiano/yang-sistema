@@ -3,8 +3,10 @@ import { PageHeader, Card, Input, Select, Button, Badge, Label } from "@/compone
 import { createCliente } from "./actions";
 import Link from "next/link";
 import { CLIENTE_STATUS_LABEL, CLIENTE_STATUS_VARIANT } from "@/lib/status";
+import { exigirModulo } from "@/lib/acesso";
 
 export default async function ClientesPage() {
+  await exigirModulo("clientes");
   const clientes = await prisma.cliente.findMany({
     orderBy: { createdAt: "desc" },
     include: { _count: { select: { propostas: true, projetos: true } } },

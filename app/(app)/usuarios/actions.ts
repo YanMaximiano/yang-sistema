@@ -5,6 +5,7 @@ import { requireRole } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
 import { str } from "@/lib/form";
+import { ehModulo, mesmoQueOPadrao } from "@/lib/permissoes";
 import type { Role } from "@/app/generated/prisma/client";
 
 const SENHA_MINIMA = 8;
@@ -54,12 +55,23 @@ export async function updateUsuario(formData: FormData) {
   const alvo = await prisma.user.findUnique({ where: { id }, select: { role: true } });
   if (!alvo || alvo.role === "CLIENTE") return;
 
+  // áreas liberadas: o que está marcado é o que vale. Igual ao padrão do cargo = sem
+  // personalização (continua acompanhando o padrão se o cargo mudar). Admin sempre vê tudo.
+  const novoCargo = (role || alvo.role) as Role;
+  let areas: { permissoes: string[]; permissoesPersonalizadas: boolean } | undefined;
+  if (formData.get("editarModulos") === "1" && novoCargo !== "ADMIN") {
+    const marcados = Array.from(new Set(formData.getAll("modulos").map(String).filter(ehModulo)));
+    const igualAoPadrao = mesmoQueOPadrao(novoCargo, marcados);
+    areas = { permissoes: igualAoPadrao ? [] : marcados, permissoesPersonalizadas: !igualAoPadrao };
+  }
+
   await prisma.user.update({
     where: { id },
     data: {
       name: name ?? undefined,
       role: role || undefined,
       passwordHash: senha ? await bcrypt.hash(senha, 10) : undefined,
+      ...areas,
     },
   });
 

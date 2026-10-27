@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { PageHeader, Card, Badge } from "@/components/ui";
 import { listarAvisos } from "@/lib/avisos";
+import { exigirModulo } from "@/lib/acesso";
 
 export default async function AvisosPage() {
+  await exigirModulo("avisos");
   const avisos = await listarAvisos();
 
   return (

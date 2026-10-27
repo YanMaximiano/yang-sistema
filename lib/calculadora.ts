@@ -161,6 +161,17 @@ export function depreciacaoPorDiaria(e: EquipamentoParaCalculo, config: ConfigCa
   return dias > 0 ? depreciacaoMensalDe(e, config.depreciacaoPct) / dias : 0;
 }
 
+/** Junta a configuração salva no banco com os padrões (campos que faltarem usam o padrão). */
+export function configComPadrao(salva: Partial<ConfigCalculadora> | null | undefined): ConfigCalculadora {
+  const config: ConfigCalculadora = { ...CONFIG_PADRAO };
+  if (salva) {
+    for (const k of Object.keys(CONFIG_PADRAO) as (keyof ConfigCalculadora)[]) {
+      if (salva[k] != null) Object.assign(config, { [k]: salva[k] });
+    }
+  }
+  return config;
+}
+
 export function horasFaturaveis(c: ConfigCalculadora) {
   return (
     positivo(c.horasMensais) * positivo(c.pessoasFaturaveis) * (positivo(c.ocupacaoPct) / 100)

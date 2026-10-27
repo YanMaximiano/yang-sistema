@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { PageHeader, Card, LinkButton } from "@/components/ui";
 import { formatMoeda } from "@/lib/utils";
 import Link from "next/link";
+import { exigirModulo } from "@/lib/acesso";
 
 const COLUNAS: { status: "ENVIADA" | "NEGOCIACAO" | "APROVADA" | "RECUSADA"; label: string }[] = [
   { status: "ENVIADA", label: "Enviada" },
@@ -11,6 +12,7 @@ const COLUNAS: { status: "ENVIADA" | "NEGOCIACAO" | "APROVADA" | "RECUSADA"; lab
 ];
 
 export default async function PropostasPage() {
+  await exigirModulo("propostas");
   const propostas = await prisma.proposta.findMany({
     orderBy: { createdAt: "desc" },
     include: {
